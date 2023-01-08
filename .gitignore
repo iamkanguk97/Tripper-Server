@@ -1,5 +1,8 @@
-node_modules
-package-lock.json
+# Dependency directories
+node_modules/
 
-./src/fword_list.txt
-./src/config/envs
+# Docs
+src/docs/
+
+# Environment variables
+src/config/envs
