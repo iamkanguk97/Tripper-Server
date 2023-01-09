@@ -6,16 +6,29 @@
  */
 
 const express = require('express');
+const passport = require('passport');
 // const validate = require('../middlewares/validate');
 const authController = require('../controllers/auth.controller');
 
 const router = express.Router();
+
+/** 카카오 로그인 관련 Router */
+router.get('/kakao-login', passport.authenticate('kakao'));
+router.get('/kakao-login/callback', passport.authenticate('kakao', authController.kakaoLoginCallback));
 
 router.get('/verify-nickname', authController.verifyNickname);   // 닉네임 확인 API
 
 module.exports = router;
 
 /**
+ * @swagger
+ * paths:
+ *  /api/auth/kakao-login:
+ *      post:
+ *          summary: '카카오 로그인 API'
+ *          description: '카카오 로그인 기능입니다. 초기 회원가입시에는 회원가입 API를 추가로 거쳐야 합니다.'
+ *          tags: [Auth]
+ * 
  * @swagger
  * paths:
  *  /api/auth/verify-nickname?nickname={nickname}:

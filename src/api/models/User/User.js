@@ -13,7 +13,7 @@ module.exports = class User extends Sequelize.Model {
             },
             USER_EMAIL: {
                 type: Sequelize.STRING(50),
-                allowNull: false,
+                allowNull: true,
                 comment: '사용자 이메일 (카카오 이메일)'
             },
             USER_NICKNAME: {
@@ -28,7 +28,7 @@ module.exports = class User extends Sequelize.Model {
             },
             USER_KAKAO_ID: {
                 type: Sequelize.STRING(30),
-                allowNull: false,
+                allowNull: true,
                 comment: '사용자 카카오 고유값'
             },
             USER_AGE_GROUP: {
@@ -40,6 +40,17 @@ module.exports = class User extends Sequelize.Model {
                 type: Sequelize.CHAR(1),
                 allowNull: true,
                 comment: '사용자 성별'
+            },
+            USER_PROVIDER: {
+                type: Sequelize.CHAR(1),
+                allowNull: false,
+                comment: '사용자 로그인 타입 (K: 카카오)'
+            },
+            USER_STATUS: {
+                type: Sequelize.CHAR(1),
+                allowNull: false,
+                defaultValue: 'A',
+                comment: '사용자 상태 (A: 활성화됨, D: 탈퇴됨)'
             },
             CREATED_AT: {
                 type: 'TIMESTAMP',

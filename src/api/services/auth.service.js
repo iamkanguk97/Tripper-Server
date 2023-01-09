@@ -5,6 +5,17 @@ const verifyNickname = async (nickname) => {
     return verifyResult ? true : false;
 };
 
+const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
+    // DB에 해당 사용자가 등록되어 있는지 먼저 확인
+    const checkExistUser = await User.findOne({
+        where: {
+            USER_KAKAO_ID: kakaoId,
+            USER_PROVIDER: provider
+        }
+    });
+};
+
 module.exports = {
-    verifyNickname
+    verifyNickname,
+    kakaoLoginCallback,
 };

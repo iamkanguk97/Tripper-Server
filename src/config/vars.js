@@ -14,5 +14,9 @@ module.exports = {
     SWAGGER: {
         ID: process.env.SWAGGER_ID,
         PASSWORD: process.env.SWAGGER_PASSWORD
+    },
+    KAKAO: {
+        REST_API_KEY: process.env.KAKAO_REST_API_KEY,
+        CALLBACK_URL: process.env.KAKAO_CALLBACK_URL
     }
 };

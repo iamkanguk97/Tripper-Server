@@ -2,6 +2,8 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const basicAuth = require('express-basic-auth');
+const passport = require('passport');
+const passportConfig = require('../config/passport');
 const { sequelize } = require('../api/models/index');
 const { swaggerUi, specs } = require('../config/swagger');
 const { SWAGGER } = require('./vars');
@@ -14,6 +16,9 @@ const userRoutes = require('../api/routes/user.route');
 * @public
 */
 const app = express();
+
+// Passport setting
+passportConfig();
 
 // Sequelize setting
 sequelize.sync({
@@ -29,6 +34,8 @@ app.use(express.urlencoded({ extended: true }));   // x-www-form-urlencoded í˜•í
 
 app.use(helmet());   // HTTP Secure
 app.use(cors());   // CORS
+
+app.use(passport.initialize());
 
 // Setting API Routes
 app.use('/api/auth', authRoutes);

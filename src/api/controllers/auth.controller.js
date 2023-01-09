@@ -5,6 +5,11 @@ const { response, errResponse } = require('../../config/response/response-templa
 const { REGEX_NICKNAME } = require('../utils/regex');
 const { checkBadWord } = require('../utils/util');
 
+const kakaoLoginCallback = async (req, res) => {
+    const { accessToken, refreshToken, profile } = req;
+    const kakaoLoginResult = await authService.kakaoLoginCallback(accessToken, refreshToken, profile);
+};
+
 const verifyNickname = async (req, res) => {
     const nickname = req.query.nickname;
     
@@ -26,5 +31,6 @@ const verifyNickname = async (req, res) => {
 };
 
 module.exports = {
+    kakaoLoginCallback,
     verifyNickname
 };
