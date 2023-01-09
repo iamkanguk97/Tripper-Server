@@ -1,8 +1,10 @@
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
+const basicAuth = require('express-basic-auth');
 const { sequelize } = require('../api/models/index');
 const { swaggerUi, specs } = require('../config/swagger');
+const { SWAGGER } = require('./vars');
 
 const authRoutes = require('../api/routes/auth.route');
 const userRoutes = require('../api/routes/user.route');
@@ -33,6 +35,14 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
 // Swagger
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, { explorer: true }));
+app.use(
+    '/api-docs',
+    basicAuth({
+        users: { [ SWAGGER.ID ]: SWAGGER.PASSWORD },
+        challenge: true
+    }),
+    swaggerUi.serve, 
+    swaggerUi.setup(specs, { explorer: true })
+);
 
 module.exports = app;

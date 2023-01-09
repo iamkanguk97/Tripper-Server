@@ -10,5 +10,9 @@ module.exports = {
         ID: process.env.RDS_ID,
         PASSWORD: process.env.RDS_PASSWORD,
         DATABASE: process.env.RDS_DATABASE
+    },
+    SWAGGER: {
+        ID: process.env.SWAGGER_ID,
+        PASSWORD: process.env.SWAGGER_PASSWORD
     }
 };
