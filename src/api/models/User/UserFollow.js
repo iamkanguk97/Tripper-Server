@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-module.exports = class TravelLike extends Sequelize.Model {
+module.exports = class Follow extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
             IDX: {
@@ -8,44 +8,46 @@ module.exports = class TravelLike extends Sequelize.Model {
                 autoIncrement: true,
                 primaryKey: true,
                 allowNull: false,
-                comment: '여행 게시물 좋아요 고유값'
-            },
-            TRAVEL_IDX: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-                comment: '여행 게시물 고유값'
+                comment: '사용자 팔로우 고유값'
             },
             USER_IDX: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 comment: '사용자 고유값'
             },
-            TRAVEL_LIKE_STATUS: {
+            FOLLOW_TARGET_IDX: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                comment: '팔로우를 당하는 사용자 고유값'  
+            },
+            FOLLOW_STATUS: {
                 type: Sequelize.CHAR(1),
                 allowNull: false,
                 defaultValue: 'Y',
-                comment: '여행 게시물 좋아요 상태'
+                comment: '팔로우 상태 (Y: 활성화, N: 비활성화)'
             },
             CREATED_AT: {
                 type: 'TIMESTAMP',
                 allowNull: false,
-                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+                comment: '생성 일자'
             },
             UPDATED_AT: {
                 type: 'TIMESTAMP',
                 allowNull: false,
-                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
+                comment: '수정 일자'
             }
         }, {
             sequelize,
             timestamps: false,
             underscored: false,
-            modelName: 'TravelLike',
-            tableName: 'TRAVEL_LIKE',
+            modelName: 'UserFollow',
+            tableName: 'USER_FOLLOW',
             charset: 'utf8',
             collate: 'utf8_general_ci',
         });
     }
 
     // static associate(db) {}
-}
+};

@@ -1,9 +1,15 @@
 const Sequelize = require('sequelize');
 
-const Travel = require('./Travel');
-const TravelLike = require('./TravelLike');
-const Follow = require('./Follow');
-const User = require('./User');
+const Travel = require('./Travel/Travel');
+const TravelHashtag = require('./Travel/TravelHashtag');
+const TravelImage = require('./Travel/TravelImage');
+const TravelLike = require('./Travel/TravelLike');
+const TravelScore = require('./Travel/TravelScore');
+
+const User = require('./User/User');
+const UserFollow = require('./User/UserFollow');
+
+const Hashtag = require('./Hashtag');
 
 const env = process.env.NODE_ENV;
 const db_config = require('../../config/database')[env];
@@ -20,13 +26,25 @@ db.sequelize = sequelize;
 
 // DB와 테이블 연결
 db.Travel = Travel;
+db.TravelHashtag = TravelHashtag;
+db.TravelImage = TravelImage;
 db.TravelLike = TravelLike;
-db.Follow = Follow;
+db.TravelScore = TravelScore;
+
 db.User = User;
+db.UserFollow = UserFollow;
+
+db.Hashtag = Hashtag;
 
 Travel.init(sequelize);
+TravelHashtag.init(sequelize);
+TravelImage.init(sequelize);
 TravelLike.init(sequelize);
-Follow.init(sequelize);
+TravelScore.init(sequelize);
+
 User.init(sequelize);
+UserFollow.init(sequelize);
+
+Hashtag.init(sequelize);
 
 module.exports = db;
