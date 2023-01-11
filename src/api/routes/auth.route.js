@@ -17,6 +17,7 @@ router.get('/kakao-login', passport.authenticate('kakao'));
 router.get('/kakao-login/callback', passport.authenticate('kakao', authController.kakaoLoginCallback));
 
 router.get('/verify-nickname', authController.verifyNickname);   // 닉네임 확인 API
+router.post('/sign-up', authController.signUp);   // 회원가입 API
 
 module.exports = router;
 

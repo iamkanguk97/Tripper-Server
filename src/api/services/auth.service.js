@@ -15,7 +15,22 @@ const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
     });
 };
 
+const signUp = async (
+    email, nickname, profileImage, kakaoId, ageGroup, gender
+) => {
+    const signUpResult = await User.create({
+        email,
+        nickname,
+        profileImage,
+        kakaoId,
+        ageGroup,
+        gender
+    });
+    console.log(signUpResult);
+};
+
 module.exports = {
     verifyNickname,
     kakaoLoginCallback,
+    signUp
 };

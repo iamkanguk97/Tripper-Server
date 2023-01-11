@@ -7,7 +7,8 @@ const { checkBadWord } = require('../utils/util');
 
 const kakaoLoginCallback = async (req, res) => {
     const { accessToken, refreshToken, profile } = req;
-    const kakaoLoginResult = await authService.kakaoLoginCallback(accessToken, refreshToken, profile);
+    console.log(profile);
+    // const kakaoLoginResult = await authService.kakaoLoginCallback(accessToken, refreshToken, profile);
 };
 
 const verifyNickname = async (req, res) => {
@@ -30,7 +31,24 @@ const verifyNickname = async (req, res) => {
         return res.status(httpStatus.OK).send(response(responseMessage.SUCCESS));
 };
 
+const signUp = async (req, res) => {
+    const { email, nickname, profileImage, kakaoId, ageGroup, gender } = req.body;
+    
+    /* Validation */
+    if (!email)   // [2013] 이메일 입력 안함  
+        return res.status(httpStatus.BAD_REQUEST).send(errResponse(responseMessage.EMAIL_EMPTY));
+    if (!nickname)   // [2014] 닉네임 입력 안함
+        return res.status(httpStatus.BAD_REQUEST).send(errResponse(responseMessage.NICKNAME_EMPTY));
+    if (!kakaoId)   // [2015] 카카오 고유값 입력 안함
+        return res.status(httpStatus.BAD_REQUEST).send(errResponse(responseMessage.KAKAOID_EMPTY));
+    
+    const signUpResult = await authService.signUp(
+        email, nickname, profileImage, kakaoId, ageGroup, gender
+    );
+};
+
 module.exports = {
     kakaoLoginCallback,
-    verifyNickname
+    verifyNickname,
+    signUp
 };
