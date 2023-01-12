@@ -22,6 +22,27 @@ const checkBadWord = async (nickname) => {
     return check;
 };
 
+/**
+ * 첫 문자열을 받아오는 함수 (성별, 유저 로그인 타입 등)
+ * @param gender
+ * @returns M / F
+ */
+const getFirstLetter = (gender) => {
+    return gender.charAt(0).toUpperCase();
+};
+
+/**
+ * 카카오에서 받은 연령대 정보를 새로운 문자열로 변경하는 함수
+ * @param ageGroup
+ * @returns ex) 20대
+ */
+const ageGroupToString = (ageGroup) => {
+    const age = parseInt(ageGroup.split('~')[0]);
+    return age < 10 ? '10대 미만' : `${age}대`;
+};
+
 module.exports = {
-    checkBadWord
+    checkBadWord,
+    getFirstLetter,
+    ageGroupToString
 };

@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
 
-// TODO: 사용자 프로필 사진 컬럼 추가 필요!
 module.exports = class User extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
@@ -48,22 +47,20 @@ module.exports = class User extends Sequelize.Model {
             },
             USER_STATUS: {
                 type: Sequelize.CHAR(1),
-                allowNull: false,
+                allowNull: true,
                 defaultValue: 'A',
                 comment: '사용자 상태 (A: 활성화됨, D: 탈퇴됨)'
             },
             CREATED_AT: {
-                type: 'TIMESTAMP',
-                allowNull: false,
-                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+                type: Sequelize.DATE(3),
+                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP(3)'),
                 comment: '생성 일자'
             },
-            UPDATED_AT: {
-                type: 'TIMESTAMP',
-                allowNull: false,
-                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
-                comment: '수정 일자'
-            }
+            // UPDATED_AT: {
+            //     type: Sequelize.DATE(3),
+            //     defaultValue: Sequelize.literal('CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)'),
+            //     comment: '수정 일자'
+            // }
         }, {
             sequelize,
             timestamps: false,

@@ -22,7 +22,7 @@ passportConfig();
 
 // Sequelize setting
 sequelize.sync({
-    force: false   // force가 true면 모든 table의 데이터를 초기화!
+    force: true   // force가 true면 모든 table의 데이터를 초기화!
 }).then(() => {
     console.log('Success for DB Connection!');
 }).catch((err) => {
