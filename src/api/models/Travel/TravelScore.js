@@ -29,12 +29,13 @@ module.exports = class TravelScore extends Sequelize.Model {
                 type: 'TIMESTAMP',
                 allowNull: false,
                 defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
-                comment: '등록 일자'
+                comment: '생성 일자'
             },
             UPDATED_AT: {
                 type: 'TIMESTAMP',
                 allowNull: false,
-                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
+                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+                onUpdate: Sequelize.literal('CURRENT_TIMESTAMP'),
                 comment: '수정 일자'
             }
         }, {

@@ -35,7 +35,8 @@ module.exports = class Follow extends Sequelize.Model {
             UPDATED_AT: {
                 type: 'TIMESTAMP',
                 allowNull: false,
-                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
+                defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+                onUpdate: Sequelize.literal('CURRENT_TIMESTAMP'),
                 comment: '수정 일자'
             }
         }, {
