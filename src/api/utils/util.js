@@ -8,7 +8,7 @@ const readFile = util.promisify(fs.readFile);
  * @returns true / false
  */
 const checkBadWord = async (nickname) => {
-    let badWordArray = await readFile('src/fword_list.txt', 'utf-8');
+    let badWordArray = await readFile('src/docs/fword_list.txt', 'utf-8');
     badWordArray = badWordArray.toString().replace(/\r/gi, "").split("\n");
 
     let check = 0;
