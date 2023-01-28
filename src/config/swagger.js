@@ -14,6 +14,14 @@ const options = {
                 email: 'rkddnrdl97@naver.com'
             },
         },
+        components: {
+            securitySchemes: {
+                JWT: {
+                    type: 'http',
+                    scheme: 'Bearer'
+                }
+            }
+        },
         servers: [
             {
                 url: 'http://localhost:3030'
@@ -21,7 +29,8 @@ const options = {
         ]
     },
     apis: [
-        'src/api/routes/*.route.js'
+        'src/api/routes/*.route.js',
+        'src/api/models/User/*.js',
     ]
 };
 

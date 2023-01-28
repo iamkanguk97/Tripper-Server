@@ -5,7 +5,8 @@ const development = {
     username: RDS.ID,
     password: RDS.PASSWORD,
     database: RDS.DATABASE,
-    dialect: 'mysql'
+    dialect: 'mysql',
+    logging: true   // console에 sequelize log 출력 여부
 };
 
 const local = {
@@ -13,7 +14,8 @@ const local = {
     username: RDS.ID,
     password: RDS.PASSWORD,
     database: RDS.DATABASE,
-    dialect: 'mysql'
+    dialect: 'mysql',
+    logging: false
 };
 
 module.exports = {

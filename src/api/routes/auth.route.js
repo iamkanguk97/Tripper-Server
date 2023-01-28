@@ -7,17 +7,29 @@
 
 const express = require('express');
 const passport = require('passport');
-// const validate = require('../middlewares/validate');
-const authController = require('../controllers/auth.controller');
+const AuthController = require('../controllers/auth.controller');
+const validationMiddleware = require('../middlewares/validationMiddleware');
+const { verifyNickValidation, signUpValidation } = require('../middlewares/validations/auth.validation');
 
 const router = express.Router();
 
 /** 카카오 로그인 관련 Router */
 router.get('/kakao-login', passport.authenticate('kakao'));
-router.get('/kakao-login/callback', passport.authenticate('kakao', authController.kakaoLoginCallback));
+router.get('/kakao-login/callback', passport.authenticate('kakao', AuthController.kakaoLoginCallback));
 
-router.get('/verify-nickname', authController.verifyNickname);   // 닉네임 확인 API
-router.post('/sign-up', authController.signUp);   // 회원가입 API
+router.get(
+    '/verify-nickname',
+    verifyNickValidation,
+    validationMiddleware,
+    AuthController.verifyNickname
+);   // 닉네임 확인 API
+
+router.post(
+    '/sign-up',
+    signUpValidation,
+    validationMiddleware,
+    AuthController.signUp
+);   // 회원가입 API
 
 module.exports = router;
 
@@ -63,10 +75,32 @@ module.exports = router;
  *                                      example: '요청 성공'
  *              '2010':
  *                  description: '닉네임을 입력해주세요.'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: false
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 2010
+ *                                  message:
+ *                                      type: string
+ *                                      example: '닉네임을 입력해주세요.'
  *              '2011':
  *                  description: '닉네임은 한글,영어,숫자만 가능하며 2자 이상 10자 이하로 설정 가능합니다.'
  *              '2012':
  *                  description: '닉네임에 부적절한 단어가 포함되어 있습니다. 다시 시도해주세요.'
  *              '3010':
  *                  description: '중복된 닉네임입니다.'
+ * 
+ * @swagger
+ * paths: 
+ *  /api/auth/sign-up:
+ *      post:
+ *          summary: '회원가입 API'
+ *          description: '카카오 로그인 API를 먼저 사용해서 신규 유저일 경우에만 해당 API를 사용하시면 됩니다.'
+ *          tags: [Auth]
  */

@@ -1,8 +1,9 @@
 # Dependency directories
 node_modules/
 
-# Docs
+# Docs, Logs
 src/docs/
+src/logs
 
 # Environment variables
 src/config/envs

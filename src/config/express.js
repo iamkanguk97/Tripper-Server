@@ -6,7 +6,9 @@ const passport = require('passport');
 const passportConfig = require('../config/passport');
 const { sequelize } = require('../api/models/index');
 const { swaggerUi, specs } = require('../config/swagger');
-const { SWAGGER } = require('./vars');
+const { SWAGGER, NODE_ENV } = require('./vars');
+const morganMiddleware = require('../api/middlewares/morganMiddleware');
+const Logger = require('./logger');
 
 const authRoutes = require('../api/routes/auth.route');
 const userRoutes = require('../api/routes/user.route');
@@ -17,16 +19,13 @@ const userRoutes = require('../api/routes/user.route');
 */
 const app = express();
 
-// Passport setting
-passportConfig();
-
 // Sequelize setting
 sequelize.sync({
-    force: true   // force가 true면 모든 table의 데이터를 초기화!
+    force: false   // force가 true면 모든 table의 데이터를 초기화!
 }).then(() => {
-    console.log('Success for DB Connection!');
+    Logger.info('Success for DB Connection!'); 
 }).catch((err) => {
-    console.log(err);
+    Logger.error(err);
 });
 
 app.use(express.json());   // JSON 형태의 데이터 해석
@@ -34,6 +33,8 @@ app.use(express.urlencoded({ extended: true }));   // x-www-form-urlencoded 형�
 
 app.use(helmet());   // HTTP Secure
 app.use(cors());   // CORS
+
+app.use(morganMiddleware);
 
 app.use(passport.initialize());
 
@@ -51,5 +52,8 @@ app.use(
     swaggerUi.serve, 
     swaggerUi.setup(specs, { explorer: true })
 );
+
+// Passport setting
+passportConfig();
 
 module.exports = app;

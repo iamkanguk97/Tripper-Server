@@ -1,50 +1,26 @@
 const httpStatus = require('http-status');
-const authService = require('../services/auth.service');
+const AuthService = require('../services/auth.service');
 const responseMessage = require('../../config/response/baseResponseStatus');
 const { response, errResponse } = require('../../config/response/response-template');
-const { REGEX_NICKNAME } = require('../utils/regex');
-const { checkBadWord } = require('../utils/util');
 
 const kakaoLoginCallback = async (req, res) => {
-    const { accessToken, refreshToken, profile } = req;
-    console.log(profile);
-    // const kakaoLoginResult = await authService.kakaoLoginCallback(accessToken, refreshToken, profile);
+    const { accessToken, refreshToken, profile } = req;   // KakaoStrategy에서 가져온 사용자 accessToken, refreshToken, 프로필
+    const kakaoLoginResult = await AuthService.kakaoLoginCallback(accessToken, refreshToken, profile);
 };
 
-const verifyNickname = async (req, res) => {
-    const nickname = req.query.nickname;
-    
-    /* Validation */
-    if (!nickname)   // [2010] 닉네임 입력 안함
-        return res.status(httpStatus.BAD_REQUEST).send(errResponse(responseMessage.NICKNAME_EMPTY));
-    if (!(REGEX_NICKNAME.test(nickname)))   // [2011] 닉네임 형식 오류
-        return res.status(httpStatus.BAD_REQUEST).send(errResponse(responseMessage.NICKNAME_ERROR_TYPE));
-    if (await checkBadWord(nickname))   // [2012] 닉네임 부적절한 단어 포함
-        return res.status(httpStatus.BAD_REQUEST).send(errResponse(responseMessage.NICKNAME_BAD_WORD_INCLUDE));
-
-    // DB에서 동일한 닉네임이 있는지 확인
-    const checkNickname = await authService.verifyNickname(nickname);
-    
-    if (checkNickname)   // 닉네임이 이미 존재하는 경우
-        return res.status(httpStatus.BAD_REQUEST).send(errResponse(responseMessage.NICKNAME_DUPLICATED));   // [3010] 닉네임 중복 오류
-    else   // 해당 닉네임이 존재하지 않는 경우
-        return res.status(httpStatus.OK).send(response(responseMessage.SUCCESS));
+const verifyNickname = (req, res) => {
+    // 이전 Middleware 부분에서 Validation 체크를 함
+    // 해당 Controller까지 들어오면 바로 성공 메세지를 return
+    return res.status(httpStatus.OK).send(response(responseMessage.SUCCESS));
 };
 
 const signUp = async (req, res) => {
     const { email, nickname, profileImage, kakaoId, ageGroup, gender } = req.body;
     
-    /* Validation */
-    if (!email)   // [2013] 이메일 입력 안함  
-        return res.status(httpStatus.BAD_REQUEST).send(errResponse(responseMessage.EMAIL_EMPTY));
-    if (!nickname)   // [2014] 닉네임 입력 안함
-        return res.status(httpStatus.BAD_REQUEST).send(errResponse(responseMessage.NICKNAME_EMPTY));
-    if (!kakaoId)   // [2015] 카카오 고유값 입력 안함
-        return res.status(httpStatus.BAD_REQUEST).send(errResponse(responseMessage.KAKAOID_EMPTY));
-    
-    const signUpResult = await authService.signUp(
+    const signUpResult = await AuthService.signUp(
         email, nickname, profileImage, kakaoId, ageGroup, gender
     );
+    console.log(signUpResult);
 };
 
 module.exports = {
