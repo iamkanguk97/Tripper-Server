@@ -1,14 +1,18 @@
 const express = require('express');
-const helmet = require('helmet');
 const cors = require('cors');
 const basicAuth = require('express-basic-auth');
+const helmet = require('helmet');
 const passport = require('passport');
+const httpStatus = require('http-status');
+const morganMiddleware = require('../api/middlewares/morganMiddleware');
 const passportConfig = require('../config/passport');
+const Logger = require('./logger');
+const responseMessage = require('../config/response/baseResponseStatus');
+
+const { errResponse } = require('../config/response/response-template');
 const { sequelize } = require('../api/models/index');
 const { swaggerUi, specs } = require('../config/swagger');
-const { SWAGGER, NODE_ENV } = require('./vars');
-const morganMiddleware = require('../api/middlewares/morganMiddleware');
-const Logger = require('./logger');
+const { SWAGGER } = require('./vars');
 
 const authRoutes = require('../api/routes/auth.route');
 const userRoutes = require('../api/routes/user.route');
@@ -55,5 +59,14 @@ app.use(
 
 // Passport setting
 passportConfig();
+
+// 404 NOT FOUND Middleware
+app.use((req, res, next) => {
+    let errMessage = responseMessage.API_NOT_FOUND;
+    errMessage.message += ` (${req.method} ${req.url})`;
+
+    Logger.error(`API NOT FOUND! (${req.method} ${req.url})`);
+    res.status(httpStatus.NOT_FOUND).send(errResponse(errMessage));
+});
 
 module.exports = app;
