@@ -1,6 +1,6 @@
-const { body } = require("express-validator");
+const { body, query } = require("express-validator");
+const { checkUserStatusFunc } = require('../../utils/validation-util');
 const responseMessage = require('../../../config/response/baseResponseStatus');
-const User = require("../../models/User/User");
 
 /**
  * 팔로우 기능 API Validator
@@ -9,18 +9,25 @@ const User = require("../../models/User/User");
 const followValidation = [
     body('followUserIdx')
         .notEmpty().withMessage(responseMessage.FOLLOW_TARGET_IDX_EMPTY).bail()
-        .custom(async (value) => {
-            const checkUserResult = await User.findOne({
-                where: {
-                    IDX: value,
-                    USER_STATUS: 'A'
-                }
-            });
-            if (!checkUserResult)
-                return Promise.reject('USER NOT EXIST')
-        }).withMessage(responseMessage.USER_NOT_EXIST).bail()
+        .custom(checkUserStatusFunc).withMessage(responseMessage.USER_NOT_EXIST).bail()
+];
+
+/**
+ * 팔로잉 또는 팔로워 리스트 조회 API Validator
+ * - userIdx 실제 존재하는 유저 확인 (+ 탈퇴 유무 확인)
+ * - option 유무 확인 + following 또는 follower인지 확인
+ */
+const followListValidation = [
+    query('userIdx')
+        .custom(checkUserStatusFunc).withMessage(responseMessage.USER_NOT_EXIST).bail(),
+    query('option')
+        .notEmpty().withMessage(responseMessage.FOLLOW_LIST_OPTION_EMPTY).bail()
+        .custom((value) => {
+            return !(value !== 'following' && value !== 'follower');
+        }).withMessage(responseMessage.FOLLOW_LIST_OPTION_ERROR_TYPE).bail()
 ];
 
 module.exports = {
-    followValidation
+    followValidation,
+    followListValidation
 };

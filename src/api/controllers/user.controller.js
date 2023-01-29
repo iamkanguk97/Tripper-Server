@@ -11,6 +11,15 @@ const follow = async (req, res) => {
     return res.status(httpStatus.OK).send(response(responseMessage.SUCCESS, { message: followResultMessage }));
 };
 
+const followList = async (req, res) => {
+    const myIdx = req.verifiedToken.userIdx;
+    const { userIdx, option } = req.query;
+
+    const followListResult = await UserService.followList(myIdx, userIdx, option);
+    return res.status(httpStatus.OK).send(response(responseMessage.SUCCESS));
+};
+
 module.exports = {
     follow,
+    followList
 };

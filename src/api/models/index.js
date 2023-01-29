@@ -5,10 +5,8 @@ const TravelHashtag = require('./Travel/TravelHashtag');
 const TravelImage = require('./Travel/TravelImage');
 const TravelLike = require('./Travel/TravelLike');
 const TravelScore = require('./Travel/TravelScore');
-
 const User = require('./User/User');
 const UserFollow = require('./User/UserFollow');
-
 const Hashtag = require('./Hashtag');
 
 const env = process.env.NODE_ENV;
@@ -46,5 +44,8 @@ User.init(sequelize);
 UserFollow.init(sequelize);
 
 Hashtag.init(sequelize);
+
+// User.associate(db);
+// UserFollow.associate(db);
 
 module.exports = db;

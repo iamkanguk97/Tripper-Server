@@ -1,3 +1,5 @@
+const Logger = require('../../config/logger');
+const User = require('../models/User/User');
 const UserFollow = require('../models/User/UserFollow');
 
 const follow = async (myIdx, followUserIdx) => { 
@@ -36,6 +38,18 @@ const follow = async (myIdx, followUserIdx) => {
     return rm;
 };
 
+const followList = async (myIdx, userIdx, option) => {
+    const _userIdx = !userIdx ? myIdx : userIdx;
+
+    let followListResult = await UserFollow.findAll({
+        where: {
+            [ option === 'following' ? 'USER_IDX' : 'FOLLOW_TARGET_IDX' ]: _userIdx,
+        }
+    });
+    console.log(followListResult);
+};
+
 module.exports = {
     follow,
+    followList
 };

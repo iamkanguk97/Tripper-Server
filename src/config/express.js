@@ -26,6 +26,7 @@ const app = express();
 // Sequelize setting
 sequelize.sync({
     force: false   // force가 true면 모든 table의 데이터를 초기화!
+    // alter: true 
 }).then(() => {
     Logger.info('Success for DB Connection!'); 
 }).catch((err) => {

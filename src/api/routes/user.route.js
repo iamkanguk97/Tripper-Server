@@ -9,7 +9,7 @@ const express = require('express');
 const UserController = require('../controllers/user.controller');
 const jwtMiddleware = require('../middlewares/jwtMiddleware');
 const validationMiddleware = require('../middlewares/validationMiddleware');
-const { followValidation } = require('../middlewares/validations/user.validation');
+const { followValidation, followListValidation } = require('../middlewares/validations/user.validation');
 
 const router = express.Router();
 
@@ -21,17 +21,15 @@ router.post(
     UserController.follow
 );   // 팔로우 API
 
-module.exports = router;
+router.get(
+    '/follow-list',
+    jwtMiddleware,
+    followListValidation,
+    validationMiddleware,
+    UserController.followList
+);   // 팔로잉 또는 팔로워 조회 API
 
-// *          requestBody:
-// *              - required: true
-// *              - content:
-// *                  application/json
-// *                      schema:
-// *                          properties:
-// *                              followUserIdx:
-// *                                  type: integer
-// *                                  example: 1
+module.exports = router;
 
 /**
  * @swagger
@@ -43,15 +41,17 @@ module.exports = router;
  *          summary: '팔로우 API'
  *          description: '팔로우 기능입니다.'
  *          tags: [User]
- *          parameters:
- *              - in: body
- *                name: body
- *                required: true
- *                schema:
- *                  properties:
- *                      followUserIdx:
- *                          type: integer
- *                          example: 1
+ *          requestBody: 
+ *              description: '팔로우 요청을 할 유저의 고유값을 입력해주세요.'
+ *              required: true
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              followUserIdx:
+ *                                  type: integer
+ *                                  example: 1
  *          responses:
  *              '200':
  *                  description: '요청 성공'
@@ -119,4 +119,13 @@ module.exports = router;
  *                          message:
  *                              type: string
  *                              example: '존재하지 않는 유저입니다.'
+ */
+
+/**
+ * @swagger
+ * paths:
+ *  /api/users/follow-list?userIdx=&option=:
+ *      get:
+ *          summary: '팔로잉 또는 팔로워 조회 API'
+ *          tags: [User]
  */
