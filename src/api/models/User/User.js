@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const UserFollow = require('./UserFollow');
 
 /**
  * @swagger
@@ -138,5 +139,16 @@ module.exports = class User extends Sequelize.Model {
         });
     }
 
-    // static associate(db) {}
+    static associate(db) {
+        db.User.hasMany(db.UserFollow, {
+            foreignKey: 'USER_IDX',
+            sourceKey: 'IDX',
+            constraints: false
+        });
+        db.User.hasMany(db.UserFollow, {
+            foreignKey: 'FOLLOW_TARGET_IDX',
+            sourceKey: 'IDX',
+            constraints: false
+        });
+    }
 };

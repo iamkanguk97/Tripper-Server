@@ -80,5 +80,16 @@ module.exports = class Follow extends Sequelize.Model {
         });
     }
 
-    // static associate(db) {}
+    static associate(db) {
+        db.UserFollow.belongsTo(db.User, {
+            foreignKey: 'USER_IDX',
+            targetKey: 'IDX',
+            constraints: false
+        });
+        db.UserFollow.belongsTo(db.User, {
+            foreignKey: 'FOLLOW_TARGET_IDX',
+            targetKey: 'IDX',
+            constraints: false
+        });
+    }
 };

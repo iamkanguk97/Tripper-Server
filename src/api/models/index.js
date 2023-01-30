@@ -45,7 +45,7 @@ UserFollow.init(sequelize);
 
 Hashtag.init(sequelize);
 
-// User.associate(db);
-// UserFollow.associate(db);
+User.associate(db);
+UserFollow.associate(db);
 
 module.exports = db;
