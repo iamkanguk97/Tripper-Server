@@ -1,4 +1,3 @@
-const Logger = require('../../config/logger');
 const User = require('../models/User/User');
 const UserFollow = require('../models/User/UserFollow');
 
@@ -42,14 +41,35 @@ const followList = async (myIdx, userIdx, option) => {
     const _userIdx = !userIdx ? myIdx : userIdx;
 
     let followListResult = await UserFollow.findAll({
+        include: [{
+            model: User,
+            attributes: [ 'IDX', 'USER_NICKNAME', 'USER_PROFILE_IMAGE' ],
+            required: true
+        }],
         where: {
-            [ option === 'following' ? 'USER_IDX' : 'FOLLOW_TARGET_IDX' ]: _userIdx,
+            IDX: 15
+        },
+    });
+
+    followListResult = followListResult.map(el => el.get({ plain: true }));
+    console.log(followListResult);
+    // console.log(followListResult[0].dataValues);
+    // console.log(followListResult[0]);
+};
+
+const deleteFollower = async (myIdx, userIdx) => {
+    await UserFollow.destroy({
+        where: {
+            USER_IDX: userIdx,
+            FOLLOW_TARGET_IDX: myIdx
         }
     });
-    console.log(followListResult);
+
+    return parseInt(userIdx);   // 삭제한 팔로워의 userIdx
 };
 
 module.exports = {
     follow,
-    followList
+    followList,
+    deleteFollower
 };

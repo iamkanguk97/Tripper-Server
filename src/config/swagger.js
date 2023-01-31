@@ -1,3 +1,4 @@
+'use strict';
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 
@@ -14,6 +15,7 @@ const options = {
                 email: 'rkddnrdl97@naver.com'
             },
         },
+        schemes: [ 'http', 'https' ],
         components: {
             securitySchemes: {
                 JWT: {
@@ -24,14 +26,15 @@ const options = {
         },
         servers: [
             {
-                url: 'http://localhost:3030'
+                url: 'http://localhost:3030',
+                description: 'Local Server'
             }
         ]
     },
     apis: [
         'src/api/routes/*.route.js',
         'src/api/models/User/*.js',
-    ]
+    ],
 };
 
 const specs = swaggerJsDoc(options);

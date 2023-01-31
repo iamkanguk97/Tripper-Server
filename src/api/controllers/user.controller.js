@@ -19,7 +19,16 @@ const followList = async (req, res) => {
     return res.status(httpStatus.OK).send(response(responseMessage.SUCCESS));
 };
 
+const deleteFollower = async (req, res) => {
+    const myIdx = req.verifiedToken.userIdx;
+    const deleteUserIdx = req.headers.useridx;
+
+    const deleteFollowerIdx = await UserService.deleteFollower(myIdx, deleteUserIdx);
+    return res.status(httpStatus.OK).send(response(responseMessage.SUCCESS, { deleteUserIdx: deleteFollowerIdx }));
+};
+
 module.exports = {
     follow,
-    followList
+    followList,
+    deleteFollower
 };

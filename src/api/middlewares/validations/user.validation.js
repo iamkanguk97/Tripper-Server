@@ -1,6 +1,7 @@
-const { body, query } = require("express-validator");
+const { body, query, header } = require("express-validator");
 const { checkUserStatusFunc } = require('../../utils/validation-util');
 const responseMessage = require('../../../config/response/baseResponseStatus');
+const UserFollow = require('../../models/User/UserFollow');
 
 /**
  * 팔로우 기능 API Validator
@@ -22,12 +23,34 @@ const followListValidation = [
         .custom(checkUserStatusFunc).withMessage(responseMessage.USER_NOT_EXIST).bail(),
     query('option')
         .notEmpty().withMessage(responseMessage.FOLLOW_LIST_OPTION_EMPTY).bail()
-        .custom((value) => {
-            return !(value !== 'following' && value !== 'follower');
-        }).withMessage(responseMessage.FOLLOW_LIST_OPTION_ERROR_TYPE).bail()
+        .isIn(['following', 'follower']).withMessage(responseMessage.FOLLOW_LIST_OPTION_ERROR_TYPE).bail()
+];
+
+/**
+ * 본인 팔로워 삭제 API Validator
+ * - 삭제할 팔로워 고유값 유무 확인 + 존재 유무 확인
+ * - 삭제할 팔로워가 본인을 팔로우하고 있는지 확인
+ */
+const deleteFollowerValidation = [
+    header('useridx')
+        .notEmpty().withMessage(responseMessage.DELETE_FOLLOWER_IDX_EMPTY).bail()
+        .custom(checkUserStatusFunc).withMessage(responseMessage.USER_NOT_EXIST).bail()
+        .custom(async (value, { req }) => {
+            // 해당 유저가 본인을 팔로우하고 있는지 확인
+            const checkFollow = await UserFollow.findOne({
+                where: {
+                    USER_IDX: value,
+                    FOLLOW_TARGET_IDX: req.verifiedToken.userIdx
+                }
+            });
+
+            if (!checkFollow)
+                return Promise.reject('DELETE FOLLOWER NOT FOLLOW');
+        }).withMessage(responseMessage.DELETE_FOLLOWER_NOT_FOLLOW).bail()
 ];
 
 module.exports = {
     followValidation,
-    followListValidation
+    followListValidation,
+    deleteFollowerValidation
 };
