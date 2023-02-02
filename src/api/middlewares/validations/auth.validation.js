@@ -1,4 +1,4 @@
-const { query, body, isEmail } = require("express-validator");
+const { query, body } = require("express-validator");
 const { REGEX_NICKNAME } = require('../../utils/regex');
 const { checkBadWord } = require("../../utils/util");
 const responseMessage = require('../../../config/response/baseResponseStatus');
