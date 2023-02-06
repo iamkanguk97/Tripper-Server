@@ -5,10 +5,12 @@ const helmet = require('helmet');
 const passport = require('passport');
 const httpStatus = require('http-status');
 const methodOverride = require('method-override');
+const fileUpload = require('express-fileupload');
 const morganMiddleware = require('../api/middlewares/morganMiddleware');
 const passportConfig = require('../config/passport');
 const Logger = require('./logger');
 const responseMessage = require('../config/response/baseResponseStatus');
+const errorHandleMiddleware = require('../api/middlewares/errorHandleMiddleware');
 
 const { errResponse } = require('../config/response/response-template');
 const { sequelize } = require('../api/models/index');
@@ -41,6 +43,7 @@ app.use(methodOverride());   // PUT, DELETE Method를 위한 library
 
 app.use(helmet());   // HTTP Secure
 app.use(cors());   // CORS
+app.use(fileUpload());   // for file-upload
 
 app.use(morganMiddleware);
 
@@ -72,5 +75,8 @@ app.use((req, res, next) => {
     Logger.error(`API NOT FOUND! (${req.method} ${req.url})`);
     res.status(httpStatus.NOT_FOUND).send(errResponse(errMessage));
 });
+
+// Error Handler Middleware
+app.use(errorHandleMiddleware);
 
 module.exports = app;
