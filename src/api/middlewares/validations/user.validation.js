@@ -1,3 +1,4 @@
+'use strict';
 const { body, query, header } = require("express-validator");
 const { checkUserStatusFunc } = require('../../utils/validation-util');
 const responseMessage = require('../../../config/response/baseResponseStatus');
@@ -10,7 +11,7 @@ const UserFollow = require('../../models/User/UserFollow');
 const followValidation = [
     body('followUserIdx')
         .notEmpty().withMessage(responseMessage.FOLLOW_TARGET_IDX_EMPTY).bail()
-        .custom(checkUserStatusFunc).withMessage(responseMessage.USER_NOT_EXIST).bail()
+        .custom(checkUserStatusFunc).bail()
 ];
 
 /**
@@ -34,19 +35,27 @@ const followListValidation = [
 const deleteFollowerValidation = [
     header('useridx')
         .notEmpty().withMessage(responseMessage.DELETE_FOLLOWER_IDX_EMPTY).bail()
-        .custom(checkUserStatusFunc).withMessage(responseMessage.USER_NOT_EXIST).bail()
+        .custom(checkUserStatusFunc).bail()
         .custom(async (value, { req }) => {
-            // 해당 유저가 본인을 팔로우하고 있는지 확인
-            const checkFollow = await UserFollow.findOne({
-                where: {
-                    USER_IDX: value,
-                    FOLLOW_TARGET_IDX: req.verifiedToken.userIdx
-                }
-            });
+            try {
+                // 해당 유저가 본인을 팔로우하고 있는지 확인
+                const checkFollow = await UserFollow.findOne({
+                    where: {
+                        USER_IDX: value,
+                        FOLLOW_TARGET_IDX: req.verifiedToken.userIdx
+                    }
+                });
 
-            if (!checkFollow)
-                return Promise.reject('DELETE FOLLOWER NOT FOLLOW');
-        }).withMessage(responseMessage.DELETE_FOLLOWER_NOT_FOLLOW).bail()
+                if (!checkFollow)
+                    return Promise.reject(responseMessage.DELETE_FOLLOWER_NOT_FOLLOW);
+            } catch(err) {
+                Logger.error(err);
+                return Promise.reject({
+                    isServerError: true,
+                    ...responseMessage.DATABASE_ERROR
+                });
+            }
+        }).bail()
 ];
 
 module.exports = {

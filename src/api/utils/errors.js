@@ -1,20 +1,23 @@
 'use strict';
 const httpStatus = require('http-status');
 
-class CustomError extends Error {
+// 500번대 서버 에러 (데이터베이스 에러 포함)
+class ServerError extends Error {
     constructor(message) {
         super(message);
+        this.statusCode = httpStatus.INTERNAL_SERVER_ERROR;
     }
 }
 
-class BadRequestError extends CustomError {
+// 400번대 요청 에러
+class BadRequestError extends Error {
     constructor(message) {
-        super(message)
+        super(message);
 		this.statusCode = httpStatus.BAD_REQUEST;
     }
 }
 
 module.exports = {
-    CustomError,
+    ServerError,
     BadRequestError,
 };

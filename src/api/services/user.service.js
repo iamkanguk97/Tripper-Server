@@ -1,4 +1,4 @@
-const User = require('../models/User/User');
+'use strict';
 const UserFollow = require('../models/User/UserFollow');
 
 const follow = async (myIdx, followUserIdx) => { 
@@ -10,7 +10,7 @@ const follow = async (myIdx, followUserIdx) => {
 
     // 본인과 팔로우 신청 받은 사람과 현재의 팔로우 관계를 DB에서 가져옴.
     let checkRelation = await UserFollow.findOne({
-        attributes: ['IDX'],
+        attributes: ['IDXXX'],
         where: option
     });
     checkRelation = !checkRelation ? 'N' : 'Y';   // NULL이면 'N' 처리
@@ -38,29 +38,35 @@ const follow = async (myIdx, followUserIdx) => {
 };
 
 const followList = async (myIdx, userIdx, option) => {
+    // Response로 줘야할 값: 사용자 인덱스, 사용자 닉네임, 사용자 프로필 사진, 내가 지금 팔로우 하고있는지에 대한 정보
+    // option = following (USER_IDX가 myIdx), option = follower (FOLLOW_TARGET_IDX가 myIdx)
+    
     const _userIdx = !userIdx ? myIdx : userIdx;
-
-    let followListResult = await UserFollow.findAll({
-        include: [{
-            model: User,
-            attributes: [ 'IDX', 'USER_NICKNAME', 'USER_PROFILE_IMAGE' ],
-            required: true
-        }],
-        where: {
-            IDX: 15
-        },
+    let listResult = await UserFollow.findAll({
+        
     });
 
-    followListResult = followListResult.map(el => el.get({ plain: true }));
-    console.log(followListResult);
-    // console.log(followListResult[0].dataValues);
-    // console.log(followListResult[0]);
+    // let followListResult = await UserFollow.findAll({
+    //     include: [{
+    //         model: User,
+    //         attributes: [ 'IDX', 'USER_NICKNAME', 'USER_PROFILE_IMAGE' ],
+    //         required: true
+    //     }],
+    //     where: {
+    //         IDX: 15
+    //     },
+    // });
+
+    // followListResult = followListResult.map(el => el.get({ plain: true }));
+    // console.log(followListResult);
+    // // console.log(followListResult[0].dataValues);
+    // // console.log(followListResult[0]);
 };
 
 const deleteFollower = async (myIdx, userIdx) => {
     await UserFollow.destroy({
         where: {
-            USER_IDX: userIdx,
+            USER_IDXX: userIdx,
             FOLLOW_TARGET_IDX: myIdx
         }
     });

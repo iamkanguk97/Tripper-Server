@@ -3,6 +3,7 @@ module.exports = {
     JWT_AUTHORIZATION_ERROR: { "isSuccess": false, "code": 401, "message": "JWT 인증 에러 발생." },
     JWT_TOKEN_EXPIRED_ERROR: { "isSuccess": false, "code": 401, "message": "JWT 토큰 만료." },
     API_NOT_FOUND: { "isSuccess": false, "code": 404, "message": "API NOT FOUND!" },
+    DATABASE_ERROR: { "isSuccess": false, "code": 500, "message": "데이터베이스 에러 발생." },
     INTERNAL_SERVER_ERROR: { "isSuccess": false, "code": 500, "message": "서버 내부 에러 발생." },
 
     NICKNAME_EMPTY: { isSuccess: false, "code": 2010, "message": "닉네임을 입력해주세요." },

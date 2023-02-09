@@ -1,3 +1,4 @@
+'use strict';
 const httpStatus = require('http-status');
 const UserService = require('../services/user.service');
 const responseMessage = require('../../config/response/baseResponseStatus');

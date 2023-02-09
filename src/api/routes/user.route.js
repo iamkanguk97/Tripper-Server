@@ -11,6 +11,7 @@ const UserController = require('../controllers/user.controller');
 const jwtMiddleware = require('../middlewares/jwtMiddleware');
 const validationMiddleware = require('../middlewares/validationMiddleware');
 const { followValidation, followListValidation, deleteFollowerValidation } = require('../middlewares/validations/user.validation');
+const { wrapAsync } = require('../utils/util');
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ router.post(
     jwtMiddleware,
     followValidation,
     validationMiddleware,
-    UserController.follow
+    wrapAsync(UserController.follow)
 );   // 팔로우 API
 
 router.get(
@@ -35,7 +36,7 @@ router.delete(
     jwtMiddleware,
     deleteFollowerValidation,
     validationMiddleware,
-    UserController.deleteFollower
+    wrapAsync(UserController.deleteFollower)
 );   // 본인 팔로워 삭제 API
 
 module.exports = router;

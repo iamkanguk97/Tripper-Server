@@ -5,11 +5,13 @@
  *  description: 인증 관련 기능 리스트
  */
 
+'use strict';
 const express = require('express');
 const passport = require('passport');
 const AuthController = require('../controllers/auth.controller');
 const validationMiddleware = require('../middlewares/validationMiddleware');
 const { verifyNickValidation, signUpValidation } = require('../middlewares/validations/auth.validation');
+const { wrapAsync } = require('../utils/util');
 
 const router = express.Router();
 
@@ -26,9 +28,9 @@ router.get(
 
 router.post(
     '/sign-up',
-    signUpValidation,
-    validationMiddleware,
-    AuthController.signUp
+    // signUpValidation,
+    // validationMiddleware,
+    wrapAsync(AuthController.signUp)
 );   // 회원가입 API
 
 module.exports = router;

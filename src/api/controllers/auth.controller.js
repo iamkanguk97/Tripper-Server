@@ -1,3 +1,4 @@
+'use strict';
 const httpStatus = require('http-status');
 const AuthService = require('../services/auth.service');
 const responseMessage = require('../../config/response/baseResponseStatus');
@@ -15,16 +16,19 @@ const verifyNickname = (req, res) => {
 };
 
 const signUp = async (req, res) => {
-    const { email, nickname, profileImage, kakaoId, ageGroup, gender } = req.body;
+    const { email, nickname, kakaoId, ageGroup, gender } = req.body;
+    const profileImage = req.files.pimage;
     
     const signUpResult = await AuthService.signUp(
         email, nickname, profileImage, kakaoId, ageGroup, gender
     );
-    console.log(signUpResult);
+    // console.log(signUpResult);
+
+    return res.send(signUpResult);
 };
 
 module.exports = {
     kakaoLoginCallback,
     verifyNickname,
-    signUp
+    signUp,
 };
