@@ -7,3 +7,6 @@ src/logs
 
 # Environment variables
 src/config/envs
+
+# DS_Store
+.DS_Store
