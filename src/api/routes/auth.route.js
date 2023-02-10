@@ -75,6 +75,31 @@ module.exports = router;
  *                                  message:
  *                                      type: string
  *                                      example: '요청 성공'
+ *              '500':
+ *                  description: '서버 내부 에러 발생'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: false
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 500
+ *                                  message:
+ *                                      type: string
+ *                                      example: '서버 내부 에러 발생.'
+ *                                  error:
+ *                                      type: object
+ *                                      properties:
+ *                                          message:
+ *                                              type: string
+ *                                              example: '에러 메세지 내용'
+ *                                          stack:
+ *                                              type: string
+ *                                              example: '에러가 발생한 위치 내용'
  *              '2010':
  *                  description: '닉네임을 입력해주세요.'
  *                  content:
