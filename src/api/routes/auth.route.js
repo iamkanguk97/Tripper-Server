@@ -19,19 +19,23 @@ const router = express.Router();
 router.get('/kakao-login', passport.authenticate('kakao'));
 router.get('/kakao-login/callback', passport.authenticate('kakao', AuthController.kakaoLoginCallback));
 
+/** 네이버 로그인 관련 Router */
+router.get('/naver-login', passport.authenticate('naver'));
+router.get('/naver-login/callback', passport.authenticate('naver', AuthController.naverLoginCallback));
+
 router.get(
     '/verify-nickname',
     verifyNickValidation,
     validationMiddleware,
     AuthController.verifyNickname
-);   // 닉네임 확인 API
+);   // 닉네임 확인 API (OK)
 
 router.post(
     '/sign-up',
     // signUpValidation,
     // validationMiddleware,
     wrapAsync(AuthController.signUp)
-);   // 회원가입 API
+);   // 회원가입 API (진행중)
 
 module.exports = router;
 
@@ -42,6 +46,14 @@ module.exports = router;
  *      post:
  *          summary: '카카오 로그인 API'
  *          description: '카카오 로그인 기능입니다. 초기 회원가입시에는 회원가입 API를 추가로 거쳐야 합니다.'
+ *          tags: [Auth]
+ * 
+ * @swagger
+ * paths:
+ *  /api/auth/naver-login:
+ *      post:
+ *          summary: '네이버 로그인 API'
+ *          description: '네이버 로그인 기능입니다. 초기 회원가입시에는 회원가입 API를 추가로 거쳐야 합니다.'
  *          tags: [Auth]
  * 
  * @swagger

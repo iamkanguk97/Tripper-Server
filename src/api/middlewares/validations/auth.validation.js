@@ -22,7 +22,7 @@ const verifyNickValidation = [
 /**
  * 회원가입 API Validator
  * - 이메일 유무 확인 + 이메일 형식 확인
- * - 닉네임 유무 확인 (닉네임 형식은 확인 필요x)
+ * - 닉네임 유무 + 형식 확인 (안해도 되지만.. 2중 보안이면 더 좋으니까!)
  * - 카카오 고유 번호 유무 확인
  */
 const signUpValidation = [
@@ -30,7 +30,10 @@ const signUpValidation = [
         .notEmpty().withMessage(responseMessage.EMAIL_EMPTY).bail()
         .isEmail().withMessage(responseMessage.EMAIL_TYPE_ERROR).bail(),
     body('nickname')
-        .notEmpty().withMessage(responseMessage.NICKNAME_EMPTY).bail(),
+        .notEmpty().withMessage(responseMessage.NICKNAME_EMPTY).bail()
+        .matches(REGEX_NICKNAME).withMessage(responseMessage.NICKNAME_ERROR_TYPE).bail()
+        .custom(checkBadWordInclude).bail()
+        .custom(checkNickDuplicate).bail(),
     body('kakaoId')
         .notEmpty().withMessage(responseMessage.KAKAOID_EMPTY).bail()
 ];

@@ -25,5 +25,16 @@ module.exports = {
         SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY,
         BUCKET_NAME: process.env.S3_BUCKET_NAME,
         REGION: process.env.S3_REGION
+    },
+    REDIS: {
+        HOST: process.env.REDIS_HOST,
+        PORT: process.env.REDIS_PORT,
+        USERNAME: process.env.REDIS_USERNAME,
+        PASSWORD: process.env.REDIS_PASSWORD
+    },
+    NAVER: {
+        CLIENT_ID: process.env.NAVER_CLIENT_ID,
+        CLIENT_SECRET_KEY: process.env.NAVER_CLIENT_SECRET_KEY,
+        CALLBACK_URL: process.env.NAVER_CALLBACK_URL
     }
 };

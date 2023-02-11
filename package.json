@@ -30,6 +30,8 @@
     "mysql2": "^2.3.3",
     "passport": "^0.6.0",
     "passport-kakao": "^1.0.1",
+    "passport-naver": "^1.0.6",
+    "redis": "^4.6.4",
     "sequelize": "^6.28.0",
     "sequelize-cli": "^6.5.2",
     "swagger-jsdoc": "^6.2.7",

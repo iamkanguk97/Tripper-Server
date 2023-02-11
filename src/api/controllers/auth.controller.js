@@ -9,6 +9,11 @@ const kakaoLoginCallback = async (req, res) => {
     const kakaoLoginResult = await AuthService.kakaoLoginCallback(accessToken, refreshToken, profile);
 };
 
+const naverLoginCallback = async (req, res) => {
+    const { accessToken, refreshToken, profile } = req;
+    const naverLoginResult = await AuthService.naverLoginCallback(accessToken, refreshToken, profile);
+};
+
 const verifyNickname = (req, res) => {
     // 이전 Middleware 부분에서 Validation 체크를 함
     // 해당 Controller까지 들어오면 바로 성공 메세지를 return
@@ -22,13 +27,13 @@ const signUp = async (req, res) => {
     const signUpResult = await AuthService.signUp(
         email, nickname, profileImage, kakaoId, ageGroup, gender
     );
-    // console.log(signUpResult);
 
-    return res.send(signUpResult);
+    return res.status(httpStatus.OK).send(response(responseMessage.SUCCESS, signUpResult));
 };
 
 module.exports = {
     kakaoLoginCallback,
+    naverLoginCallback,
     verifyNickname,
     signUp,
 };
