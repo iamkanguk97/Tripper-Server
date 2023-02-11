@@ -77,7 +77,7 @@ app.use((req, res, next) => {
     errMessage.message += ` (${req.method} ${req.url})`;
 
     Logger.error(`API NOT FOUND! (${req.method} ${req.url})`);
-    res.status(httpStatus.NOT_FOUND).send(errResponse(errMessage));
+    res.status(httpStatus.NOT_FOUND).json(errResponse(errMessage));
 });
 
 // Error Handler Middleware

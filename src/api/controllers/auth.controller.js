@@ -2,7 +2,7 @@
 const httpStatus = require('http-status');
 const AuthService = require('../services/auth.service');
 const responseMessage = require('../../config/response/baseResponseStatus');
-const { response, errResponse } = require('../../config/response/response-template');
+const { response } = require('../../config/response/response-template');
 
 const kakaoLoginCallback = async (req, res) => {
     const { accessToken, refreshToken, profile } = req;   // KakaoStrategy에서 가져온 사용자 accessToken, refreshToken, 프로필
@@ -17,7 +17,7 @@ const naverLoginCallback = async (req, res) => {
 const verifyNickname = (req, res) => {
     // 이전 Middleware 부분에서 Validation 체크를 함
     // 해당 Controller까지 들어오면 바로 성공 메세지를 return
-    return res.status(httpStatus.OK).send(response(responseMessage.SUCCESS));
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS));
 };
 
 const signUp = async (req, res) => {
@@ -28,7 +28,7 @@ const signUp = async (req, res) => {
         email, nickname, profileImage, kakaoId, ageGroup, gender
     );
 
-    return res.status(httpStatus.OK).send(response(responseMessage.SUCCESS, signUpResult));
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, signUpResult));
 };
 
 module.exports = {
