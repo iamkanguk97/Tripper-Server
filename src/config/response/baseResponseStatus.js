@@ -1,5 +1,6 @@
 module.exports = {
     SUCCESS : { "isSuccess": true, "code": 200, "message": "요청 성공." },
+    REQUIRE_SIGN_UP: { "isSuccess": true, "code": 200, "message": "환영합니다! 신규 회원의 경우 닉네임 및 프로필 사진 설정 후 서비스 이용이 가능합니다." },
     JWT_AUTHORIZATION_ERROR: { "isSuccess": false, "code": 401, "message": "JWT 인증 에러 발생." },
     JWT_TOKEN_EXPIRED_ERROR: { "isSuccess": false, "code": 401, "message": "JWT 토큰 만료." },
     API_NOT_FOUND: { "isSuccess": false, "code": 404, "message": "API NOT FOUND!" },
@@ -21,4 +22,5 @@ module.exports = {
     NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3010, "message": "중복된 닉네임입니다." },
     USER_NOT_EXIST: { "isSuccess": false, "code": 3011, "message": "존재하지 않는 유저입니다." },
     DELETE_FOLLOWER_NOT_FOLLOW: { "isSuccess": false, "code": 3012, "message": "삭제할 팔로워가 회원님을 팔로우하고 있지 않습니다." },
+    USER_SNSID_DUPLICATED: { "isSuccess": false, "code": 3013, "message": "중복된 소셜로그인 고유값입니다." },
 };

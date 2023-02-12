@@ -5,15 +5,13 @@ const responseMessage = require('../../config/response/baseResponseStatus');
 const { BadRequestError, ServerError } = require('../utils/errors');
 
 const errorHandleMiddleware = (error, req, res, next) => {
-    console.log(error.message);
-    console.log(typeof error.message);
+    console.log(error);
     const err = {
         statusCode: error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
-        // statusCode: error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
         // message: JSON.parse(error.message) || responseMessage.INTERNAL_SERVER_ERROR
         // message: error.statusCode ? JSON.parse(error.message) : responseMessage.INTERNAL_SERVER_ERROR,
         // message: error.statusCode ? JSON.parse(error.message) : responseMessage.INTERNAL_SERVER_ERROR,
-        message: error.statusCode ? error.message : responseMessage.INTERNAL_SERVER_ERROR,
+        message: JSON.parse(error.message)
     };
 
     // JWT Error
@@ -35,7 +33,6 @@ const errorHandleMiddleware = (error, req, res, next) => {
     }
     
     // 이외의 Error들 처리
-    console.log('hello world!');
     return res.status(err.statusCode).json(err.message);
 };
 

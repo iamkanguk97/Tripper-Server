@@ -17,11 +17,11 @@ const router = express.Router();
 
 /** 카카오 로그인 관련 Router */
 router.get('/kakao-login', passport.authenticate('kakao'));
-router.get('/kakao-login/callback', passport.authenticate('kakao', AuthController.kakaoLoginCallback));
+router.get('/kakao-login/callback', AuthController.kakaoLoginCallback);
 
 /** 네이버 로그인 관련 Router */
 router.get('/naver-login', passport.authenticate('naver'));
-router.get('/naver-login/callback', passport.authenticate('naver', AuthController.naverLoginCallback));
+router.get('/naver-login/callback', AuthController.naverLoginCallback);
 
 router.get(
     '/verify-nickname',
@@ -32,10 +32,22 @@ router.get(
 
 router.post(
     '/sign-up',
-    // signUpValidation,
-    // validationMiddleware,
+    signUpValidation,
+    validationMiddleware,
     wrapAsync(AuthController.signUp)
 );   // 회원가입 API (진행중)
+
+router.get(
+    '/auto-login',
+    AuthController.autoLogin
+);   // 자동로그인 API
+
+router.get(
+    '/token-refresh',
+    
+    validationMiddleware,
+    AuthController.tokenRefresh
+);   // JWT Access Token 재발급을 위한 Router
 
 module.exports = router;
 
@@ -141,5 +153,21 @@ module.exports = router;
  *      post:
  *          summary: '회원가입 API'
  *          description: '카카오 로그인 API를 먼저 사용해서 신규 유저일 경우에만 해당 API를 사용하시면 됩니다.'
+ *          tags: [Auth]
+ * 
+ * @swagger
+ * paths: 
+ *  /api/auth/auto-login:
+ *      get:
+ *          summary: '자동 로그인 API'
+ *          description: 'JWT Access Token 재발급을 위한 Router입니다. 클라이언트분은 access token과 refresh token을 둘 다 헤더에 담아서 요청해야합니다.'
+ *          tags: [Auth]
+ * 
+ * @swagger
+ * paths: 
+ *  /api/auth/token-refresh:
+ *      get:
+ *          summary: 'JWT Access Token 재발급 API'
+ *          description: 'JWT Access Token 재발급을 위한 Router입니다. 클라이언트분은 access token과 refresh token을 둘 다 헤더에 담아서 요청해야합니다.'
  *          tags: [Auth]
  */

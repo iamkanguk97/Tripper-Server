@@ -14,5 +14,16 @@ const errResponse = ({isSuccess, code, message}) => {
         message: message
     }
 };
+
+const validationErrorResponse = (isServerError, error) => {
+    return {
+        isServerError: isServerError,
+        error: error
+    }
+};
    
-module.exports = { response, errResponse };
+module.exports = { 
+    response, 
+    errResponse, 
+    validationErrorResponse 
+};

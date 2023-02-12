@@ -1,7 +1,7 @@
 'use strict';
 const { query, body } = require("express-validator");
 const { REGEX_NICKNAME } = require('../../utils/regex');
-const { checkNickDuplicate, checkBadWordInclude } = require('../../utils/validation-util');
+const { checkNickDuplicate, checkBadWordInclude, checkSnsIdDuplicate } = require('../../utils/validation-util');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 
 /**
@@ -36,9 +36,18 @@ const signUpValidation = [
         .custom(checkNickDuplicate).bail(),
     body('kakaoId')
         .notEmpty().withMessage(responseMessage.KAKAOID_EMPTY).bail()
+        .custom(checkSnsIdDuplicate).bail()
+];
+
+/**
+ * Access Token 갱신을 위한 API Validator
+ */
+const tokenRefreshValidation = [
+
 ];
 
 module.exports = {
     verifyNickValidation,
-    signUpValidation
+    signUpValidation,
+    tokenRefreshValidation
 };

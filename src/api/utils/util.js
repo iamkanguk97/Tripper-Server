@@ -4,6 +4,7 @@ const util = require('util');
 const AWS = require('aws-sdk');
 const readFile = util.promisify(fs.readFile);
 const { S3 } = require('../../config/vars');
+const User = require('../models/User/User');
 
 /**
  * 에러 핸들링을 위한 헬퍼 함수
@@ -55,7 +56,8 @@ const ageGroupToString = (ageGroup) => {
 };
 
 /**
- * AWS S3 객체를 생성해주는 함수 
+ * AWS S3 객체를 생성해주는 함수
+ * @returns new AWS.S3() (S3 Module)
  */
 const returnS3Module = () => {
     AWS.config.update({
@@ -67,10 +69,47 @@ const returnS3Module = () => {
     return new AWS.S3();
 };
 
+/**
+ * 프로필 이미지 업로드 함수
+ * @param profileImage, kakaoId
+ * @returns Profile Image S3 Location
+ */
+const uploadProfileImage = async (profileImage, kakaoId) => {
+    const s3 = returnS3Module();
+    const fileContent = Buffer.from(profileImage.data, 'binary');
+    const params = {   // S3 Upload Parameters
+        Bucket: S3.BUCKET_NAME,
+        Key: `profile/profile_kakaoId_${kakaoId}`,
+        Body: fileContent
+    };
+
+    const uploadProfileImageResult = await s3.upload(params).promise();
+    return uploadProfileImageResult.Location;
+};
+
+/**
+ * 소셜로그인 고유값을 가지고 회원 존재하는지 확인
+ * @param provider, snsId 
+ * @returns userIdx / false
+ */
+const checkUserExistWithSnsId = async (provider, snsId) => {
+    const userExistResult = await User.findOne({
+        where: {
+            USER_SNS_ID: snsId,
+            USER_PROVIDER: provider,
+            USER_STATUS: 'A'
+        }
+    });
+    
+    return userExistResult ? userExistResult.dataValues.IDX : false;
+};
+
 module.exports = {
     checkBadWord,
     getFirstLetter,
     ageGroupToString,
     wrapAsync,
-    returnS3Module
+    returnS3Module,
+    uploadProfileImage,
+    checkUserExistWithSnsId
 };

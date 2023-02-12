@@ -7,6 +7,7 @@ const User = require('../models/User/User');
 const responseMessage = require('../../config/response/baseResponseStatus');
 const Logger = require('../../config/logger');
 const { checkBadWord } = require('../utils/util');
+const { validationErrorResponse } = require('../../config/response/response-template');
 
 // 회원 탈퇴 및 존재 유무 확인하는 Validation Function
 const checkUserStatusFunc = async (value) => {
@@ -59,8 +60,27 @@ const checkBadWordInclude = async (value) => {
     }
 };
 
+// kakaoId 중복 확인
+const checkSnsIdDuplicate = async (snsId) => {
+    try {
+        const checkSnsIdDuplicateResult = await User.findOne({
+            where: {
+                USER_KAKAO_ID: snsId,
+                USER_STATUS: 'A'
+            }
+        });
+        
+        if (checkSnsIdDuplicateResult)
+            return Promise.reject(responseMessage.USER_SNSID_DUPLICATED);
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(validationErrorResponse(true, err));
+    }
+};
+
 module.exports = {
     checkUserStatusFunc,
     checkNickDuplicate,
-    checkBadWordInclude
+    checkBadWordInclude,
+    checkSnsIdDuplicate
 };
