@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-const UserFollow = require('./UserFollow');
 
 /**
  * @swagger
@@ -10,7 +9,7 @@ const UserFollow = require('./UserFollow');
  *              required:
  *                  - IDX
  *                  - USER_NICKNAME
- *                  - USER_KAKAO_ID
+ *                  - USER_SNS_ID
  *                  - USER_STATUS
  *                  - USER_PROVIDER
  *                  - CREATED_AT
@@ -22,16 +21,16 @@ const UserFollow = require('./UserFollow');
  *                  USER_EMAIL:
  *                      type: string
  *                      format: email
- *                      description: '사용자 이메일 (카카오에서 받아오는 이메일)'
+ *                      description: '사용자 이메일'
  *                  USER_NICKNAME:
  *                      type: string
  *                      description: '사용자 닉네임 (회원가입 시 설정)'
  *                  USER_PROFILE_IMAGE:
  *                      type: string
  *                      description: '사용자 프로필 이미지 링크 (S3 링크)'
- *                  USER_KAKAO_ID:
+ *                  USER_SNS_ID:
  *                      type: string
- *                      description: '사용자 카카오 고유값'
+ *                      description: '사용자 소셜로그인 고유값'
  *                  USER_AGE_GROUP:
  *                      type: string
  *                      description: '사용자 연령대'
@@ -43,7 +42,7 @@ const UserFollow = require('./UserFollow');
  *                      description: '사용자 상태 (A: 활성화됨, D: 탈퇴됨)'
  *                  USER_PROVIDER:
  *                      type: char
- *                      description: '사용자 로그인 타입 (K: 카카오)'
+ *                      description: '사용자 로그인 타입 (K: 카카오, N: 네이버)'
  *                  CREATED_AT:
  *                      type: timestamp
  *                      description: '등록 일자'
@@ -77,7 +76,7 @@ module.exports = class User extends Sequelize.Model {
             USER_EMAIL: {
                 type: Sequelize.STRING(50),
                 allowNull: true,
-                comment: '사용자 이메일 (카카오 이메일)'
+                comment: '사용자 이메일'
             },
             USER_NICKNAME: {
                 type: Sequelize.STRING(10),
@@ -89,10 +88,10 @@ module.exports = class User extends Sequelize.Model {
                 allowNull: true,
                 comment: '사용자 프로필 이미지 링크 (S3 링크)'
             },
-            USER_KAKAO_ID: {
-                type: Sequelize.STRING(30),
-                allowNull: true,
-                comment: '사용자 카카오 고유값'
+            USER_SNS_ID: {
+                type: Sequelize.STRING(100),
+                allowNull: false,
+                comment: '사용자 소셜로그인 고유값'
             },
             USER_AGE_GROUP: {
                 type: Sequelize.STRING(10),
@@ -107,7 +106,7 @@ module.exports = class User extends Sequelize.Model {
             USER_PROVIDER: {
                 type: Sequelize.CHAR(1),
                 allowNull: false,
-                comment: '사용자 로그인 타입 (K: 카카오)'
+                comment: '사용자 로그인 타입 (K: 카카오, N: 네이버)'
             },
             USER_STATUS: {
                 type: Sequelize.CHAR(1),
