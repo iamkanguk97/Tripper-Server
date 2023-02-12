@@ -8,13 +8,56 @@ const { generateAccessToken, generateRefreshToken } = require('../utils/jwt-util
 const { hSet } = require('../../config/redis');
 
 const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
-    // DB에 해당 사용자가 등록되어 있는지 먼저 확인
-    const checkExistUser = await User.findOne({
-        where: {
-            USER_KAKAO_ID: kakaoId,
-            USER_PROVIDER: provider
-        }
-    });
+    console.log(profile);
+    // 소셜로그인 고유값으로 유저 존재하는지 확인
+    const checkIsUserExist = await checkUserExistWithSnsId('K', profile.id);
+
+    /**
+     * 유저가 있다 -> token 발급해주기
+     * 유저가 없다 -> 회원가입 API로 넘기기
+     */
+    if (checkIsUserExist !== false) {
+        const userIdx = checkIsUserExist;
+        const jwt_at = generateAccessToken(userIdx);
+        const jwt_rt = generateRefreshToken();
+
+        // Refresh token Redis에 저장
+        await hSet('refreshToken', `userId_${userIdx}`, jwt_rt);
+
+        return {
+            requireSignUp: false,
+            result: {
+                userIdx,
+                sns_token: {
+                    accessToken,
+                    refreshToken
+                },
+                jwt_token: {
+                    accessToken: jwt_at,
+                    refreshToken: jwt_rt
+                }
+            }
+        };
+    } else {
+        const isAgeGroup = profile._json.kakao_account.has_age_range;
+        const isGender = profile._json.kakao_account.has_gender;
+
+        // 회원가입 API로 넘기기
+        return {
+            requireSignUp: true,
+            result: {
+                sns_token: {
+                    accessToken,
+                    refreshToken
+                },
+                snsId: profile.id,
+                email: profile._json.kakao_account.email,
+                age_group: isAgeGroup ? profile._json.kakao_account.age_range : null,
+                gender: isGender ? profile._json.kakao_account.gender : null,
+                provider: 'kakao',
+            }
+        };
+    }
 };
 
 const naverLoginCallback = async (accessToken, refreshToken, profile) => {
