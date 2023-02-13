@@ -32,8 +32,8 @@ router.get(
 
 router.post(
     '/sign-up',
-    signUpValidation,
-    validationMiddleware,
+    // signUpValidation,
+    // validationMiddleware,
     wrapAsync(AuthController.signUp)
 );   // 회원가입 API (진행중)
 

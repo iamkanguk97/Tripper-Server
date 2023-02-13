@@ -2,13 +2,12 @@
 const User = require('../models/User/User');
 const responseMessage = require('../../config/response/baseResponseStatus');
 const { getFirstLetter, ageGroupToString, returnS3Module, uploadProfileImage, checkUserExistWithSnsId } = require('../utils/util');
-const { S3 } = require('../../config/vars');
+const { JWT_REFRESH_TOKEN_EXPIRE_TIME } = require('../../config/vars');
 const { ServerError } = require('../utils/errors');
 const { generateAccessToken, generateRefreshToken } = require('../utils/jwt-util');
 const { hSet } = require('../../config/redis');
 
 const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
-    console.log(profile);
     // 소셜로그인 고유값으로 유저 존재하는지 확인
     const checkIsUserExist = await checkUserExistWithSnsId('K', profile.id);
 
@@ -22,7 +21,7 @@ const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
         const jwt_rt = generateRefreshToken();
 
         // Refresh token Redis에 저장
-        await hSet('refreshToken', `userId_${userIdx}`, jwt_rt);
+        await hSet('refreshToken', `userId_${userIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
 
         return {
             requireSignUp: false,
@@ -39,8 +38,8 @@ const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
             }
         };
     } else {
-        const isAgeGroup = profile._json.kakao_account.has_age_range;
-        const isGender = profile._json.kakao_account.has_gender;
+        const isAgeGroup = profile._json.kakao_account.has_age_range;   // 유저가 연령대 동의했는지 여부
+        const isGender = profile._json.kakao_account.has_gender;   // 유저가 성별 동의했는지 여부
 
         // 회원가입 API로 넘기기
         return {
@@ -74,7 +73,7 @@ const naverLoginCallback = async (accessToken, refreshToken, profile) => {
         const jwt_rt = generateRefreshToken();
 
         // Refresh token Redis에 저장
-        await hSet('refreshToken', `userId_${userIdx}`, jwt_rt);
+        await hSet('refreshToken', `userId_${userIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
 
         return {
             requireSignUp: false,
@@ -101,7 +100,8 @@ const naverLoginCallback = async (accessToken, refreshToken, profile) => {
                 },
                 snsId: profile.id,
                 email: profile._json.email,
-                age_group: profile._json.age,
+                age_group: profile._json.age ? profile._json.age : null,
+                gender: profile._json.gender ? profile._json.gender : null,
                 provider: 'naver',
             }
         };
@@ -110,14 +110,14 @@ const naverLoginCallback = async (accessToken, refreshToken, profile) => {
 
 const signUp = async (
     email, nickname,
-    profileImage, kakaoId,
-    ageGroup, gender
+    profileImage, snsId,
+    ageGroup, gender, provider
 ) => {
     try {
         let __profileImage = null;
         const _gender = !gender ? gender : getFirstLetter(gender);
         const _ageGroup = !ageGroup ? ageGroup : ageGroupToString(ageGroup);
-        // TODO: 추후 카카오 로그인만 아닌 다른 로그인 연동 시 provider 동적으로 세팅필요
+        const _provider = getFirstLetter(provider);
 
         /**
          * // TODO: S3에 프로필 사진 등록 -> 클라쪽이랑 협의
@@ -131,28 +131,27 @@ const signUp = async (
             USER_EMAIL: email,
             USER_NICKNAME: nickname,
             USER_PROFILE_IMAGE: __profileImage,
-            USER_KAKAO_ID: kakaoId,
+            USER_SNS_ID: snsId,
             USER_AGE_GROUP: _ageGroup,
             USER_GENDER: _gender,
-            USER_PROVIDER: 'K',
+            USER_PROVIDER: _provider,
         })).dataValues.IDX;
 
         // JWT Access + Refresh 발급
-        const jwt_at = jwt_sign(newUserIdx);
-        const jwt_rt = jwt_refresh();
+        const jwt_at = generateAccessToken(newUserIdx);
+        const jwt_rt = generateRefreshToken();
 
         // Redis에 Refresh Token 저장
-        hSet('refreshToken', `userId_${newUserIdx}`, jwt_rt);
+        hSet('refreshToken', `userId_${newUserIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
 
         return {
             newUserIdx,
-            token: {
+            jwt_token: {
                 access_token: jwt_at,
                 refresh_token: jwt_rt
             }
         };
     } catch (err) {
-        console.log(err);
         // errorHandleMiddleware에 에러 전달.
         throw new ServerError(JSON.stringify({
             ...responseMessage.INTERNAL_SERVER_ERROR,

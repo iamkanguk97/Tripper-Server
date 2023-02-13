@@ -5,6 +5,7 @@ module.exports = {
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT,
     JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
+    JWT_REFRESH_TOKEN_EXPIRE_TIME: (60 * 60 * 24 * 14),
     RDS: {
         END_POINT: process.env.RDS_ENDPOINT,
         PORT: process.env.RDS_PORT,

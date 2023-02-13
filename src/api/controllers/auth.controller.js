@@ -10,9 +10,9 @@ const kakaoLoginCallback = async (req, res, next) => {
     passport.authenticate('kakao', async ({ accessToken, refreshToken, profile }) => {
         const kakaoLoginResult = await AuthService.kakaoLoginCallback(accessToken, refreshToken, profile);
         if (kakaoLoginResult.requireSignUp)
-            return res.status(httpStatus.OK).json();
+            return res.status(httpStatus.OK).json(response(responseMessage.REQUIRE_SIGN_UP, kakaoLoginResult.result));
         else
-            return res.status(httpStatus.OK).json();
+            return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, kakaoLoginResult.result));
     })(req, res, next);
 };
 
@@ -23,7 +23,7 @@ const naverLoginCallback = async (req, res, next) => {
         if (naverLoginResult.requireSignUp)
             return res.status(httpStatus.OK).json(response(responseMessage.REQUIRE_SIGN_UP, naverLoginResult.result));
         else
-            return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, naverLoginR));
+            return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, naverLoginResult.result));
     })(req, res, next);
 };
 
@@ -34,11 +34,11 @@ const verifyNickname = (req, res) => {
 };
 
 const signUp = async (req, res) => {
-    const { email, nickname, kakaoId, ageGroup, gender } = req.body;
+    const { email, nickname, snsId, ageGroup, gender, provider } = req.body;
     const profileImage = req.files ? req.files.pimage : null;
     
     const signUpResult = await AuthService.signUp(
-        email, nickname, profileImage, kakaoId, ageGroup, gender
+        email, nickname, profileImage, snsId, ageGroup, gender, provider
     );
   
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, signUpResult));

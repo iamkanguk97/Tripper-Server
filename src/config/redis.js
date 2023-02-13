@@ -20,16 +20,13 @@ const connectRedis = async () => {
     await redisClient.connect();
 };
 
-const set = async (key, value) => {
-    await redisClient.set(key, value);
-};
-
-const hSet = async (key, field, value) => {
-    await redisClient.hSet(key, field, value);
+const hSet = async (key, field, value, expireTime = null) => {
+    await redisClient.hSet(key, field, value);   // key-value 설정
+    if (expireTime !== null)
+        await redisClient.expire(key, expireTime);   // expireTime 설정
 };
 
 module.exports = {
     connectRedis,
-    set,
     hSet
 };
