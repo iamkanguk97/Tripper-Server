@@ -13,7 +13,7 @@ module.exports = {
     EMAIL_EMPTY: { "isSuccess": false, "code": 2013, "message": "이메일을 입력해주세요." },
     EMAIL_TYPE_ERROR: { "isSuccess": false, "code": 2014, "message": "이메일 형식이 잘못되었습니다. 다시 입력해주세요." },
     NICKNAME_EMPTY: { "isSuccess": false, "code": 2015, "message": "닉네임을 입력해주세요." },
-    KAKAOID_EMPTY: { "isSuccess": false, "code": 2016, "message": "카카오 고유값을 입력해주세요." },
+    SNS_ID_EMPTY: { "isSuccess": false, "code": 2016, "message": "소셜로그인 고유값을 입력해주세요." },
     FOLLOW_TARGET_IDX_EMPTY: { "isSuccess": false, "code": 2017, "message": "팔로우를 신청할 유저의 고유값을 입력해주세요." },
     FOLLOW_LIST_OPTION_EMPTY: { "isSuccess": false, "code": 2018, "message": "팔로잉 또는 팔로워 조회 옵션을 입력해주세요." },
     FOLLOW_LIST_OPTION_ERROR_TYPE: { "isSuccess": false, "code": 2019, "message": "팔로잉 또는 팔로워 조회 옵션이 잘못 입력되었습니다. 다시 입력해주세요." },

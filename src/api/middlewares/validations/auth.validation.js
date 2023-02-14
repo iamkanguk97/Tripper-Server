@@ -32,11 +32,14 @@ const signUpValidation = [
     body('nickname')
         .notEmpty().withMessage(responseMessage.NICKNAME_EMPTY).bail()
         .matches(REGEX_NICKNAME).withMessage(responseMessage.NICKNAME_ERROR_TYPE).bail()
-        .custom(checkBadWordInclude).bail()
-        .custom(checkNickDuplicate).bail(),
-    body('kakaoId')
+        .custom(checkNickDuplicate).bail()
+        .custom(checkBadWordInclude).bail(),
+    body('snsId')
         .notEmpty().withMessage(responseMessage.KAKAOID_EMPTY).bail()
-        .custom(checkSnsIdDuplicate).bail()
+        .custom(checkSnsIdDuplicate).bail(),
+    body('provider')
+        .notEmpty().withMessage().bail()
+        .isIn().withMessage().bail()
 ];
 
 /**

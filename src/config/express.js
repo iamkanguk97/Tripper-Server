@@ -19,7 +19,6 @@ const { SWAGGER } = require('./vars');
 
 const authRoutes = require('../api/routes/auth.route');
 const userRoutes = require('../api/routes/user.route');
-const { connectRedis } = require('./redis');
 
 /**
 * Express instance
@@ -36,9 +35,6 @@ sequelize.sync({
 }).catch((err) => {
     Logger.error(err);
 });
-
-// Redis Connection
-connectRedis();
 
 app.use(express.json());   // JSON 형태의 데이터 해석
 app.use(express.urlencoded({ extended: true }));   // x-www-form-urlencoded 형태 데이터 해석

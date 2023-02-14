@@ -7,7 +7,6 @@ module.exports = () => {
         clientID: KAKAO.REST_API_KEY,
         callbackURL: KAKAO.CALLBACK_URL
     }, (accessToken, refreshToken, profile, done) => {
-        // 바로 authController로 넘김
         done({ accessToken, refreshToken, profile });
     }));
 };

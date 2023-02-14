@@ -28,12 +28,12 @@ router.get(
     verifyNickValidation,
     validationMiddleware,
     AuthController.verifyNickname
-);   // 닉네임 확인 API (OK)
+);   // 닉네임 확인 API
 
 router.post(
     '/sign-up',
-    // signUpValidation,
-    // validationMiddleware,
+    signUpValidation,
+    validationMiddleware,
     wrapAsync(AuthController.signUp)
 );   // 회원가입 API (진행중)
 

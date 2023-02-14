@@ -8,7 +8,6 @@ module.exports = () => {
         clientSecret: NAVER.CLIENT_SECRET_KEY,
         callbackURL: NAVER.CALLBACK_URL
     }, (accessToken, refreshToken, profile, done) => {
-        // authController로 이동
         done({ accessToken, refreshToken, profile });
     }));
 };

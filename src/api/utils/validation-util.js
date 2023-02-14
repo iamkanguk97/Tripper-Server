@@ -60,12 +60,12 @@ const checkBadWordInclude = async (value) => {
     }
 };
 
-// kakaoId 중복 확인
+// snsId 중복 확인
 const checkSnsIdDuplicate = async (snsId) => {
     try {
         const checkSnsIdDuplicateResult = await User.findOne({
             where: {
-                USER_KAKAO_ID: snsId,
+                USER_SNS_ID: snsId,
                 USER_STATUS: 'A'
             }
         });
