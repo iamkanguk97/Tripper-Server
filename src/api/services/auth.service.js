@@ -8,60 +8,67 @@ const { generateAccessToken, generateRefreshToken } = require('../utils/jwt-util
 const RedisClient = require('../../config/redis');
 
 const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
-    // 소셜로그인 고유값으로 유저 존재하는지 확인
-    const checkIsUserExist = await checkUserExistWithSnsId('K', profile.id);
+    try {
+        // 소셜로그인 고유값으로 유저 존재하는지 확인
+        const checkIsUserExist = await checkUserExistWithSnsId('K', profile.id);
+    } catch (err) {
+        return err;
+        // throw new Error(err);
+    }
 
     /**
      * 유저가 있다 -> token 발급해주기
      * 유저가 없다 -> 회원가입 API로 넘기기
      */
-    if (checkIsUserExist !== false) {
-        // Redis Connection
-        const redisClient = new RedisClient();
-        await redisClient.connect();
+    // if (checkIsUserExist !== false) {
+    //     // Redis Connection
+    //     const redisClient = new RedisClient();
+    //     await redisClient.connect();
 
-        const userIdx = checkIsUserExist;
-        const jwt_at = generateAccessToken(userIdx);
-        const jwt_rt = generateRefreshToken();
+    //     const userIdx = checkIsUserExist;
+    //     const jwt_at = generateAccessToken(userIdx);
+    //     const jwt_rt = generateRefreshToken();
 
-        // Refresh token Redis에 저장
-        await hSet('refreshToken', `userId_${userIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
-        await redisClient.disconnect();
+    //     // Refresh token Redis에 저장
+    //     await hSet('refreshToken', `userId_${userIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
+    //     await redisClient.disconnect();
 
-        return {
-            requireSignUp: false,
-            result: {
-                userIdx,
-                sns_token: {
-                    accessToken,
-                    refreshToken
-                },
-                jwt_token: {
-                    accessToken: jwt_at,
-                    refreshToken: jwt_rt
-                }
-            }
-        };
-    } else {
-        const isAgeGroup = profile._json.kakao_account.has_age_range;   // 유저가 연령대 동의했는지 여부
-        const isGender = profile._json.kakao_account.has_gender;   // 유저가 성별 동의했는지 여부
+    //     return {
+    //         requireSignUp: false,
+    //         token: {
+    //             sns_token: {
+    //                 accessToken,
+    //                 refreshToken
+    //             },
+    //             jwt_token: {
+    //                 accessToken: jwt_at,
+    //                 refreshToken: jwt_rt
+    //             }
+    //         },
+    //         result: {
+    //             userIdx
+    //         }
+    //     };
+    // } else {
+    //     const isAgeGroup = profile._json.kakao_account.has_age_range;   // 유저가 연령대 동의했는지 여부
+    //     const isGender = profile._json.kakao_account.has_gender;   // 유저가 성별 동의했는지 여부
 
-        // 회원가입 API로 넘기기
-        return {
-            requireSignUp: true,
-            result: {
-                sns_token: {
-                    accessToken,
-                    refreshToken
-                },
-                snsId: profile.id,
-                email: profile._json.kakao_account.email,
-                age_group: isAgeGroup ? profile._json.kakao_account.age_range : null,
-                gender: isGender ? profile._json.kakao_account.gender : null,
-                provider: 'kakao',
-            }
-        };
-    }
+    //     // 회원가입 API로 넘기기
+    //     return {
+    //         requireSignUp: true,
+    //         result: {
+    //             sns_token: {
+    //                 accessToken,
+    //                 refreshToken
+    //             },
+    //             snsId: profile.id,
+    //             email: profile._json.kakao_account.email,
+    //             age_group: isAgeGroup ? profile._json.kakao_account.age_range : null,
+    //             gender: isGender ? profile._json.kakao_account.gender : null,
+    //             provider: 'kakao',
+    //         }
+    //     };
+    // }
 };
 
 const naverLoginCallback = async (accessToken, refreshToken, profile) => {

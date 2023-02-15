@@ -5,6 +5,7 @@ const responseMessage = require('../../config/response/baseResponseStatus');
 const { BadRequestError, ServerError } = require('../utils/errors');
 
 const errorHandleMiddleware = (error, req, res, next) => {
+    console.log('hihi');
     console.log(error);
     const err = {
         statusCode: error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,

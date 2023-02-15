@@ -44,7 +44,6 @@ router.get(
 
 router.get(
     '/token-refresh',
-    
     validationMiddleware,
     AuthController.tokenRefresh
 );   // JWT Access Token 재발급을 위한 Router

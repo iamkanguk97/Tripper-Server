@@ -6,6 +6,7 @@ const passport = require('passport');
 const httpStatus = require('http-status');
 const methodOverride = require('method-override');
 const fileUpload = require('express-fileupload');
+// const cookieParser = require('cookie-parser');
 const morganMiddleware = require('../api/middlewares/morganMiddleware');
 const passportConfig = require('../config/passport');
 const Logger = require('./logger');
@@ -38,6 +39,7 @@ sequelize.sync({
 
 app.use(express.json());   // JSON 형태의 데이터 해석
 app.use(express.urlencoded({ extended: true }));   // x-www-form-urlencoded 형태 데이터 해석
+// app.use(cookieParser());   // cookie-parser 설정
 
 app.use(methodOverride());   // PUT, DELETE Method를 위한 library
 

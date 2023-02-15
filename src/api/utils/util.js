@@ -6,6 +6,8 @@ const readFile = util.promisify(fs.readFile);
 const { S3 } = require('../../config/vars');
 const User = require('../models/User/User');
 
+const { ServerError } = require('../../api/utils/errors');
+
 /**
  * 에러 핸들링을 위한 헬퍼 함수
  */
@@ -95,12 +97,12 @@ const uploadProfileImage = async (profileImage, kakaoId) => {
 const checkUserExistWithSnsId = async (provider, snsId) => {
     const userExistResult = await User.findOne({
         where: {
-            USER_SNS_ID: snsId,
+            USER_SNS_ID_KK: snsId,
             USER_PROVIDER: provider,
             USER_STATUS: 'A'
         }
     });
-    
+
     return userExistResult ? userExistResult.dataValues.IDX : false;
 };
 
