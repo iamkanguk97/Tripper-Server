@@ -4,18 +4,32 @@ const { REDIS } = require('./vars');
 
 class RedisClient {
     constructor() {
+        this.setRedis();
+    }
+
+    setRedis() {
+        this.setRedisClient();
+        
+        this.redisClient.on('connect', this.connectMessageHandler);
+        this.redisClient.on('error', this.errorMessageHandler);
+        this.redisClient.on('end', this.quitMessageHandler);
+    }
+
+    setRedisClient() {
         this.redisClient = redis.createClient({
             url: `redis://${REDIS.USERNAME}:${REDIS.PASSWORD}@${REDIS.HOST}:${REDIS.PORT}/0`,
             legacyMode: false,
         });
+    }
 
-        this.redisClient.on('connect', () => {
-            Logger.info('Success for Redis Connection!');
-        });
-        this.redisClient.on('error', (err) => {
-            Logger.error('Error for Redis Connection!');
-            Logger.error(err);
-        });
+    connectMessageHandler() {
+        console.log('### Success for Redis Connection! ###');
+    }
+    errorMessageHandler(err) {
+        console.log('### Redis Connection Error! >> ###', err);
+    }
+    quitMessageHandler() {
+        console.log('### Redis Connection Close! ###');
     }
 
     // RedisClient에 연결
@@ -31,9 +45,8 @@ class RedisClient {
     }
 
     // RedisClient 연결 끊기
-    async disconnect() {
-        Logger.info('Success for disconnecting Redis!');
-        await this.redisClient.disconnect();
+    disconnect() {
+        this.redisClient.quit();
     }
 }
 
