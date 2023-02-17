@@ -100,6 +100,7 @@ const naverLoginCallback = async (accessToken, refreshToken, profile) => {
         } else {
             // 회원가입 API로 넘기기
             return {
+                isError: false,
                 requireSignUp: true,
                 result: {
                     snsId: profile.id,
