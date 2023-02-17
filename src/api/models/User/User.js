@@ -75,7 +75,7 @@ module.exports = class User extends Sequelize.Model {
             },
             USER_EMAIL: {
                 type: Sequelize.STRING(50),
-                allowNull: true,
+                allowNull: false,
                 comment: '사용자 이메일'
             },
             USER_NICKNAME: {
