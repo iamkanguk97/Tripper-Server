@@ -76,12 +76,12 @@ const returnS3Module = () => {
  * @param profileImage, kakaoId
  * @returns Profile Image S3 Location
  */
-const uploadProfileImage = async (profileImage, kakaoId) => {
+const uploadProfileImage = async (profileImage, snsId) => {
     const s3 = returnS3Module();
     const fileContent = Buffer.from(profileImage.data, 'binary');
     const params = {   // S3 Upload Parameters
         Bucket: S3.BUCKET_NAME,
-        Key: `profile/profile_kakaoId_${kakaoId}`,
+        Key: `profile/profile_snsId_${snsId}`,
         Body: fileContent
     };
 

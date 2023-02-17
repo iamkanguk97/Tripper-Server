@@ -60,7 +60,7 @@ const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
         }
     } catch (err) {
         // 에러 발생 -> Middleware로 넘기기 위해 Return
-        return { isError: true, error: { message: err.message, stack: err.stack }};
+        return { isError: true, error: err };
     } finally {
         if (redisClient)
             redisClient.quit();
@@ -116,13 +116,7 @@ const naverLoginCallback = async (accessToken, refreshToken, profile) => {
         }    
     } catch (err) {
         // 에러 발생 -> Middleware로 넘기기 위해 Return
-        return { 
-            isError: true,
-            error: {
-                message: err.message,
-                stack: err.stack
-            }
-        }
+        return { isError: true, error: err };
     } finally {
         if (redisClient)
             redisClient.quit();
@@ -135,11 +129,12 @@ const signUp = async (
     ageGroup, gender, provider
 ) => {
     let redisClient = null;
+    let __profileImage = null;
+
     try {
         redisClient = new RedisClient();
         await redisClient.connect();
 
-        let __profileImage = null;
         const _gender = !gender ? gender : getFirstLetter(gender);
         const _ageGroup = !ageGroup ? ageGroup : ageGroupToString(ageGroup);
         const _provider = getFirstLetter(provider);
@@ -148,7 +143,7 @@ const signUp = async (
          * 프로필 사진을 카카오에서 가져오는걸로 하지말고 본인 갤러리에서 직접 설정할 수 있게하는걸로 하자!
          * profileImage가 null일 경우 -> 클라쪽에서 처리 가능 
          */
-        __profileImage = profileImage ? await uploadProfileImage(profileImage, kakaoId) : null;
+        __profileImage = profileImage ? await uploadProfileImage(profileImage, snsId) : null;
 
         // DB에 해당 User 등록
         const newUserIdx = (await User.create({
@@ -166,26 +161,20 @@ const signUp = async (
         const jwt_rt = generateRefreshToken();
 
         // Redis에 Refresh Token 저장
-        await hSet('refreshToken', `userId_${newUserIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
+        await redisClient.hSet('refreshToken', `userId_${newUserIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
 
         return {
             newUserIdx,
             jwt_token: {
-                access_token: jwt_at,
-                refresh_token: jwt_rt
+                accessToken: jwt_at,
+                refreshToken: jwt_rt
             }
         };
     } catch (err) {
-        // errorHandleMiddleware에 에러 전달.
-        throw new ServerError(JSON.stringify({
-            ...responseMessage.INTERNAL_SERVER_ERROR,
-            error: {
-                message: err.message,
-                stack: err.stack
-            },
-        }));
+        throw new Error(err);
     } finally {
-        await redisClient.disconnect();
+        if (redisClient)
+            redisClient.quit();
     }
 };
 

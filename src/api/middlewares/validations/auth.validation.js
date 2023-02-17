@@ -24,6 +24,7 @@ const verifyNickValidation = [
  * - 이메일 유무 확인 + 이메일 형식 확인
  * - 닉네임 유무 + 형식 확인 (안해도 되지만.. 2중 보안이면 더 좋으니까!)
  * - 카카오 고유 번호 유무 확인
+ * - 사용자 로그인 타입 유무 + 형식 확인
  */
 const signUpValidation = [
     body('email')
@@ -35,11 +36,11 @@ const signUpValidation = [
         .custom(checkNickDuplicate).bail()
         .custom(checkBadWordInclude).bail(),
     body('snsId')
-        .notEmpty().withMessage(responseMessage.KAKAOID_EMPTY).bail()
+        .notEmpty().withMessage(responseMessage.SNS_ID_EMPTY).bail()
         .custom(checkSnsIdDuplicate).bail(),
     body('provider')
-        .notEmpty().withMessage().bail()
-        .isIn().withMessage().bail()
+        .notEmpty().withMessage(responseMessage.PROVIDER_EMPTY).bail()
+        .isIn(['kakao', 'naver']).withMessage(responseMessage.PROVIDER_ERROR_TYPE).bail()
 ];
 
 /**

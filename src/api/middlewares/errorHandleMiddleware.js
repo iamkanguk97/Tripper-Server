@@ -1,10 +1,12 @@
 'use strict';
 const httpStatus = require('http-status');
-const jwt = require('jsonwebtoken');
+const Logger = require('../../config/logger');
 const responseMessage = require('../../config/response/baseResponseStatus');
 const { BadRequestError, ServerError } = require('../utils/errors');
 
 const errorHandleMiddleware = (error, req, res, next) => {
+    Logger.error(error);   // 에러 로깅
+
     const statusCode = error.statusCode || httpStatus.INTERNAL_SERVER_ERROR;
     let message = null;
 
@@ -15,7 +17,10 @@ const errorHandleMiddleware = (error, req, res, next) => {
     if (statusCode === httpStatus.INTERNAL_SERVER_ERROR) {
         message = {
             ...responseMessage.INTERNAL_SERVER_ERROR,
-            error
+            error: {
+                message: error.message,
+                stack: error.stack
+            }
         };
     }
 
