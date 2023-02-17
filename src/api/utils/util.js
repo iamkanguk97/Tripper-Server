@@ -97,7 +97,7 @@ const uploadProfileImage = async (profileImage, kakaoId) => {
 const checkUserExistWithSnsId = async (provider, snsId) => {
     const userExistResult = await User.findOne({
         where: {
-            USER_SNS_ID_KK: snsId,
+            USER_SNS_ID: snsId,
             USER_PROVIDER: provider,
             USER_STATUS: 'A'
         }

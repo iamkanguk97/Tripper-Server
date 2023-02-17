@@ -32,6 +32,7 @@ class RedisClient {
 
     // RedisClient 연결 끊기
     async disconnect() {
+        Logger.info('Success for disconnecting Redis!');
         await this.redisClient.disconnect();
     }
 }
