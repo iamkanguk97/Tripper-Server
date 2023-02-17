@@ -10,7 +10,7 @@ const kakaoLoginCallback = async (req, res, next) => {
     passport.authenticate('kakao', async ({ accessToken, refreshToken, profile }) => {
         const kakaoLoginResult = await AuthService.kakaoLoginCallback(accessToken, refreshToken, profile);
         if (kakaoLoginResult.isError)
-            next(kakaoLoginResult.errorMessage);
+            next(kakaoLoginResult.error);
         else {
             if (kakaoLoginResult.requireSignUp)
                 return res.status(httpStatus.OK).json(response(responseMessage.REQUIRE_SIGN_UP, kakaoLoginResult.result));
@@ -27,7 +27,7 @@ const naverLoginCallback = async (req, res, next) => {
     passport.authenticate('naver', async ({ accessToken, refreshToken, profile }) => {
         const naverLoginResult = await AuthService.naverLoginCallback(accessToken, refreshToken, profile);
         if (naverLoginResult.isError)
-            next(kakaoLoginResult.errorMessage);
+            next(kakaoLoginResult.error);
         else {
             if (naverLoginResult.requireSignUp)
                 return res.status(httpStatus.OK).json(response(responseMessage.REQUIRE_SIGN_UP, naverLoginResult.result));

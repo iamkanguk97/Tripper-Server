@@ -34,11 +34,11 @@ const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
                 isError: false,
                 requireSignUp: false,
                 result: {
+                    userIdx,
                     jwt_token: {
                         accessToken: jwt_at,
                         refreshToken: jwt_rt
-                    },
-                    userIdx
+                    }
                 }
             }
         } else {
@@ -60,7 +60,7 @@ const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
         }
     } catch (err) {
         // 에러 발생 -> Middleware로 넘기기 위해 Return
-        return { isError: true, errorMessage: err }
+        return { isError: true, error: { message: err.message, stack: err.stack }};
     } finally {
         if (redisClient)
             redisClient.quit();
@@ -116,7 +116,13 @@ const naverLoginCallback = async (accessToken, refreshToken, profile) => {
         }    
     } catch (err) {
         // 에러 발생 -> Middleware로 넘기기 위해 Return
-        return { isError: true, errorMessage: err }
+        return { 
+            isError: true,
+            error: {
+                message: err.message,
+                stack: err.stack
+            }
+        }
     } finally {
         if (redisClient)
             redisClient.quit();

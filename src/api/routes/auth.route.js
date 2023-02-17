@@ -15,11 +15,11 @@ const { wrapAsync } = require('../utils/util');
 
 const router = express.Router();
 
-/** 카카오 로그인 관련 Router */
+/** 카카오 로그인 관련 Router (OK) */
 router.get('/kakao-login', passport.authenticate('kakao'));
 router.get('/kakao-login/callback', AuthController.kakaoLoginCallback);
 
-/** 네이버 로그인 관련 Router */
+/** 네이버 로그인 관련 Router (OK) */
 router.get('/naver-login', passport.authenticate('naver'));
 router.get('/naver-login/callback', AuthController.naverLoginCallback);
 
@@ -28,7 +28,7 @@ router.get(
     verifyNickValidation,
     validationMiddleware,
     AuthController.verifyNickname
-);   // 닉네임 확인 API
+);   // 닉네임 확인 API (OK)
 
 router.post(
     '/sign-up',
@@ -58,6 +58,99 @@ module.exports = router;
  *          summary: '카카오 로그인 API'
  *          description: '카카오 로그인 기능입니다. 초기 회원가입시에는 회원가입 API를 추가로 거쳐야 합니다.'
  *          tags: [Auth]
+ *          responses:
+ *              '200':
+ *                  description: '요청 성공'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: true
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 200
+ *                                  message:
+ *                                      type: string
+ *                                      example: '요청 성공'
+ *                                  result:
+ *                                      type: object
+ *                                      properties:
+ *                                          jwt_token:
+ *                                              type: object
+ *                                              properties:
+ *                                                  accessToken:
+ *                                                      type: string
+ *                                                      example: 'JWT Access Token'
+ *                                                  refreshToken:
+ *                                                      type: string
+ *                                                      example: 'JWT Refresh Token'
+ *                                          userIdx:
+ *                                              type: integer
+ *                                              example: 1
+ *              '_200':
+ *                  description: '환영합니다! 신규 회원의 경우 닉네임 및 프로필 사진 설정 후 서비스 이용이 가능합니다.'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: true
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 200
+ *                                  message:
+ *                                      type: string
+ *                                      example: '환영합니다! 신규 회원의 경우 닉네임 및 프로필 사진 설정 후 서비스 이용이 가능합니다.'
+ *                                  result:
+ *                                      type: object
+ *                                      properties:
+ *                                          snsId:
+ *                                              type: string
+ *                                              example: '소셜로그인 고유값'
+ *                                          email:
+ *                                              type: string
+ *                                              example: 'rkddnrdl97@naver.com'
+ *                                          age_group:
+ *                                              type: string
+ *                                              example: '20대 (또는) null'
+ *                                              nullable: true
+ *                                          gender:
+ *                                              type: string
+ *                                              example: 'male (또는) null'
+ *                                              nullable: true
+ *                                          provider:
+ *                                              type: string
+ *                                              example: 'kakao'
+ *              '500':
+ *                  description: '서버 내부 에러 발생'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: false
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 500
+ *                                  message:
+ *                                      type: string
+ *                                      example: '서버 내부 에러 발생.'
+ *                                  error:
+ *                                      type: object
+ *                                      properties:
+ *                                          message:
+ *                                              type: string
+ *                                              example: '에러 메세지 내용'
+ *                                          stack:
+ *                                              type: string
+ *                                              example: '에러 위치'                   
  * 
  * @swagger
  * paths:
@@ -66,6 +159,99 @@ module.exports = router;
  *          summary: '네이버 로그인 API'
  *          description: '네이버 로그인 기능입니다. 초기 회원가입시에는 회원가입 API를 추가로 거쳐야 합니다.'
  *          tags: [Auth]
+ *          responses:
+ *              '200':
+ *                  description: '요청 성공'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: true
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 200
+ *                                  message:
+ *                                      type: string
+ *                                      example: '요청 성공'
+ *                                  result:
+ *                                      type: object
+ *                                      properties:
+ *                                          jwt_token:
+ *                                              type: object
+ *                                              properties:
+ *                                                  accessToken:
+ *                                                      type: string
+ *                                                      example: 'JWT Access Token'
+ *                                                  refreshToken:
+ *                                                      type: string
+ *                                                      example: 'JWT Refresh Token'
+ *                                          userIdx:
+ *                                              type: integer
+ *                                              example: 1
+ *              '_200':
+ *                  description: '환영합니다! 신규 회원의 경우 닉네임 및 프로필 사진 설정 후 서비스 이용이 가능합니다.'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: true
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 200
+ *                                  message:
+ *                                      type: string
+ *                                      example: '환영합니다! 신규 회원의 경우 닉네임 및 프로필 사진 설정 후 서비스 이용이 가능합니다.'
+ *                                  result:
+ *                                      type: object
+ *                                      properties:
+ *                                          snsId:
+ *                                              type: string
+ *                                              example: '소셜로그인 고유값'
+ *                                          email:
+ *                                              type: string
+ *                                              example: 'rkddnrdl97@naver.com'
+ *                                          age_group:
+ *                                              type: string
+ *                                              example: '20대 (또는) null'
+ *                                              nullable: true
+ *                                          gender:
+ *                                              type: string
+ *                                              example: 'male (또는) null'
+ *                                              nullable: true
+ *                                          provider:
+ *                                              type: string
+ *                                              example: 'naver'
+ *              '500':
+ *                  description: '서버 내부 에러 발생'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: false
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 500
+ *                                  message:
+ *                                      type: string
+ *                                      example: '서버 내부 에러 발생.'
+ *                                  error:
+ *                                      type: object
+ *                                      properties:
+ *                                          message:
+ *                                              type: string
+ *                                              example: '에러 메세지 내용'
+ *                                          stack:
+ *                                              type: string
+ *                                              example: '에러 위치'
  * 
  * @swagger
  * paths:
