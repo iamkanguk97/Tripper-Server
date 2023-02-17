@@ -23,13 +23,13 @@ class RedisClient {
     }
 
     connectMessageHandler() {
-        console.log('### Success for Redis Connection! ###');
+        Logger.info('### Success for Redis Connection! ###');
     }
     errorMessageHandler(err) {
-        console.log('### Redis Connection Error! >> ###', err);
+        Logger.error('### Redis Connection Error! >> ###', err);
     }
     quitMessageHandler() {
-        console.log('### Redis Connection Close! ###');
+        Logger.info('### Redis Connection Close! ###');
     }
 
     // RedisClient에 연결
@@ -45,7 +45,7 @@ class RedisClient {
     }
 
     // RedisClient 연결 끊기
-    disconnect() {
+    quit() {
         this.redisClient.quit();
     }
 }

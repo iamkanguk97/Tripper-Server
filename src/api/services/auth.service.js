@@ -8,6 +8,7 @@ const { ServerError } = require('../utils/errors');
 const { generateAccessToken, generateRefreshToken } = require('../utils/jwt-util');
 
 const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
+    let redisClient = null;
     try {
         // 소셜로그인 고유값으로 유저 존재하는지 확인
         const checkIsUserExist = await checkUserExistWithSnsId('K', profile.id);
@@ -18,7 +19,7 @@ const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
          */
         if (checkIsUserExist !== false) {
             // Redis Connection
-            const redisClient = new RedisClient();
+            redisClient = new RedisClient();
             await redisClient.connect();
 
             const userIdx = checkIsUserExist;
@@ -26,8 +27,7 @@ const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
             const jwt_rt = generateRefreshToken();
 
             // Refresh token Redis에 저장
-            await hSet('refreshToken', `userId_${userIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
-            await redisClient.disconnect();
+            await redisClient.hSet('refreshToken', `userId_${userIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
 
             // TODO: 카카오쪽에서 발급받은 AccessToken과 RefreshToken은 추후 필요할 때 클라쪽으로 Response 보내주자!
             return {
@@ -61,10 +61,14 @@ const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
     } catch (err) {
         // 에러 발생 -> Middleware로 넘기기 위해 Return
         return { isError: true, errorMessage: err }
+    } finally {
+        if (redisClient)
+            redisClient.quit();
     }
 };
 
 const naverLoginCallback = async (accessToken, refreshToken, profile) => {
+    let redisClient = null;
     try {
         // 소셜로그인 고유값으로 유저 존재하는지 확인
         const checkIsUserExist = await checkUserExistWithSnsId('N', profile.id);
@@ -75,7 +79,7 @@ const naverLoginCallback = async (accessToken, refreshToken, profile) => {
          */
         if (checkIsUserExist !== false) {
             // Redis Connection
-            const redisClient = new RedisClient();
+            redisClient = new RedisClient();
             await redisClient.connect();
 
             const userIdx = checkIsUserExist;
@@ -83,8 +87,7 @@ const naverLoginCallback = async (accessToken, refreshToken, profile) => {
             const jwt_rt = generateRefreshToken();
 
             // Refresh token Redis에 저장
-            await hSet('refreshToken', `userId_${userIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
-            await redisClient.disconnect();
+            await redisClient.hSet('refreshToken', `userId_${userIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
 
             return {
                 isError: false,
@@ -114,6 +117,9 @@ const naverLoginCallback = async (accessToken, refreshToken, profile) => {
     } catch (err) {
         // 에러 발생 -> Middleware로 넘기기 위해 Return
         return { isError: true, errorMessage: err }
+    } finally {
+        if (redisClient)
+            redisClient.quit();
     }
 };
 
