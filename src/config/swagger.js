@@ -28,6 +28,10 @@ const options = {
             {
                 url: 'http://localhost:3030',
                 description: 'Local Server'
+            },
+            {
+                url: 'https://dev.ourtravel-tripper.shop',
+                description: 'Development Server'
             }
         ]
     },
