@@ -17,7 +17,15 @@ class BadRequestError extends Error {
     }
 }
 
+class JWTError extends Error {
+    constructor(message) {
+        super(message);
+        this.statusCode = httpStatus.UNAUTHORIZED;
+    }
+}
+
 module.exports = {
     ServerError,
     BadRequestError,
+    JWTError
 };

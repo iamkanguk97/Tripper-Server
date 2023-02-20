@@ -2,8 +2,9 @@
 const httpStatus = require('http-status');
 const Logger = require('../../config/logger');
 const responseMessage = require('../../config/response/baseResponseStatus');
-const { BadRequestError, ServerError } = require('../utils/errors');
+const { BadRequestError, ServerError, JWTError } = require('../utils/errors');
 
+// TODO: 이 에러 핸들링 부분은 지금 약간 뒤죽박죽이라고 생각함. 나중에 한번에 통일할 수 있게 코드 리팩토링 필요할듯?
 const errorHandleMiddleware = (error, req, res, next) => {
     Logger.error(error);   // 에러 로깅
 
@@ -12,6 +13,21 @@ const errorHandleMiddleware = (error, req, res, next) => {
 
     if (error instanceof BadRequestError) {   // BadRequestError일 경우
         message = JSON.parse(error.message);
+    }
+
+    if (error instanceof JWTError) {   // JWT 관련 에러일 경우
+        const _responseMessage = 
+            error.message === 'jwt expired' 
+            ? responseMessage.JWT_TOKEN_EXPIRED_ERROR
+            : responseMessage.JWT_AUTHORIZATION_ERROR;
+
+        message = {
+            ..._responseMessage,
+            error: {
+                message: error.message,
+                stack: error.stack
+            }
+        }
     }
 
     if (statusCode === httpStatus.INTERNAL_SERVER_ERROR) {

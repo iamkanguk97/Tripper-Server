@@ -63,6 +63,7 @@ const tokenRefresh = async (req, res) => {
     const refreshToken = req.headers.refresh_token;
     
     const tokenRefreshResult = await AuthService.tokenRefresh(accessToken, refreshToken);
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, tokenRefreshResult));
 };
 
 module.exports = {

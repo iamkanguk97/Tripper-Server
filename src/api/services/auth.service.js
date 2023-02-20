@@ -1,11 +1,11 @@
 'use strict';
-const jwt = require('jsonwebtoken');
 const User = require('../models/User/User');
 const RedisClient = require('../../config/redis');
 const { verify, refreshVerify } = require('../utils/jwt-util');
 const { getFirstLetter, ageGroupToString, returnS3Module, uploadProfileImage, checkUserExistWithSnsId } = require('../utils/util');
 const { JWT_REFRESH_TOKEN_EXPIRE_TIME } = require('../../config/vars');
 const { generateAccessToken, generateRefreshToken } = require('../utils/jwt-util');
+const { JWTError } = require('../utils/errors');
 
 const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
     let redisClient = null;
@@ -182,11 +182,37 @@ const tokenRefresh = async (accessToken, refreshToken) => {
     /**
      * (1) Access-Token + Refresh-Token 모두 만료된 경우 => 새로 로그인 필요
      * (2) Access-Token 만료 + Refresh-Token 만료되지 않음 => 새로운 Access-Token 발급
-     * (3) Access-Token이 만료되지 않은 경우 => tokenRefresh 필요 없음.
+     * (3) Access-Token 만료되지 않음 + Refresh-Token이 만료된 경우 => 새로운 Refresh-Token 발급
+     * (4) Access-Token이 만료되지 않은 경우 => tokenRefresh 필요 없음.
      */
     const accessTokenVerify = verify(accessToken);   // Access-Token 검증
-    const userIdx = accessTokenVerify.result.userIdx;   // Access-Token 검증 후 Payload에 내장되어있는 사용자 고유값
-    const refreshTokenVerify = await refreshVerify(userIdx, refreshToken);   // Refresh-Token 검증  
+    const _refreshTokenVerify = await refreshVerify(refreshToken);   // Refresh-Token 검증
+
+    if (!accessTokenVerify.isSuccess) {   // Access-Token 검증에 실패함
+        if (accessTokenVerify.message === 'jwt expired') {   // Access-Token 사용 만료
+            if (!_refreshTokenVerify) {   // Refresh-Token도 만료일 경우 => 새로 로그인 필요
+                return;
+            } else {   // Refresh-Token이 만료되지 않았음 => 새로운 Access-Token 발급
+                const newAccessToken = 'asdf';
+                return;
+            }
+        } else {   // Access-Token 검증에 문제 발생 (malformed 등) => 에러 throw
+            throw new JWTError(accessTokenVerify.message);
+        }
+    } else {   // Access-Token 검증에 성공
+        if (!_refreshTokenVerify) {   // Refresh-Token이 만료일 경우 => 새로운 Refresh-Token 발급
+            
+        } else {   // Access-Token + Refresh-Token 모두 정상상태 => 특별한 Action 필요 없음.
+
+        }
+    }
+
+    // const userIdx = accessTokenVerify.result.userIdx;   // Access-Token 검증 후 Payload에 내장되어있는 사용자 고유값
+    const refreshTokenVerify = await refreshVerify(refreshToken);   // Refresh-Token 검증
+
+    // console.log('Access-Token 검증 결과:', accessTokenVerify);
+    // console.log('사용자 고유값:', userIdx);
+    // console.log('Refresh-Token 검증 결과:', refreshTokenVerify);
 };
 
 module.exports = {

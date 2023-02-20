@@ -106,6 +106,15 @@ const checkUserExistWithSnsId = async (provider, snsId) => {
     return userExistResult ? userExistResult.dataValues.IDX : false;
 };
 
+/**
+ * 객체에 특정 value가 존재하는지 확인하는 함수
+ * @param object, value
+ * @returns true / false 
+ */
+const getKeyByValue = (obj, value) => {
+    return Object.keys(obj).find(key => obj[key] === value) ? true : false;
+};
+
 module.exports = {
     checkBadWord,
     getFirstLetter,
@@ -113,5 +122,6 @@ module.exports = {
     wrapAsync,
     returnS3Module,
     uploadProfileImage,
-    checkUserExistWithSnsId
+    checkUserExistWithSnsId,
+    getKeyByValue
 };

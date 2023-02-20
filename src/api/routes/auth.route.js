@@ -545,12 +545,12 @@ router.get(
  * @swagger
  * paths: 
  *  /api/auth/token-refresh:
- *      get:
+ *      post:
  *          summary: 'JWT Access Token 재발급 API'
  *          description: 'JWT Access Token 재발급을 위한 Router입니다. 클라이언트분은 access token과 refresh token을 둘 다 헤더에 담아서 요청해야합니다.'
  *          tags: [Auth]
  */
-router.get(
+router.post(
     '/token-refresh',
     tokenRefreshValidation,
     validationMiddleware,

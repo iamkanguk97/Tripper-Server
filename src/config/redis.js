@@ -49,6 +49,11 @@ class RedisClient {
         return await this.redisClient.hGet(key, field);
     }
 
+    // Redis hGetAll
+    async hGetAll(key) {
+        return await this.redisClient.hGetAll(key);
+    }
+
     // RedisClient 연결 끊기
     quit() {
         this.redisClient.quit();
