@@ -1,7 +1,7 @@
 'use strict';
-const { query, body } = require("express-validator");
+const { query, body, header } = require("express-validator");
 const { REGEX_NICKNAME } = require('../../utils/regex');
-const { checkNickDuplicate, checkBadWordInclude, checkSnsIdDuplicate } = require('../../utils/validation-util');
+const { checkNickDuplicate, checkBadWordInclude, checkSnsIdDuplicate, checkAccessTokenEmpty } = require('../../utils/validation-util');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 
 /**
@@ -45,9 +45,15 @@ const signUpValidation = [
 
 /**
  * Access Token 갱신을 위한 API Validator
+ * - 자세한 검증 Logic은 Service단에서 진행하는걸로 결정.
+ * - Access-Token 및 Refresh-Token 유무 확인만 필요.
  */
 const tokenRefreshValidation = [
-
+    header('authorization')
+        .notEmpty().withMessage(responseMessage.JWT_ACCESS_TOKEN_EMPTY).bail()   // authorization 부분이 아예 없을 때
+        .custom(checkAccessTokenEmpty).bail(),   // authorization key는 있지만 Bearer을 입력하지 않았거나 아예 비어있는 경우
+    header('refresh_token')
+        .notEmpty().withMessage(responseMessage.JWT_REFRESH_TOKEN_EMPTY).bail()   // refresh_token이 없는 경우
 ];
 
 module.exports = {

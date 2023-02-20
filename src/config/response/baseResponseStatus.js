@@ -19,6 +19,8 @@ module.exports = {
     DELETE_FOLLOWER_IDX_EMPTY: { "isSuccess": false, "code": 2020, "message": "삭제할 팔로워의 고유값을 입력해주세요." },
     PROVIDER_EMPTY: { "isSuccess": false, "code": 2021, "message": "사용자 로그인 타입을 입력해주세요." },
     PROVIDER_ERROR_TYPE: { "isSuccess": false, "code": 2022, "message": "사용자 로그인 타입은 kakao 또는 naver로 입력해주세요." },
+    JWT_ACCESS_TOKEN_EMPTY: { "isSuccess": false, "code": 2023, "message": "JWT Access-Token을 입력해주세요." },
+    JWT_REFRESH_TOKEN_EMPTY: { "isSuccess": false, "code": 2024, "message": "JWT Refresh-Token을 입력해주세요." },
 
     NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3010, "message": "중복된 닉네임입니다." },
     USER_NOT_EXIST: { "isSuccess": false, "code": 3011, "message": "존재하지 않는 유저입니다." },

@@ -1,10 +1,9 @@
 'use strict';
 const User = require('../models/User/User');
-const responseMessage = require('../../config/response/baseResponseStatus');
 const RedisClient = require('../../config/redis');
+const { verify } = require('../utils/jwt-util');
 const { getFirstLetter, ageGroupToString, returnS3Module, uploadProfileImage, checkUserExistWithSnsId } = require('../utils/util');
 const { JWT_REFRESH_TOKEN_EXPIRE_TIME } = require('../../config/vars');
-const { ServerError } = require('../utils/errors');
 const { generateAccessToken, generateRefreshToken } = require('../utils/jwt-util');
 
 const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
@@ -178,8 +177,17 @@ const signUp = async (
     }
 };
 
+const tokenRefresh = async (accessToken, refreshToken) => {
+    /**
+     * (1) Access-Token + Refresh-Token 모두 만료된 경우 => 새로 로그인 필요
+     */
+    const accessTokenVerify = verify(accessToken);   // Access-Token 검증
+    console.log(accessTokenVerify);
+};
+
 module.exports = {
     kakaoLoginCallback,
     naverLoginCallback,
-    signUp
+    signUp,
+    tokenRefresh
 };

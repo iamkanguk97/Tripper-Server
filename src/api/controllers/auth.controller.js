@@ -58,7 +58,12 @@ const signUp = async (req, res) => {
 
 const autoLogin = async (req, res) => {};
 
-const tokenRefresh = async (req, res) => {};
+const tokenRefresh = async (req, res) => {
+    const accessToken = req.headers.authorization.split('Bearer ')[1];
+    const refreshToken = req.headers.refresh_token;
+    
+    const tokenRefreshResult = await AuthService.tokenRefresh(accessToken, refreshToken);
+};
 
 module.exports = {
     kakaoLoginCallback,

@@ -10,7 +10,7 @@ const express = require('express');
 const passport = require('passport');
 const AuthController = require('../controllers/auth.controller');
 const validationMiddleware = require('../middlewares/validationMiddleware');
-const { verifyNickValidation, signUpValidation } = require('../middlewares/validations/auth.validation');
+const { verifyNickValidation, signUpValidation, tokenRefreshValidation } = require('../middlewares/validations/auth.validation');
 const { wrapAsync } = require('../utils/util');
 
 const router = express.Router();
@@ -552,6 +552,7 @@ router.get(
  */
 router.get(
     '/token-refresh',
+    tokenRefreshValidation,
     validationMiddleware,
     AuthController.tokenRefresh
 );   // JWT Access Token 재발급을 위한 Router

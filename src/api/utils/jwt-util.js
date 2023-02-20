@@ -26,20 +26,19 @@ const generateRefreshToken = () => {
 
 // JWT Access Token 검증
 const verify = (token) => {
-    // let decoded = null;
-    // try {
-    //   decoded = jwt.verify(token, secret);
-    //   return {
-    //     ok: true,
-    //     id: decoded.id,
-    //     role: decoded.role,
-    //   };
-    // } catch (err) {
-    //   return {
-    //     ok: false,
-    //     message: err.message,
-    //   };
-    // }
+    let decoded = null;
+    try {
+        decoded = jwt.verify(token, JWT_SECRET_KEY);
+        return {
+            isSuccess: true,
+            result: decoded
+        };
+    } catch (err) {
+        return {
+            isSuccess: false,
+            message: err.message
+        }
+    }
 };
 
 const jwt_refresh = () => {

@@ -78,9 +78,27 @@ const checkSnsIdDuplicate = async (snsId) => {
     }
 };
 
+// Header에 Access-Token이 있는지 확인
+// 일반 API에는 jwtMiddleware가 있기 때문에 사용 안해도 되지만 jwtMiddleware를 사용안하는 경우 이 util 함수 사용 필요!
+const checkAccessTokenEmpty = async (token) => {
+    try {
+        const _token = token.split('Bearer ')[1];
+        console.log(_token);
+        if (!_token)   // token을 입력 안했을경우
+            return Promise.reject(responseMessage.JWT_ACCESS_TOKEN_EMPTY);
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject({
+            isServerError: true,
+            error: err
+        });
+    }
+};
+
 module.exports = {
     checkUserStatusFunc,
     checkNickDuplicate,
     checkBadWordInclude,
-    checkSnsIdDuplicate
+    checkSnsIdDuplicate,
+    checkAccessTokenEmpty
 };
