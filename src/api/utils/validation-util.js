@@ -83,7 +83,6 @@ const checkSnsIdDuplicate = async (snsId) => {
 const checkAccessTokenEmpty = async (token) => {
     try {
         const _token = token.split('Bearer ')[1];
-        console.log(_token);
         if (!_token)   // token을 입력 안했을경우
             return Promise.reject(responseMessage.JWT_ACCESS_TOKEN_EMPTY);
     } catch (err) {

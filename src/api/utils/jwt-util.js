@@ -1,6 +1,7 @@
 'use strict';
 const { JWT_SECRET_KEY } = require('../../config/vars');
 const jwt = require('jsonwebtoken');
+const RedisClient = require('../../config/redis');
 
 // JWT Access Token 발급
 const generateAccessToken = (newUserIdx) => {
@@ -41,41 +42,27 @@ const verify = (token) => {
     }
 };
 
-const jwt_refresh = () => {
-    return jwt.sign(
-        {},   // refresh token은 payload 없이 발급
-        JWT_SECRET_KEY,
-        { algorithm: 'HS256', expiresIn: '14d' }
-    );
-};
-
 // JWT Refresh Token 검증
-const jwt_refresh_verify = async (userIdx, token) => {
-    /* redis 모듈은 기본적으로 promise를 반환하지 않으므로,
-       promisify를 이용하여 promise를 반환하게 해줍니다.*/
-       // const getAsync = promisify(redisClient.get).bind(redisClient);
+const refreshVerify = async (userIdx, token) => {
+    let redisClient = null;
+    try {
+        redisClient = new RedisClient();
+        await redisClient.connect();
 
-       try {
-        
-       } catch (err) {
+        const refreshTokenGetKey = `userId_${11}`;
+        // const refreshTokenGetKey = `userId_${userIdx}`;
+        const result = await redisClient.hGet('refreshToken', refreshTokenGetKey);
 
-       }
-    
-    //    try {
-    //      const data = await getAsync(userId); // refresh token 가져오기
-    //      if (token === data) {
-    //        try {
-    //          jwt.verify(token, secret);
-    //          return true;
-    //        } catch (err) {
-    //          return false;
-    //        }
-    //      } else {
-    //        return false;
-    //      }
-    //    } catch (err) {
-    //      return false;
-    //    }
+        if (token === result) {
+            const verifyRefreshToken = jwt.verify(token, JWT_SECRET_KEY);
+            console.log(verifyRefreshToken);
+        }
+    } catch (err) {
+        throw new Error(err);
+    } finally {
+        if (redisClient)
+            redisClient.quit();
+    }
 };
 
 
@@ -83,5 +70,5 @@ module.exports = {
     generateAccessToken,
     generateRefreshToken,
     verify,
-    jwt_refresh_verify
+    refreshVerify
 };

@@ -1,7 +1,8 @@
 'use strict';
+const jwt = require('jsonwebtoken');
 const User = require('../models/User/User');
 const RedisClient = require('../../config/redis');
-const { verify } = require('../utils/jwt-util');
+const { verify, refreshVerify } = require('../utils/jwt-util');
 const { getFirstLetter, ageGroupToString, returnS3Module, uploadProfileImage, checkUserExistWithSnsId } = require('../utils/util');
 const { JWT_REFRESH_TOKEN_EXPIRE_TIME } = require('../../config/vars');
 const { generateAccessToken, generateRefreshToken } = require('../utils/jwt-util');
@@ -180,9 +181,12 @@ const signUp = async (
 const tokenRefresh = async (accessToken, refreshToken) => {
     /**
      * (1) Access-Token + Refresh-Token 모두 만료된 경우 => 새로 로그인 필요
+     * (2) Access-Token 만료 + Refresh-Token 만료되지 않음 => 새로운 Access-Token 발급
+     * (3) Access-Token이 만료되지 않은 경우 => tokenRefresh 필요 없음.
      */
     const accessTokenVerify = verify(accessToken);   // Access-Token 검증
-    console.log(accessTokenVerify);
+    const userIdx = accessTokenVerify.result.userIdx;   // Access-Token 검증 후 Payload에 내장되어있는 사용자 고유값
+    const refreshTokenVerify = await refreshVerify(userIdx, refreshToken);   // Refresh-Token 검증  
 };
 
 module.exports = {

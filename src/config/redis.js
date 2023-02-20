@@ -44,6 +44,11 @@ class RedisClient {
             await this.redisClient.expire(key, expireTime);   // expireTime 설정
     }
 
+    // Redis hGet
+    async hGet(key, field) {
+        return await this.redisClient.hGet(key, field);
+    }
+
     // RedisClient 연결 끊기
     quit() {
         this.redisClient.quit();
@@ -51,3 +56,5 @@ class RedisClient {
 }
 
 module.exports = RedisClient;
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWR4IjoxLCJpYXQiOjE2NzY5MDI0OTQsImV4cCI6MTY3NjkwNjA5NH0.XtNPhGrbJ_fFV4VSORAQSmb7M-YDjjqrrDYM9e9MQ88

@@ -554,7 +554,7 @@ router.get(
     '/token-refresh',
     tokenRefreshValidation,
     validationMiddleware,
-    AuthController.tokenRefresh
+    wrapAsync(AuthController.tokenRefresh)
 );   // JWT Access Token 재발급을 위한 Router
 
 module.exports = router;
