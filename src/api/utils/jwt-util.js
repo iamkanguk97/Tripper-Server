@@ -1,5 +1,5 @@
 'use strict';
-const { JWT_SECRET_KEY } = require('../../config/vars');
+const { JWT_SECRET_KEY, JWT_REFRESH_TOKEN_EXPIRE_TIME } = require('../../config/vars');
 const jwt = require('jsonwebtoken');
 const RedisClient = require('../../config/redis');
 const { getKeyByValue } = require('./util');
@@ -18,12 +18,30 @@ const generateAccessToken = (newUserIdx) => {
 };
 
 // JWT Refresh Token 발급
-const generateRefreshToken = () => {
-    return jwt.sign(
+const generateRefreshToken = async (userIdx, redisClient = null) => {
+    const newRefreshToken = jwt.sign(
         {},   // refresh token은 payload 없이 발급
         JWT_SECRET_KEY,
         { algorithm: 'HS256', expiresIn: '14d' }
     );
+
+    if (!redisClient) {
+        let _redisClient = null;
+        try {
+            _redisClient = new RedisClient();
+            await _redisClient.connect();
+            await _redisClient.hSet('refreshToken', `userId_${userIdx}`, newRefreshToken, JWT_REFRESH_TOKEN_EXPIRE_TIME);
+        } catch (err) {
+            throw new Error(err);            
+        } finally {
+            _redisClient.quit();
+        }
+    } else {
+        // Redis에 Refresh-Token 저장
+        await redisClient.hSet('refreshToken', `userId_${userIdx}`, newRefreshToken, JWT_REFRESH_TOKEN_EXPIRE_TIME);
+    }
+
+    return newRefreshToken;
 };
 
 // JWT Access Token 검증
@@ -50,9 +68,9 @@ const refreshVerify = async (token) => {
         redisClient = new RedisClient();
         await redisClient.connect();
 
-        const refreshTokens = await redisClient.hGetAll('refreshToken');
-        // const userRefreshTokenExist = getKeyByValue(refreshTokens, token);
-        return getKeyByValue(refreshTokens, 'asdf');   // Redis에 parameter로 전달된 해당 토큰이 있는지 확인
+        const refreshTokens = await redisClient.hGetAll('refreshToken');   // refreshToken key에 있는 field 전부 가져옴
+        return getKeyByValue(refreshTokens, token);   // Redis에 parameter로 전달된 해당 토큰이 있는지 확인
+        // return getKeyByValue(refreshTokens, 'asdf');   // Redis에 parameter로 전달된 해당 토큰이 있는지 확인
     } catch (err) {
         throw new Error(err);
     } finally {
@@ -60,29 +78,6 @@ const refreshVerify = async (token) => {
             redisClient.quit();
     }
 };
-
-// const refreshVerify = async (userIdx, token) => {
-//     let redisClient = null;
-//     try {
-//         redisClient = new RedisClient();
-//         await redisClient.connect();
-
-//         const refreshTokenGetKey = `userId_${11}`;
-//         // const refreshTokenGetKey = `userId_${userIdx}`;
-//         const result = await redisClient.hGet('refreshToken', refreshTokenGetKey);
-
-//         if (token === result) {
-//             const verifyRefreshToken = jwt.verify(token, JWT_SECRET_KEY);
-//             console.log(verifyRefreshToken);
-//         }
-//     } catch (err) {
-//         throw new Error(err);
-//     } finally {
-//         if (redisClient)
-//             redisClient.quit();
-//     }
-// };
-
 
 module.exports = {
     generateAccessToken,

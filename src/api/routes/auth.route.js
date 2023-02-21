@@ -10,6 +10,7 @@ const express = require('express');
 const passport = require('passport');
 const AuthController = require('../controllers/auth.controller');
 const validationMiddleware = require('../middlewares/validationMiddleware');
+const jwtMiddleware = require('../middlewares/jwtMiddleware');
 const { verifyNickValidation, signUpValidation, tokenRefreshValidation } = require('../middlewares/validations/auth.validation');
 const { wrapAsync } = require('../utils/util');
 
@@ -538,6 +539,7 @@ router.post(
  */
 router.get(
     '/auto-login',
+    jwtMiddleware,
     AuthController.autoLogin
 );   // 자동로그인 API
 
@@ -546,8 +548,8 @@ router.get(
  * paths: 
  *  /api/auth/token-refresh:
  *      post:
- *          summary: 'JWT Access Token 재발급 API'
- *          description: 'JWT Access Token 재발급을 위한 Router입니다. 클라이언트분은 access token과 refresh token을 둘 다 헤더에 담아서 요청해야합니다.'
+ *          summary: 'JWT 재발급을 위한 Router'
+ *          description: 'JWT 재발급을 위한 Router입니다. 클라이언트분은 access token과 refresh token을 둘 다 헤더에 담아서 요청해야합니다.'
  *          tags: [Auth]
  */
 router.post(
@@ -555,6 +557,6 @@ router.post(
     tokenRefreshValidation,
     validationMiddleware,
     wrapAsync(AuthController.tokenRefresh)
-);   // JWT Access Token 재발급을 위한 Router
+);   // JWT 재발급을 위한 Router
 
 module.exports = router;

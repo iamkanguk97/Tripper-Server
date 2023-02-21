@@ -109,10 +109,11 @@ const checkUserExistWithSnsId = async (provider, snsId) => {
 /**
  * 객체에 특정 value가 존재하는지 확인하는 함수
  * @param object, value
- * @returns true / false 
+ * @returns Redis-Key or false
  */
 const getKeyByValue = (obj, value) => {
-    return Object.keys(obj).find(key => obj[key] === value) ? true : false;
+    const result = Object.keys(obj).find(key => obj[key] === value);
+    return result ? result : false;
 };
 
 module.exports = {

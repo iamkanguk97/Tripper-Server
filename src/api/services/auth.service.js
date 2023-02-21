@@ -24,10 +24,10 @@ const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
 
             const userIdx = checkIsUserExist;
             const jwt_at = generateAccessToken(userIdx);
-            const jwt_rt = generateRefreshToken();
+            const jwt_rt = await generateRefreshToken(userIdx, redisClient);
 
             // Refresh token Redis에 저장
-            await redisClient.hSet('refreshToken', `userId_${userIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
+            // await redisClient.hSet('refreshToken', `userId_${userIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
 
             // TODO: 카카오쪽에서 발급받은 AccessToken과 RefreshToken은 추후 필요할 때 클라쪽으로 Response 보내주자!
             return {
@@ -84,10 +84,10 @@ const naverLoginCallback = async (accessToken, refreshToken, profile) => {
 
             const userIdx = checkIsUserExist;
             const jwt_at = generateAccessToken(userIdx);
-            const jwt_rt = generateRefreshToken();
+            const jwt_rt = await generateRefreshToken(userIdx, redisClient);
 
             // Refresh token Redis에 저장
-            await redisClient.hSet('refreshToken', `userId_${userIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
+            // await redisClient.hSet('refreshToken', `userId_${userIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
 
             return {
                 isError: false,
@@ -158,10 +158,10 @@ const signUp = async (
 
         // JWT Access + Refresh 발급
         const jwt_at = generateAccessToken(newUserIdx);
-        const jwt_rt = generateRefreshToken();
+        const jwt_rt = await generateRefreshToken(newUserIdx, redisClient);
 
         // Redis에 Refresh Token 저장
-        await redisClient.hSet('refreshToken', `userId_${newUserIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
+        // await redisClient.hSet('refreshToken', `userId_${newUserIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
 
         return {
             newUserIdx,
@@ -190,29 +190,29 @@ const tokenRefresh = async (accessToken, refreshToken) => {
 
     if (!accessTokenVerify.isSuccess) {   // Access-Token 검증에 실패함
         if (accessTokenVerify.message === 'jwt expired') {   // Access-Token 사용 만료
-            if (!_refreshTokenVerify) {   // Refresh-Token도 만료일 경우 => 새로 로그인 필요
+            if (!_refreshTokenVerify && typeof _refreshTokenVerify === 'boolean') {   // Refresh-Token도 만료일 경우 => 새로 로그인 필요
+                console.log('새로 로그인이 필요합니다!');
                 return;
             } else {   // Refresh-Token이 만료되지 않았음 => 새로운 Access-Token 발급
-                const newAccessToken = 'asdf';
+                const userIdx = _refreshTokenVerify.split('_')[1];
+                const newAccessToken = generateAccessToken(userIdx);
+                console.log(`[사용자 ${userIdx}] 새로운 Access-Token 발급 완료! => ${newAccessToken}`);
                 return;
             }
         } else {   // Access-Token 검증에 문제 발생 (malformed 등) => 에러 throw
             throw new JWTError(accessTokenVerify.message);
         }
     } else {   // Access-Token 검증에 성공
-        if (!_refreshTokenVerify) {   // Refresh-Token이 만료일 경우 => 새로운 Refresh-Token 발급
-            
+        if (!_refreshTokenVerify && typeof _refreshTokenVerify === 'boolean') {   // Refresh-Token이 만료일 경우 => 새로운 Refresh-Token 발급
+            const userIdx = accessTokenVerify.result.userIdx;
+            const newRefreshToken = await generateRefreshToken(userIdx);
+            console.log(`[사용자 ${userIdx}] 새로운 Refresh-Token 발급 완료! => ${newRefreshToken}`);
+            return;
         } else {   // Access-Token + Refresh-Token 모두 정상상태 => 특별한 Action 필요 없음.
-
+            console.log('Access-Token + Refresh-Token 모두 정상입니다!');
+            return;
         }
     }
-
-    // const userIdx = accessTokenVerify.result.userIdx;   // Access-Token 검증 후 Payload에 내장되어있는 사용자 고유값
-    const refreshTokenVerify = await refreshVerify(refreshToken);   // Refresh-Token 검증
-
-    // console.log('Access-Token 검증 결과:', accessTokenVerify);
-    // console.log('사용자 고유값:', userIdx);
-    // console.log('Refresh-Token 검증 결과:', refreshTokenVerify);
 };
 
 module.exports = {
