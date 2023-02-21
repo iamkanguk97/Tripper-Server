@@ -2,6 +2,7 @@
 const jwt = require('jsonwebtoken');
 const responseMessage = require('../../config/response/baseResponseStatus');
 const { JWT_SECRET_KEY } = require('../../config/vars');
+const { JWTError } = require('../utils/errors');
 
 // JWT 인증 미들웨어
 const jwtMiddleware = (req, res, next) => {
@@ -10,10 +11,7 @@ const jwtMiddleware = (req, res, next) => {
         req.verifiedToken = jwt.verify(token, JWT_SECRET_KEY);
         return next();
     } catch (err) {
-        if (err.name === 'TokenExpiredError') {   // 토큰 만료로 인한 에러 발생
-            throw new jwt.TokenExpiredError(JSON.stringify(responseMessage.JWT_TOKEN_EXPIRED_ERROR));
-        }
-        throw new jwt.JsonWebTokenError(JSON.stringify(responseMessage.JWT_AUTHORIZATION_ERROR));
+        throw new JWTError(err);
     }
 };
 

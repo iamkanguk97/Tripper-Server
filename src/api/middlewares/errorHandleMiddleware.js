@@ -17,7 +17,7 @@ const errorHandleMiddleware = (error, req, res, next) => {
 
     if (error instanceof JWTError) {   // JWT 관련 에러일 경우
         const _responseMessage = 
-            error.message === 'jwt expired' 
+            error.message.includes('expired')   // expired라는 단어가 있으면 => 토큰 만료 에러 메세지 전달
             ? responseMessage.JWT_TOKEN_EXPIRED_ERROR
             : responseMessage.JWT_AUTHORIZATION_ERROR;
 
