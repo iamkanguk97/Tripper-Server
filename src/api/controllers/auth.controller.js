@@ -60,7 +60,7 @@ const autoLogin = async (req, res) => {
     // jwtMiddleware에서 Access-Token에 대한 유효 여부를 체크함.
     // 따라서 해당 Controller까지 도달하면 성공메세지 Return
     const userIdx = req.verifiedToken.userIdx;
-    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, { message: '자동 로그인 성공', userIdx }));
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, { userIdx: parseInt(userIdx) }));
 };
 
 const tokenRefresh = async (req, res) => {

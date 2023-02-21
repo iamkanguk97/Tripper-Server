@@ -533,9 +533,69 @@ router.post(
  * paths: 
  *  /api/auth/auto-login:
  *      get:
+ *          security:
+ *              - JWT: []
  *          summary: '자동 로그인 API'
- *          description: 'JWT Access Token 재발급을 위한 Router입니다. 클라이언트분은 access token과 refresh token을 둘 다 헤더에 담아서 요청해야합니다.'
+ *          description: '자동 로그인 기능입니다. Access-Token 검증만 진행하게 됩니다. 토큰 만료 에러가 발생하게 되면 token-refresh API를 사용해주셔야 합니다.'
  *          tags: [Auth]
+ *          parameters:
+ *              - in: header
+ *                name: Authorization
+ *                schema:
+ *                  type: string
+ *                  example: 'Bearer <여기에 JWT Access-Token 입력해주세요>'
+ *                required: true
+ *                description: 'JWT Access-Token (Bearer)'
+ *          responses:
+ *              '200':
+ *                  description: '요청 성공.'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: true
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 200
+ *                                  message:
+ *                                      type: string
+ *                                      example: '요청 성공'
+ *                                  result:
+ *                                      type: object
+ *                                      properties:
+ *                                          userIdx:
+ *                                              type: integer
+ *                                              example: 1
+ *              '401':
+ *                  description: 'JWT 인증 에러 발생'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: false
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 401
+ *                                  message:
+ *                                      type: string
+ *                                      example: 'JWT 인증 에러 발생'
+ *                                  error:
+ *                                      type: object
+ *                                      properties:
+ *                                          message:
+ *                                              type: string
+ *                                              example: '에러 메세지'
+ *                                          stack:
+ *                                              type: string
+ *                                              example: '에러 발생 위치'
+ *              '_401':
+ *                  description: 'JWT 토큰 만료' 
  */
 router.get(
     '/auto-login',
