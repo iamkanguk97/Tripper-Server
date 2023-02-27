@@ -61,5 +61,3 @@ class RedisClient {
 }
 
 module.exports = RedisClient;
-
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWR4IjoxLCJpYXQiOjE2NzY5MDI0OTQsImV4cCI6MTY3NjkwNjA5NH0.XtNPhGrbJ_fFV4VSORAQSmb7M-YDjjqrrDYM9e9MQ88
