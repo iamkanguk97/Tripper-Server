@@ -552,6 +552,11 @@ router.post(
  *                  content:
  *                      application/json:
  *                          schema:
+ *                              required:
+ *                                  - isSuccess
+ *                                  - code
+ *                                  - message
+ *                                  - result
  *                              type: object
  *                              properties:
  *                                  isSuccess:
@@ -575,6 +580,10 @@ router.post(
  *                      application/json:
  *                          schema:
  *                              type: object
+ *                              required:
+ *                                  - isSuccess
+ *                                  - code
+ *                                  - message
  *                              properties:
  *                                  isSuccess:
  *                                      type: boolean
@@ -595,13 +604,13 @@ router.post(
  *                                              type: string
  *                                              example: '에러 발생 위치'
  *              '_401':
- *                  description: 'JWT 토큰 만료' 
+ *                  description: 'JWT 토큰 만료'
  */
 router.get(
     '/auto-login',
     jwtMiddleware,
     AuthController.autoLogin
-);   // 자동로그인 API
+);   // 자동로그인 API (OK)
 
 /**
  * @swagger

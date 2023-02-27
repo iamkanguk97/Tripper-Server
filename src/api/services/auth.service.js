@@ -2,8 +2,7 @@
 const User = require('../models/User/User');
 const RedisClient = require('../../config/redis');
 const { verify, refreshVerify } = require('../utils/jwt-util');
-const { getFirstLetter, ageGroupToString, returnS3Module, uploadProfileImage, checkUserExistWithSnsId } = require('../utils/util');
-const { JWT_REFRESH_TOKEN_EXPIRE_TIME } = require('../../config/vars');
+const { getFirstLetter, ageGroupToString, uploadProfileImage, checkUserExistWithSnsId } = require('../utils/util');
 const { generateAccessToken, generateRefreshToken } = require('../utils/jwt-util');
 const { JWTError } = require('../utils/errors');
 
@@ -185,6 +184,7 @@ const tokenRefresh = async (accessToken, refreshToken) => {
      * (3) Access-Token 만료되지 않음 + Refresh-Token이 만료된 경우 => 새로운 Refresh-Token 발급
      * (4) Access-Token이 만료되지 않은 경우 => tokenRefresh 필요 없음.
      */
+    let rm = null;
     const accessTokenVerify = verify(accessToken);   // Access-Token 검증
     const _refreshTokenVerify = await refreshVerify(refreshToken);   // Refresh-Token 검증
 
@@ -192,12 +192,12 @@ const tokenRefresh = async (accessToken, refreshToken) => {
         if (accessTokenVerify.message === 'jwt expired') {   // Access-Token 사용 만료
             if (!_refreshTokenVerify && typeof _refreshTokenVerify === 'boolean') {   // Refresh-Token도 만료일 경우 => 새로 로그인 필요
                 console.log('새로 로그인이 필요합니다!');
-                return;
+                rm = { message: '세션이 만료되었습니다. 로그인을 다시 진행해주세요.' };
             } else {   // Refresh-Token이 만료되지 않았음 => 새로운 Access-Token 발급
                 const userIdx = _refreshTokenVerify.split('_')[1];
                 const newAccessToken = generateAccessToken(userIdx);
                 console.log(`[사용자 ${userIdx}] 새로운 Access-Token 발급 완료! => ${newAccessToken}`);
-                return;
+                rm = { message: '새로운 Access-Token이 발급되었습니다.', userIdx, accessToken: newAccessToken }
             }
         } else {   // Access-Token 검증에 문제 발생 (malformed 등) => 에러 throw
             throw new JWTError(accessTokenVerify.message);
@@ -207,12 +207,13 @@ const tokenRefresh = async (accessToken, refreshToken) => {
             const userIdx = accessTokenVerify.result.userIdx;
             const newRefreshToken = await generateRefreshToken(userIdx);
             console.log(`[사용자 ${userIdx}] 새로운 Refresh-Token 발급 완료! => ${newRefreshToken}`);
-            return;
+            rm = { message: '새로운 Refresh-Token이 발급되었습니다.', userIdx, refreshToken: newRefreshToken }
         } else {   // Access-Token + Refresh-Token 모두 정상상태 => 특별한 Action 필요 없음.
-            console.log('Access-Token + Refresh-Token 모두 정상입니다!');
-            return;
+            rm = { message: 'Access-Token과 Refresh-Token이 모두 정상 상태입니다.' };
         }
     }
+
+    return rm;
 };
 
 module.exports = {
