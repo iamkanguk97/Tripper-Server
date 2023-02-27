@@ -3,7 +3,7 @@ const httpStatus = require('http-status');
 const passport = require('passport');
 const AuthService = require('../services/auth.service');
 const responseMessage = require('../../config/response/baseResponseStatus');
-const { response } = require('../../config/response/response-template');
+const { response, errResponse } = require('../../config/response/response-template');
 
 const kakaoLoginCallback = async (req, res, next) => {
     // Kakao Access-Token이랑 Refresh Token은 특별하게 사용할 곳이 없다고 판단되어서 따로 저장은 안함.
@@ -60,6 +60,8 @@ const autoLogin = async (req, res) => {
     // jwtMiddleware에서 Access-Token에 대한 유효 여부를 체크함.
     // 따라서 해당 Controller까지 도달하면 성공메세지 Return
     const userIdx = req.verifiedToken.userIdx;
+    if (!userIdx)   // userIdx가 없다 -> Refresh-Token을 보냈을 경우임!
+        return res.status(httpStatus.BAD_REQUEST).json(errResponse(responseMessage.AUTO_LOGIN_ERROR));
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, { userIdx: parseInt(userIdx) }));
 };
 

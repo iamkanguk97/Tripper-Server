@@ -1,6 +1,7 @@
 module.exports = {
     SUCCESS : { "isSuccess": true, "code": 200, "message": "요청 성공." },
     REQUIRE_SIGN_UP: { "isSuccess": true, "code": 200, "message": "환영합니다! 신규 회원의 경우 닉네임 및 프로필 사진 설정 후 서비스 이용이 가능합니다." },
+    AUTO_LOGIN_ERROR: { "isSuccess": false, "code": 400, "message": "자동 로그인 에러 발생 (payload null)" },
     JWT_AUTHORIZATION_ERROR: { "isSuccess": false, "code": 401, "message": "JWT 인증 에러 발생." },
     JWT_TOKEN_EXPIRED_ERROR: { "isSuccess": false, "code": 401, "message": "JWT 토큰 만료." },
     API_NOT_FOUND: { "isSuccess": false, "code": 404, "message": "API NOT FOUND!" },

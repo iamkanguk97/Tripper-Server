@@ -574,6 +574,26 @@ router.post(
  *                                          userIdx:
  *                                              type: integer
  *                                              example: 1
+ *              '400':
+ *                  description: '자동 로그인 에러 발생 (payload null)'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              required:
+ *                                  - isSuccess
+ *                                  - code
+ *                                  - message
+ *                              type: object
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: false
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 400
+ *                                  message:
+ *                                      type: string
+ *                                      example: '자동 로그인 에러 발생 (payload null)'
  *              '401':
  *                  description: 'JWT 인증 에러 발생'
  *                  content:

@@ -16,7 +16,7 @@ const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
          * 유저가 있다 -> token 발급해주기
          * 유저가 없다 -> 회원가입 API로 넘기기
          */
-        if (checkIsUserExist !== false) {
+        if (checkIsUserExist !== false && typeof checkIsUserExist === 'number') {   // 유저가 있음
             // Redis Connection
             redisClient = new RedisClient();
             await redisClient.connect();
@@ -24,9 +24,6 @@ const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
             const userIdx = checkIsUserExist;
             const jwt_at = generateAccessToken(userIdx);
             const jwt_rt = await generateRefreshToken(userIdx, redisClient);
-
-            // Refresh token Redis에 저장
-            // await redisClient.hSet('refreshToken', `userId_${userIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
 
             // TODO: 카카오쪽에서 발급받은 AccessToken과 RefreshToken은 추후 필요할 때 클라쪽으로 Response 보내주자!
             return {
@@ -40,7 +37,7 @@ const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
                     }
                 }
             }
-        } else {
+        } else {   // 유저가 없음
             const isAgeGroup = profile._json.kakao_account.has_age_range;   // 유저가 연령대 동의했는지 여부
             const isGender = profile._json.kakao_account.has_gender;   // 유저가 성별 동의했는지 여부
 
@@ -76,7 +73,7 @@ const naverLoginCallback = async (accessToken, refreshToken, profile) => {
          * 유저가 있다 -> token 발급해주기
          * 유저가 없다 -> 회원가입 API로 넘기기
          */
-        if (checkIsUserExist !== false) {
+        if (checkIsUserExist !== false && typeof checkIsUserExist === 'number') {
             // Redis Connection
             redisClient = new RedisClient();
             await redisClient.connect();
@@ -84,9 +81,6 @@ const naverLoginCallback = async (accessToken, refreshToken, profile) => {
             const userIdx = checkIsUserExist;
             const jwt_at = generateAccessToken(userIdx);
             const jwt_rt = await generateRefreshToken(userIdx, redisClient);
-
-            // Refresh token Redis에 저장
-            // await redisClient.hSet('refreshToken', `userId_${userIdx}`, jwt_rt, JWT_REFRESH_TOKEN_EXPIRE_TIME);
 
             return {
                 isError: false,

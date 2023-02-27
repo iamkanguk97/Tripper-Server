@@ -32,7 +32,7 @@ const generateRefreshToken = async (userIdx, redisClient = null) => {
             await _redisClient.connect();
             await _redisClient.hSet('refreshToken', `userId_${userIdx}`, newRefreshToken, JWT_REFRESH_TOKEN_EXPIRE_TIME);
         } catch (err) {
-            throw new Error(err);            
+            throw new Error(err);
         } finally {
             _redisClient.quit();
         }
