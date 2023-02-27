@@ -366,7 +366,7 @@ router.get(
     verifyNickValidation,
     validationMiddleware,
     AuthController.verifyNickname
-);   // 닉네임 확인 API (OK)
+);   // 닉네임 확인 API
 
 /**
  * @swagger
@@ -526,7 +526,7 @@ router.post(
     signUpValidation,
     validationMiddleware,
     wrapAsync(AuthController.signUp)
-);   // 회원가입 API (OK)
+);   // 회원가입 API
 
 /**
  * @swagger
@@ -630,7 +630,7 @@ router.get(
     '/auto-login',
     jwtMiddleware,
     AuthController.autoLogin
-);   // 자동로그인 API (OK)
+);   // 자동로그인 API
 
 /**
  * @swagger
@@ -640,6 +640,212 @@ router.get(
  *          summary: 'JWT 재발급을 위한 Router'
  *          description: 'JWT 재발급을 위한 Router입니다. 클라이언트분은 access token과 refresh token을 둘 다 헤더에 담아서 요청해야합니다.'
  *          tags: [Auth]
+ *          parameters:
+ *              - in: header
+ *                name: Authorization
+ *                schema:
+ *                  type: string
+ *                  example: 'Bearer <여기에 JWT Access-Token 입력해주세요>'
+ *                required: true
+ *                description: 'JWT Access-Token (Bearer)'
+ *              - in: header
+ *                name: refresh_token
+ *                schema:
+ *                  type: string
+ *                  example: 'JWT REFRESH TOKEN'
+ *                required: true
+ *                description: 'JWT Refresh-Token'
+ *          responses:
+ *              '200':
+ *                  description: '요청 성공.'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              required:
+ *                                  - isSuccess
+ *                                  - code
+ *                                  - message
+ *                                  - result
+ *                              type: object
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: true
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 200
+ *                                  message:
+ *                                      type: string
+ *                                      example: '요청 성공'
+ *                                  result:
+ *                                      type: object
+ *                                      required:
+ *                                          - message
+ *                                      properties:
+ *                                          message:
+ *                                              type: string
+ *                                              example: '세션이 만료되었습니다. 로그인을 다시 진행해주세요.'
+ *              '_200':
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              required:
+ *                                  - isSuccess
+ *                                  - code
+ *                                  - message
+ *                                  - result
+ *                              type: object
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: true
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 200
+ *                                  message:
+ *                                      type: string
+ *                                      example: '요청 성공'
+ *                                  result:
+ *                                      type: object
+ *                                      required:
+ *                                          - message
+ *                                          - info
+ *                                      properties:
+ *                                          message:
+ *                                              type: string
+ *                                              example: '새로운 Access-Token이 발급되었습니다.'
+ *                                          info:
+ *                                              type: object
+ *                                              required:
+ *                                                  - userIdx
+ *                                                  - accessToken
+ *                                              properties:
+ *                                                  userIdx:
+ *                                                      type: integer
+ *                                                      example: 1
+ *                                                  accessToken:
+ *                                                      type: string
+ *                                                      example: 'accesstokenhelloworld'
+ *              '__200':
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              required:
+ *                                  - isSuccess
+ *                                  - code
+ *                                  - message
+ *                                  - result
+ *                              type: object
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: true
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 200
+ *                                  message:
+ *                                      type: string
+ *                                      example: '요청 성공'
+ *                                  result:
+ *                                      type: object
+ *                                      required:
+ *                                          - message
+ *                                          - info
+ *                                      properties:
+ *                                          message:
+ *                                              type: string
+ *                                              example: '새로운 Refresh-Token이 발급되었습니다.'
+ *                                          info:
+ *                                              type: object
+ *                                              required:
+ *                                                  - userIdx
+ *                                                  - refreshToken
+ *                                              properties:
+ *                                                  userIdx:
+ *                                                      type: integer
+ *                                                      example: 1
+ *                                                  refreshToken:
+ *                                                      type: string
+ *                                                      example: 'refreshtokenhelloworld'
+ *              '___200':
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              required:
+ *                                  - isSuccess
+ *                                  - code
+ *                                  - message
+ *                                  - result
+ *                              type: object
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: true
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 200
+ *                                  message:
+ *                                      type: string
+ *                                      example: '요청 성공'
+ *                                  result:
+ *                                      type: object
+ *                                      required:
+ *                                          - message
+ *                                      properties:
+ *                                          message:
+ *                                              type: string
+ *                                              example: 'Access-Token과 Refresh-Token이 모두 정상 상태입니다.'
+ *              '500':
+ *                  description: '서버 내부 에러 발생'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              required:
+ *                                  - isSuccess
+ *                                  - code
+ *                                  - message
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: false
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 500
+ *                                  message:
+ *                                      type: string
+ *                                      example: '서버 내부 에러 발생.'
+ *                                  error:
+ *                                      type: object
+ *                                      properties:
+ *                                          message:
+ *                                              type: string
+ *                                              example: '에러 메세지 내용'
+ *                                          stack:
+ *                                              type: string
+ *                                              example: '에러가 발생한 위치 내용'
+ *              '2023':
+ *                  description: 'JWT Access-Token을 입력해주세요.'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              required:
+ *                                  - isSuccess
+ *                                  - code
+ *                                  - message
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: false
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 2023
+ *                                  message:
+ *                                      type: string
+ *                                      example: 'JWT Access-Token을 입력해주세요.'
+ *              '2024':
+ *                  description: 'JWT Refresh-Token을 입력해주세요.'
  */
 router.post(
     '/token-refresh',
