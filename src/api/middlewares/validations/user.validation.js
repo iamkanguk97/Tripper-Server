@@ -1,8 +1,7 @@
 'use strict';
 const { body, query, header } = require("express-validator");
-const { checkUserStatusFunc } = require('../../utils/validation-util');
+const { checkUserStatusFunc, checkUserFollowMe } = require('../../utils/validation-util');
 const responseMessage = require('../../../config/response/baseResponseStatus');
-const UserFollow = require('../../models/User/UserFollow');
 
 /**
  * 팔로우 기능 API Validator
@@ -36,26 +35,7 @@ const deleteFollowerValidation = [
     header('useridx')
         .notEmpty().withMessage(responseMessage.DELETE_FOLLOWER_IDX_EMPTY).bail()
         .custom(checkUserStatusFunc).bail()
-        .custom(async (value, { req }) => {
-            try {
-                // 해당 유저가 본인을 팔로우하고 있는지 확인
-                const checkFollow = await UserFollow.findOne({
-                    where: {
-                        USER_IDX: value,
-                        FOLLOW_TARGET_IDX: req.verifiedToken.userIdx
-                    }
-                });
-
-                if (!checkFollow)
-                    return Promise.reject(responseMessage.DELETE_FOLLOWER_NOT_FOLLOW);
-            } catch(err) {
-                Logger.error(err);
-                return Promise.reject({
-                    isServerError: true,
-                    ...responseMessage.DATABASE_ERROR
-                });
-            }
-        }).bail()
+        .custom(checkUserFollowMe).bail()
 ];
 
 module.exports = {

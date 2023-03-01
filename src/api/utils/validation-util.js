@@ -94,10 +94,39 @@ const checkAccessTokenEmpty = async (token) => {
     }
 };
 
+// 유저가 자기 자신을 팔로우 하고있는지 확인
+const checkUserFollowMe = async (value, { req }) => {
+    try {
+        // 해당 유저가 본인을 팔로우하고 있는지 확인
+        const checkFollow = await UserFollow.findOne({
+            where: {
+                USER_IDX: value,
+                FOLLOW_TARGET_IDX: req.verifiedToken.userIdx
+            }
+        });
+
+        if (!checkFollow)
+            return Promise.reject(responseMessage.DELETE_FOLLOWER_NOT_FOLLOW);
+    } catch(err) {
+        Logger.error(err);
+        return Promise.reject({
+            isServerError: true,
+            ...responseMessage.DATABASE_ERROR
+        });
+    }
+};
+
+// 여행 게시물이 실제로 있는지 확인
+const checkTravelExist = async (travelIdx) => {
+
+};
+
 module.exports = {
     checkUserStatusFunc,
     checkNickDuplicate,
     checkBadWordInclude,
     checkSnsIdDuplicate,
-    checkAccessTokenEmpty
+    checkAccessTokenEmpty,
+    checkUserFollowMe,
+    checkTravelExist
 };
