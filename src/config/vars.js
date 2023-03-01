@@ -19,7 +19,12 @@ module.exports = {
     },
     KAKAO: {
         REST_API_KEY: process.env.KAKAO_REST_API_KEY,
-        CALLBACK_URL: process.env.KAKAO_CALLBACK_URL
+        CALLBACK_URL: process.env.KAKAO_CALLBACK_URL,
+        SEARCH: {
+            // SORT_METHOD: 'accuracy',
+            SORT_METHOD: 'distance',
+            DATA_COUNT_PER_PAGE: 10
+        }
     },
     S3: {
         ACCESS_KEY_ID: process.env.S3_ACCESS_KEY_ID,

@@ -4,8 +4,10 @@
  */
 'use strict';
 const User = require('../models/User/User');
+const Travel = require('../models/Travel/Travel');
 const responseMessage = require('../../config/response/baseResponseStatus');
 const Logger = require('../../config/logger');
+const { Op } = require('sequelize');
 const { checkBadWord } = require('../utils/util');
 const { validationErrorResponse } = require('../../config/response/response-template');
 
@@ -117,8 +119,33 @@ const checkUserFollowMe = async (value, { req }) => {
 };
 
 // 여행 게시물이 실제로 있는지 확인
-const checkTravelExist = async (travelIdx) => {
-
+const checkTravelExist = async (value, { req }) => {
+    try {
+        const checkMyTravelValid = await Travel.findOne({
+            where: {
+                [Op.and]: [
+                    { USER_IDX: 15 },
+                    // { USER_IDX: req.verifiedToken.userIdx },
+                    { IDX: value }
+                ],
+                TRAVEL_STATUS: {
+                    [Op.ne]: 'C'
+                }
+            }
+        });
+        
+        if (!checkMyTravelValid)
+            return Promise.reject(responseMessage.TRAVEL_NOT_EXIST);
+        else {
+            req.travelStatus = checkMyTravelValid.dataValues.TRAVEL_STATUS;
+        }
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject({
+            isServerError: true,
+            ...responseMessage.DATABASE_ERROR
+        });
+    }
 };
 
 module.exports = {

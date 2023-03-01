@@ -22,9 +22,13 @@ module.exports = {
     PROVIDER_ERROR_TYPE: { "isSuccess": false, "code": 2022, "message": "사용자 로그인 타입은 kakao 또는 naver로 입력해주세요." },
     JWT_ACCESS_TOKEN_EMPTY: { "isSuccess": false, "code": 2023, "message": "JWT Access-Token을 입력해주세요." },
     JWT_REFRESH_TOKEN_EMPTY: { "isSuccess": false, "code": 2024, "message": "JWT Refresh-Token을 입력해주세요." },
+    KAKAO_SEARCH_AREA_EMPTY: { "isSuccess": false, "code": 2025, "message": "검색하실 장소명을 입력해주세요." },
+    KAKAO_SEARCH_AREA_LENGTH_ERROR: { "isSuccess": false, "code": 2026, "message": "장소명은 최소 2글자 이상으로 입력해주세요." },
+    TRAVEL_IDX_EMPTY: { "isSuccess": false, "code": 2027, "message": "여행 게시물 고유값을 입력해주세요." },
 
     NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3010, "message": "중복된 닉네임입니다." },
     USER_NOT_EXIST: { "isSuccess": false, "code": 3011, "message": "존재하지 않는 유저입니다." },
     DELETE_FOLLOWER_NOT_FOLLOW: { "isSuccess": false, "code": 3012, "message": "삭제할 팔로워가 회원님을 팔로우하고 있지 않습니다." },
     USER_SNSID_DUPLICATED: { "isSuccess": false, "code": 3013, "message": "중복된 소셜로그인 고유값입니다." },
+    TRAVEL_NOT_EXIST: { "isSuccess": false, "code": 3014, "message": "존재하지 않는 여행 게시물입니다." },
 };

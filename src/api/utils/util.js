@@ -116,6 +116,26 @@ const getKeyByValue = (obj, value) => {
     return result ? result : false;
 };
 
+/**
+ * 여행 이동수단 문자로 변환해주는 함수
+ * @param method (여행 이동수단)
+ * @return C, T, B, W, ''
+ */
+const getTravelTrans = (method) => {
+    switch (method) {
+        case '자차로 여행':
+            return 'C';
+        case '대중교통 여행':
+            return 'T';
+        case '자전거 여행':
+            return 'B';
+        case '도보 여행':
+            return 'W';
+        default:
+            return '';
+    }
+};
+
 module.exports = {
     checkBadWord,
     getFirstLetter,
@@ -124,5 +144,6 @@ module.exports = {
     returnS3Module,
     uploadProfileImage,
     checkUserExistWithSnsId,
-    getKeyByValue
+    getKeyByValue,
+    getTravelTrans
 };

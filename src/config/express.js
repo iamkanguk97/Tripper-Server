@@ -21,6 +21,7 @@ const { SWAGGER } = require('./vars');
 const authRoutes = require('../api/routes/auth.route');
 const userRoutes = require('../api/routes/user.route');
 const travelRoutes = require('../api/routes/travel.route');
+const commonRoutes = require('../api/routes/common.route');
 
 /**
 * Express instance
@@ -56,6 +57,7 @@ app.use(passport.initialize());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/travels', travelRoutes);
+app.use('/api/commons', commonRoutes);
 
 // Swagger
 app.use(
