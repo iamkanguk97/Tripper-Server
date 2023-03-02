@@ -25,10 +25,16 @@ module.exports = {
     KAKAO_SEARCH_AREA_EMPTY: { "isSuccess": false, "code": 2025, "message": "검색하실 장소명을 입력해주세요." },
     KAKAO_SEARCH_AREA_LENGTH_ERROR: { "isSuccess": false, "code": 2026, "message": "장소명은 최소 2글자 이상으로 입력해주세요." },
     TRAVEL_IDX_EMPTY: { "isSuccess": false, "code": 2027, "message": "여행 게시물 고유값을 입력해주세요." },
+    KAKAO_SEARCH_PAGE_NUMBER_ERROR: { "isSuccess": false, "code": 2028, "message": "검색 페이지는 1이상 45이하로 입력해주세요." },
+    KAKAO_SEARCH_LONGITUDE_EMPTY: { "isSuccess": false, "code": 2029, "message": "경도를 입력해주세요." },
+    KAKAO_SEARCH_LONGITUDE_ERROR_TYPE: { "isSuccess": false, "code": 2030, "message": "잘못된 경도 형식입니다." },
+    KAKAO_SEARCH_LATITUDE_EMPTY: { "isSuccess": false, "code": 2031, "message": "위도를 입력해주세요." },
+    KAKAO_SEARCH_LATITUDE_ERROR_TYPE: { "isSuccess": false, "code": 2032, "message": "잘못된 위도 형식입니다." },
 
     NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3010, "message": "중복된 닉네임입니다." },
     USER_NOT_EXIST: { "isSuccess": false, "code": 3011, "message": "존재하지 않는 유저입니다." },
     DELETE_FOLLOWER_NOT_FOLLOW: { "isSuccess": false, "code": 3012, "message": "삭제할 팔로워가 회원님을 팔로우하고 있지 않습니다." },
     USER_SNSID_DUPLICATED: { "isSuccess": false, "code": 3013, "message": "중복된 소셜로그인 고유값입니다." },
     TRAVEL_NOT_EXIST: { "isSuccess": false, "code": 3014, "message": "존재하지 않는 여행 게시물입니다." },
+    KAKAO_SEARCH_EMPTY_RESULT: { "isSuccess": false, "code": 3015, "message": "조회 결과가 없습니다. 조금 더 정확하게 지명을 입력해주세요." },
 };
