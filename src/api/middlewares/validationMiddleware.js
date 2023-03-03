@@ -12,12 +12,13 @@ const validationMiddleware = (req, res, next) => {
         if (Object.keys(errorMessage).includes('isServerError')) {   // isServerError 키가 있을경우 -> 서버 내부 에러 발생
             const _error = errorMessage.error;
             const _errorMessage = {
-                ...responseMessage.INTERNAL_SERVER_ERROR,
-                error: {
-                    ...(_error && { message: _error.message, stack: _error.stack })
-                }
+                message: _error.message,
+                stack: _error.stack
             };
-            throw new ServerError(JSON.stringify(_errorMessage));
+            console.log('hello!!!!!');
+            console.log(_errorMessage);
+            throw new Error(JSON.stringify(_errorMessage));
+            // throw new ServerError(JSON.stringify(_errorMessage));
         } else {
             throw new BadRequestError(JSON.stringify(errorMessage));
         }

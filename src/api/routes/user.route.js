@@ -15,32 +15,6 @@ const { wrapAsync } = require('../utils/util');
 
 const router = express.Router();
 
-router.post(
-    '/following', 
-    jwtMiddleware,
-    followValidation,
-    validationMiddleware,
-    wrapAsync(UserController.follow)
-);   // 팔로우 API
-
-router.get(
-    '/follow-list',
-    jwtMiddleware,
-    followListValidation,
-    validationMiddleware,
-    UserController.followList
-);   // 팔로잉 또는 팔로워 조회 API
-
-router.delete(
-    '/follower',
-    jwtMiddleware,
-    deleteFollowerValidation,
-    validationMiddleware,
-    wrapAsync(UserController.deleteFollower)
-);   // 본인 팔로워 삭제 API
-
-module.exports = router;
-
 /**
  * @swagger
  * paths:
@@ -55,7 +29,7 @@ module.exports = router;
  *              description: '팔로우 요청을 할 유저의 고유값을 입력해주세요.'
  *              required: true
  *              content:
- *                  application/json:
+ *                  application/x-www-form-urlencoded:
  *                      schema:
  *                          type: object
  *                          properties:
@@ -69,6 +43,11 @@ module.exports = router;
  *                      application/json:
  *                          schema:
  *                              type: object
+ *                              required:
+ *                                  - isSuccess
+ *                                  - code
+ *                                  - message
+ *                                  - result
  *                              properties:
  *                                  isSuccess:
  *                                      type: boolean
@@ -81,16 +60,22 @@ module.exports = router;
  *                                      example: '요청 성공'
  *                                  result:
  *                                      type: object
+ *                                      required:
+ *                                          - message
  *                                      properties:
  *                                          message:
  *                                              type: string
  *                                              example: '팔로우 요청 성공 / 팔로우 취소 성공'
  *              '401':
- *                  description: 'JWT 인증 에러 발생 / JWT 토근 만료'
+ *                  description: 'JWT 인증 에러 발생 (또는) JWT 토근 만료'
  *                  content:
  *                      application/json:
  *                          schema:
  *                              type: object
+ *                              required:
+ *                                  - isSuccess
+ *                                  - code
+ *                                  - message
  *                              properties:
  *                                  isSuccess:
  *                                      type: boolean
@@ -100,36 +85,19 @@ module.exports = router;
  *                                      example: 401
  *                                  message:
  *                                      type: string
- *                                      example: 'JWT 인증 에러 발생 / JWT 토근 만료'
+ *                                      example: 'JWT 인증 에러 발생 (또는) JWT 토근 만료'
  *              '2017':
  *                  description: '팔로우를 신청할 유저의 고유값을 입력해주세요.'
- *                  schema:
- *                      type: object
- *                      properties:
- *                          isSuccess:
- *                              type: boolean
- *                              example: false
- *                          code:
- *                              type: integer
- *                              example: 2017
- *                          message:
- *                              type: string
- *                              example: '팔로우를 신청할 유저의 고유값을 입력해주세요.'
  *              '3011':
  *                  description: '존재하지 않는 유저입니다.'
- *                  schema:
- *                      type: object
- *                      properties:
- *                          isSuccess:
- *                              type: boolean
- *                              example: false
- *                          code:
- *                              type: integer
- *                              example: 3011
- *                          message:
- *                              type: string
- *                              example: '존재하지 않는 유저입니다.'
  */
+router.post(
+    '/following',
+    jwtMiddleware,
+    followValidation,
+    validationMiddleware,
+    wrapAsync(UserController.follow)
+);   // 팔로우 API
 
 /**
  * @swagger
@@ -139,6 +107,13 @@ module.exports = router;
  *          summary: '팔로잉 또는 팔로워 조회 API'
  *          tags: [User]
  */
+router.get(
+    '/follow-list',
+    jwtMiddleware,
+    followListValidation,
+    validationMiddleware,
+    UserController.followList
+);   // 팔로잉 또는 팔로워 조회 API
 
 /**
  * @swagger
@@ -165,6 +140,10 @@ module.exports = router;
  *                      application/json:
  *                          schema:
  *                              type: object
+ *                              required:
+ *                                  - isSuccess
+ *                                  - code
+ *                                  - message
  *                              properties:
  *                                  isSuccess:
  *                                      type: boolean
@@ -179,11 +158,15 @@ module.exports = router;
  *                                      description: '응답 메세지'
  *                                      example: '요청 성공.'
  *              '401':
- *                  description: 'JWT 인증 에러 발생 / JWT 토근 만료'
+ *                  description: 'JWT 인증 에러 발생 (또는) JWT 토근 만료'
  *                  content:
  *                      application/json:
  *                          schema:
  *                              type: object
+ *                              required:
+ *                                  - isSuccess
+ *                                  - code
+ *                                  - message
  *                              properties:
  *                                  isSuccess:
  *                                      type: boolean
@@ -193,25 +176,20 @@ module.exports = router;
  *                                      example: 401
  *                                  message:
  *                                      type: string
- *                                      example: 'JWT 인증 에러 발생 / JWT 토근 만료'
+ *                                      example: 'JWT 인증 에러 발생 (또는) JWT 토근 만료'
  *              '2020':
  *                  description: '삭제할 팔로워의 고유값을 입력해주세요.'
- *                  content:
- *                      application/json:
- *                          schema:
- *                              type: object
- *                              properties:
- *                                  isSuccess:
- *                                      type: boolean
- *                                      example: false
- *                                  code:
- *                                      type: integer
- *                                      example: 2020
- *                                  message:
- *                                      type: string
- *                                      example: '삭제할 팔로워의 고유값을 입력해주세요.'
  *              '3011':
  *                  description: '존재하지 않는 유저입니다.'
  *              '3012':
  *                  description: '삭제할 팔로워가 회원님을 팔로우하고 있지 않습니다.'
  */
+router.delete(
+    '/follower',
+    jwtMiddleware,
+    deleteFollowerValidation,
+    validationMiddleware,
+    wrapAsync(UserController.deleteFollower)
+);   // 본인 팔로워 삭제 API
+
+module.exports = router;

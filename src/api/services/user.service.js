@@ -1,17 +1,20 @@
 'use strict';
 const UserFollow = require('../models/User/UserFollow');
+const { Op } = require('sequelize');
 
-const follow = async (myIdx, followUserIdx) => { 
+const follow = async (myIdx, followUserIdx) => {
     // ORM CRUD에 적용되는 옵션이 다 동일하기 때문에 하나의 변수로 빼놓음.
-    const option = {
-        USER_IDX: myIdx,
-        FOLLOW_TARGET_IDX: followUserIdx
+    const whereOption = {
+        [Op.and]: [
+            { USER_IDX: myIdx },
+            { FOLLOW_TARGET_IDX: followUserIdx }  
+        ]
     };
 
     // 본인과 팔로우 신청 받은 사람과 현재의 팔로우 관계를 DB에서 가져옴.
     let checkRelation = await UserFollow.findOne({
-        attributes: ['IDXXX'],
-        where: option
+        attributes: ['IDX'],
+        where: whereOption
     });
     checkRelation = !checkRelation ? 'N' : 'Y';   // NULL이면 'N' 처리
     
@@ -27,10 +30,13 @@ const follow = async (myIdx, followUserIdx) => {
      */
     let rm = '';
     if (checkRelation === 'N') {
-        await UserFollow.create(option);
+        await UserFollow.create({
+            USER_IDX: myIdx,
+            FOLLOW_TARGET_IDX: followUserIdx
+        });
         rm = '팔로우 요청 성공';
     } else {
-        await UserFollow.destroy({ where: option });
+        await UserFollow.destroy({ where: whereOption });
         rm = '팔로우 취소 성공';
     }
 
@@ -66,7 +72,7 @@ const followList = async (myIdx, userIdx, option) => {
 const deleteFollower = async (myIdx, userIdx) => {
     await UserFollow.destroy({
         where: {
-            USER_IDXX: userIdx,
+            USER_IDX: userIdx,
             FOLLOW_TARGET_IDX: myIdx
         }
     });

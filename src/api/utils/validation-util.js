@@ -4,6 +4,7 @@
  */
 'use strict';
 const User = require('../models/User/User');
+const UserFollow = require('../models/User/UserFollow');
 const Travel = require('../models/Travel/Travel');
 const responseMessage = require('../../config/response/baseResponseStatus');
 const Logger = require('../../config/logger');
@@ -16,7 +17,7 @@ const checkUserStatusFunc = async (value) => {
     try {
         const checkUserResult = await User.findOne({
             where: {
-                IDX: value,
+                IDXXX: value,
                 USER_STATUS: 'A'
             }
         });
@@ -25,10 +26,7 @@ const checkUserStatusFunc = async (value) => {
             return Promise.reject(responseMessage.USER_NOT_EXIST);
     } catch (err) {
         Logger.error(err);
-        return Promise.reject({
-            isServerError: true,
-            error: err
-        });
+        return Promise.reject(validationErrorResponse(true, err));
     }
 };
 
@@ -98,6 +96,7 @@ const checkAccessTokenEmpty = async (token) => {
 
 // 유저가 자기 자신을 팔로우 하고있는지 확인
 const checkUserFollowMe = async (value, { req }) => {
+    console.log('this is runngin!!!');
     try {
         // 해당 유저가 본인을 팔로우하고 있는지 확인
         const checkFollow = await UserFollow.findOne({
