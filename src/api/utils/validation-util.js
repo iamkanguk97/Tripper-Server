@@ -123,8 +123,7 @@ const checkTravelExist = async (value, { req }) => {
         const checkMyTravelValid = await Travel.findOne({
             where: {
                 [Op.and]: [
-                    { USER_IDX: 15 },
-                    // { USER_IDX: req.verifiedToken.userIdx },
+                    { USER_IDX: req.verifiedToken.userIdx },
                     { IDX: value }
                 ],
                 TRAVEL_STATUS: {
