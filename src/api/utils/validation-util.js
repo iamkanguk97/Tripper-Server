@@ -17,7 +17,7 @@ const checkUserStatusFunc = async (value) => {
     try {
         const checkUserResult = await User.findOne({
             where: {
-                IDXXX: value,
+                IDX: value,
                 USER_STATUS: 'A'
             }
         });
@@ -96,7 +96,6 @@ const checkAccessTokenEmpty = async (token) => {
 
 // 유저가 자기 자신을 팔로우 하고있는지 확인
 const checkUserFollowMe = async (value, { req }) => {
-    console.log('this is runngin!!!');
     try {
         // 해당 유저가 본인을 팔로우하고 있는지 확인
         const checkFollow = await UserFollow.findOne({
@@ -110,10 +109,7 @@ const checkUserFollowMe = async (value, { req }) => {
             return Promise.reject(responseMessage.DELETE_FOLLOWER_NOT_FOLLOW);
     } catch(err) {
         Logger.error(err);
-        return Promise.reject({
-            isServerError: true,
-            ...responseMessage.DATABASE_ERROR
-        });
+        return Promise.reject(validationErrorResponse(true, err));
     }
 };
 

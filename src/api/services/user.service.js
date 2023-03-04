@@ -70,7 +70,7 @@ const followList = async (myIdx, userIdx, option) => {
 };
 
 const deleteFollower = async (myIdx, userIdx) => {
-    const result = await UserFollow.destroy({
+    const deleteFollowerResult = await UserFollow.destroy({
         where: {
             [Op.and]: [
                 { USER_IDX: userIdx },
@@ -78,10 +78,10 @@ const deleteFollower = async (myIdx, userIdx) => {
             ]
         }
     });
-
-    console.log(result);
-
-    // return parseInt(userIdx);   // 삭제한 팔로워의 userIdx
+    
+    if (!deleteFollowerResult)   // 삭제된 데이터가 없거나 잘못된 문법 사용?
+        throw new Error('[User->deleteFollower] 삭제된 데이터가 없거나 잘못된 문법 사용!');
+    else return userIdx;
 };
 
 module.exports = {

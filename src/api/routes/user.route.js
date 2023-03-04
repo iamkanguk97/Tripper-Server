@@ -144,6 +144,7 @@ router.get(
  *                                  - isSuccess
  *                                  - code
  *                                  - message
+ *                                  - result
  *                              properties:
  *                                  isSuccess:
  *                                      type: boolean
@@ -157,6 +158,14 @@ router.get(
  *                                      type: string
  *                                      description: '응답 메세지'
  *                                      example: '요청 성공.'
+ *                                  result:
+ *                                      type: object
+ *                                      required:
+ *                                          - deleteUserIdx
+ *                                      properties:
+ *                                          deleteUserIdx:
+ *                                              type: integer
+ *                                              example: 1
  *              '401':
  *                  description: 'JWT 인증 에러 발생 (또는) JWT 토근 만료'
  *                  content:
