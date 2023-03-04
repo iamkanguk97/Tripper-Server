@@ -11,11 +11,11 @@ const searchAreaValidation = [
         .optional()
         .isInt({ min: 1, max: 45 }).withMessage(responseMessage.KAKAO_SEARCH_PAGE_NUMBER_ERROR).bail(),
     query('lon')
-        .notEmpty().withMessage(responseMessage.KAKAO_SEARCH_LONGITUDE_EMPTY).bail(),
-        // .matches(REGEX_LONGITUDE).withMessage(responseMessage.KAKAO_SEARCH_LONGITUDE_ERROR_TYPE).bail(),
+        .notEmpty().withMessage(responseMessage.KAKAO_SEARCH_LONGITUDE_EMPTY).bail()
+        .matches(REGEX_LONGITUDE).withMessage(responseMessage.KAKAO_SEARCH_LONGITUDE_ERROR_TYPE).bail(),
     query('lat')
-        .notEmpty().withMessage(responseMessage.KAKAO_SEARCH_LATITUDE_EMPTY).bail(),
-        // .matches(REGEX_LATITUDE).withMessage(responseMessage.KAKAO_SEARCH_LATITUDE_ERROR_TYPE).bail(),
+        .notEmpty().withMessage(responseMessage.KAKAO_SEARCH_LATITUDE_EMPTY).bail()
+        .matches(REGEX_LATITUDE).withMessage(responseMessage.KAKAO_SEARCH_LATITUDE_ERROR_TYPE).bail(),
 ];
 
 module.exports = {

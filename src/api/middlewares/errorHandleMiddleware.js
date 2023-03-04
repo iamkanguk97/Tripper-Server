@@ -29,7 +29,6 @@ const errorHandleMiddleware = (error, req, res, next) => {
     }
 
     if (statusCode === httpStatus.INTERNAL_SERVER_ERROR) {   // 이외의 500번 에러일 경우
-        const _error = JSON.parse(error);
         message = {
             ...responseMessage.INTERNAL_SERVER_ERROR,
             error: {
