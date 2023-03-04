@@ -18,11 +18,8 @@ const updateTravelStatus = async (req, res) => {
     const travelIdx = parseInt(req.params.travelIdx);
     const travelStatus = req.travelStatus;
     
-    const updateTravelStatusResult = (await TravelService.updateTravelStatus(userIdx, travelIdx, travelStatus)).updateTravelStatusResult;
-    if (updateTravelStatusResult)
-        return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, updateTravelStatusResult.result ));
-    else
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(errResponse(responseMessage.DATABASE_ERROR));
+    const updateTravelStatusResult = await TravelService.updateTravelStatus(userIdx, travelIdx, travelStatus);
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, updateTravelStatusResult ));
 };
 
 module.exports = {

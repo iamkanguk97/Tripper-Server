@@ -140,10 +140,7 @@ const checkTravelExist = async (value, { req }) => {
         }
     } catch (err) {
         Logger.error(err);
-        return Promise.reject({
-            isServerError: true,
-            ...responseMessage.DATABASE_ERROR
-        });
+        return Promise.reject(validationErrorResponse(true, err));
     }
 };
 
