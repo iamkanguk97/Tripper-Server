@@ -1,6 +1,7 @@
 'use strict';
 const UserFollow = require('../models/User/UserFollow');
-const { Op } = require('sequelize');
+const { Op, QueryTypes } = require('sequelize');
+const { sequelize } = require('../models/index');
 
 const follow = async (myIdx, followUserIdx) => {
     // ORM CRUD에 적용되는 옵션이 다 동일하기 때문에 하나의 변수로 빼놓음.
@@ -44,29 +45,55 @@ const follow = async (myIdx, followUserIdx) => {
 };
 
 const followList = async (myIdx, userIdx, option) => {
-    // Response로 줘야할 값: 사용자 인덱스, 사용자 닉네임, 사용자 프로필 사진, 내가 지금 팔로우 하고있는지에 대한 정보
-    // option = following (USER_IDX가 myIdx), option = follower (FOLLOW_TARGET_IDX가 myIdx)
-    
-    const _userIdx = !userIdx ? myIdx : userIdx;
-    let listResult = await UserFollow.findAll({
+    let listResult = null;
+    let query = '';
+
+    if (!userIdx) {   // 상대방 고유값이 없음 -> 본인의 팔로잉 또는 팔로워 조회
+        if (option === 'following') {   // 팔로잉 조회
+            query = `
+                SELECT UF.FOLLOW_TARGET_IDX AS followingUserIdx,
+                       U.USER_NICKNAME AS followingUserNick,
+                       U.USER_PROFILE_IMAGE AS followingUserProfileImage,
+                       'Y' AS isFollowing
+                FROM USER_FOLLOW AS UF
+                    INNER JOIN USER AS U
+                    ON U.IDX = UF.FOLLOW_TARGET_IDX
+                WHERE USER_IDX = :myIdx
+                      AND U.USER_STATUS != 'D';
+            `;
+        } else if (option === 'follower') {   // 팔로워 조회
+            query = `
+                SELECT T.USER_IDX AS followerIdx,
+                       T.USER_NICKNAME AS followerNick,
+                       T.USER_PROFILE_IMAGE AS followerProfileImage,
+                       IF(UF2.IDX IS NOT NULL, 'Y', 'N') AS isFollowing
+                FROM (
+                    SELECT UF.USER_IDX,
+                            U.USER_NICKNAME,
+                            U.USER_PROFILE_IMAGE
+                    FROM USER_FOLLOW AS UF
+                        INNER JOIN USER AS U
+                        ON UF.USER_IDX = U.IDX
+                    WHERE UF.FOLLOW_TARGET_IDX = :myIdx
+                        AND U.USER_STATUS != 'D'
+                ) AS T
+                    LEFT JOIN USER_FOLLOW AS UF2
+                    ON UF2.FOLLOW_TARGET_IDX = T.USER_IDX AND UF2.USER_IDX = :myIdx;
+            `;
+        }
+    } else {   // 상대방 고유값이 있음 -> 상대방의 팔로잉 또는 팔로워 조회
         
+    }
+
+    listResult = await sequelize.query(query, {
+        type: QueryTypes.SELECT,
+        replacements: {
+            myIdx: 11,
+            // myIdx: myIdx
+        }
     });
 
-    // let followListResult = await UserFollow.findAll({
-    //     include: [{
-    //         model: User,
-    //         attributes: [ 'IDX', 'USER_NICKNAME', 'USER_PROFILE_IMAGE' ],
-    //         required: true
-    //     }],
-    //     where: {
-    //         IDX: 15
-    //     },
-    // });
-
-    // followListResult = followListResult.map(el => el.get({ plain: true }));
-    // console.log(followListResult);
-    // // console.log(followListResult[0].dataValues);
-    // // console.log(followListResult[0]);
+    return listResult;
 };
 
 const deleteFollower = async (myIdx, userIdx) => {

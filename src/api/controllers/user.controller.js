@@ -17,7 +17,7 @@ const followList = async (req, res) => {
     const { userIdx, option } = req.query;
 
     const followListResult = await UserService.followList(myIdx, userIdx, option);
-    // return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS));
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, followListResult));
 };
 
 const deleteFollower = async (req, res) => {

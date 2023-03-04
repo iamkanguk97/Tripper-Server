@@ -110,9 +110,9 @@ router.post(
 router.get(
     '/follow-list',
     jwtMiddleware,
-    followListValidation,
-    validationMiddleware,
-    UserController.followList
+    // followListValidation,
+    // validationMiddleware,
+    wrapAsync(UserController.followList)
 );   // 팔로잉 또는 팔로워 조회 API
 
 /**
