@@ -175,7 +175,7 @@ const router = express.Router();
  *                  description: '위도를 입력해주세요.'
  *              '2032':
  *                  description: '잘못된 위도 형식입니다.'
- *              '3015'
+ *              '3015':
  *                  description: '조회 결과가 없습니다. 조금 더 정확하게 키워드를 입력해주세요.'
  */
 router.get(

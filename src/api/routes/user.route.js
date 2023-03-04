@@ -65,7 +65,7 @@ const router = express.Router();
  *                                      properties:
  *                                          message:
  *                                              type: string
- *                                              example: '팔로우 요청 성공 / 팔로우 취소 성공'
+ *                                              example: '팔로우 요청 성공 (또는) 팔로우 취소 성공'
  *              '401':
  *                  description: 'JWT 인증 에러 발생 (또는) JWT 토근 만료'
  *                  content:
@@ -97,7 +97,7 @@ router.post(
     followValidation,
     validationMiddleware,
     wrapAsync(UserController.follow)
-);   // 팔로우 API
+);   // 팔로우 API (OK)
 
 /**
  * @swagger
@@ -190,6 +190,6 @@ router.delete(
     deleteFollowerValidation,
     validationMiddleware,
     wrapAsync(UserController.deleteFollower)
-);   // 본인 팔로워 삭제 API
+);   // 본인 팔로워 삭제 API (OK)
 
 module.exports = router;

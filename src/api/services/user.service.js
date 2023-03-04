@@ -70,14 +70,18 @@ const followList = async (myIdx, userIdx, option) => {
 };
 
 const deleteFollower = async (myIdx, userIdx) => {
-    await UserFollow.destroy({
+    const result = await UserFollow.destroy({
         where: {
-            USER_IDX: userIdx,
-            FOLLOW_TARGET_IDX: myIdx
+            [Op.and]: [
+                { USER_IDX: userIdx },
+                { FOLLOW_TARGET_IDX: myIdx }
+            ]
         }
     });
 
-    return parseInt(userIdx);   // 삭제한 팔로워의 userIdx
+    console.log(result);
+
+    // return parseInt(userIdx);   // 삭제한 팔로워의 userIdx
 };
 
 module.exports = {
