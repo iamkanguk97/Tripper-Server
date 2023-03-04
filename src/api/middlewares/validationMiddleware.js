@@ -1,6 +1,6 @@
 'use strict';
 const { validationResult } = require("express-validator");
-const { BadRequestError, ServerError } = require('../utils/errors');
+const { BadRequestError, CustomServerError } = require('../utils/errors');
 const responseMessage = require('../../config/response/baseResponseStatus');
 
 const validationMiddleware = (req, res, next) => {
@@ -15,10 +15,7 @@ const validationMiddleware = (req, res, next) => {
                 message: _error.message,
                 stack: _error.stack
             };
-            console.log('hello!!!!!');
-            console.log(_errorMessage);
-            throw new Error(JSON.stringify(_errorMessage));
-            // throw new ServerError(JSON.stringify(_errorMessage));
+            throw new CustomServerError(JSON.stringify(_errorMessage));
         } else {
             throw new BadRequestError(JSON.stringify(errorMessage));
         }

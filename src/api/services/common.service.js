@@ -10,7 +10,7 @@ const searchArea = async (area, pageNumber, latitude, longitude) => {
     const KAKAO_REST_KEY = KAKAO.REST_API_KEY;
 
     // DOCS: x가 경도, y가 위도!
-    const url = `https://dapi.kakao.com/v2/local/search/keyword.json?sort=${SORT_METHOD}&page=${pageNumber}&size=${DATA_COUNT}&x=${longitude}&y=${latitude}&query=` + encodeURIComponent(area);
+    const url = `https://dapiasfd.kakao.com/v2/local/search/keyword.json?sort=${SORT_METHOD}&page=${pageNumber}&size=${DATA_COUNT}&x=${longitude}&y=${latitude}&query=` + encodeURIComponent(area);
     const result = await axios({
         method: 'GET',
         url: url,

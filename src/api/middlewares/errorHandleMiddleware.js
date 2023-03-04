@@ -2,15 +2,11 @@
 const httpStatus = require('http-status');
 const Logger = require('../../config/logger');
 const responseMessage = require('../../config/response/baseResponseStatus');
-const { BadRequestError, ServerError, JWTError } = require('../utils/errors');
+const { BadRequestError, JWTError, CustomServerError } = require('../utils/errors');
 
 // TODO: 이 에러 핸들링 부분은 지금 약간 뒤죽박죽이라고 생각함. 나중에 한번에 통일할 수 있게 코드 리팩토링 필요할듯?
 const errorHandleMiddleware = (error, req, res, next) => {
     Logger.error(error);   // 에러 로깅
-    console.log(typeof error);
-    console.log("!!!!!");
-    console.log(error.message);
-    console.log(error.stack);
 
     const statusCode = error.statusCode || httpStatus.INTERNAL_SERVER_ERROR;
     let message = null;
@@ -29,11 +25,12 @@ const errorHandleMiddleware = (error, req, res, next) => {
     }
 
     if (statusCode === httpStatus.INTERNAL_SERVER_ERROR) {   // 이외의 500번 에러일 경우
+        const _error = error instanceof CustomServerError ? JSON.parse(error.message) : error;
         message = {
             ...responseMessage.INTERNAL_SERVER_ERROR,
             error: {
-                message: error.message,
-                stack: error.stack
+                message: _error.message,
+                stack: _error.stack
             }
         };
     }

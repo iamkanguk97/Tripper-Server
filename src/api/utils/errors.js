@@ -1,8 +1,8 @@
 'use strict';
 const httpStatus = require('http-status');
 
-// 500번대 서버 에러 (데이터베이스 에러 포함)
-class ServerError extends Error {
+// 500번 서버에러 (validationMiddleware 에러)
+class CustomServerError extends Error {
     constructor(message) {
         super(message);
         this.statusCode = httpStatus.INTERNAL_SERVER_ERROR;
@@ -17,6 +17,7 @@ class BadRequestError extends Error {
     }
 }
 
+// 401에러 (JWT 인증 관련 에러)
 class JWTError extends Error {
     constructor(message) {
         super(message);
@@ -25,7 +26,7 @@ class JWTError extends Error {
 }
 
 module.exports = {
-    ServerError,
+    CustomServerError,
     BadRequestError,
     JWTError
 };
