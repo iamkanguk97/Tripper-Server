@@ -595,7 +595,7 @@ router.post(
  *                                      type: string
  *                                      example: '자동 로그인 에러 발생 (payload null)'
  *              '401':
- *                  description: 'JWT 인증 에러 발생'
+ *                  description: 'JWT 인증 에러 발생 (또는) JWT 토큰 만료'
  *                  content:
  *                      application/json:
  *                          schema:
@@ -613,18 +613,7 @@ router.post(
  *                                      example: 401
  *                                  message:
  *                                      type: string
- *                                      example: 'JWT 인증 에러 발생'
- *                                  error:
- *                                      type: object
- *                                      properties:
- *                                          message:
- *                                              type: string
- *                                              example: '에러 메세지'
- *                                          stack:
- *                                              type: string
- *                                              example: '에러 발생 위치'
- *              '_401':
- *                  description: 'JWT 토큰 만료'
+ *                                      example: 'JWT 인증 에러 발생 (또는) JWT 토큰 만료'
  */
 router.get(
     '/auto-login',
