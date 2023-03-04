@@ -183,6 +183,6 @@ router.get(
     searchAreaValidation,
     validationMiddleware,
     wrapAsync(CommonController.searchArea)
-);
+);   // 장소검색 API (OK)
 
 module.exports = router;
