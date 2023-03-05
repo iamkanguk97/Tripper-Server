@@ -82,14 +82,69 @@ const followList = async (myIdx, userIdx, option) => {
             `;
         }
     } else {   // 상대방 고유값이 있음 -> 상대방의 팔로잉 또는 팔로워 조회
-        
+        // TODO: 쿼리가 반복되는 부분이 많기때문에 조건식으로 string 조합해도 괜찮을듯?
+        if (option === 'following') {
+            query = `
+                SELECT T.FOLLOW_TARGET_IDX AS followingUserIdx,
+                        T.USER_NICKNAME AS followingUserNick,
+                        T.USER_PROFILE_IMAGE AS followingUserProfileImage,
+                        CASE
+                            WHEN ISNULL(T2.IDX) = 1 AND T.FOLLOW_TARGET_IDX = :myIdx THEN 'M'
+                            WHEN ISNULL(T2.IDX) = 1 AND T.FOLLOW_TARGET_IDX != :myIdx THEN 'N'
+                            ELSE 'Y'
+                        END AS 'isFollowing'
+                FROM (
+                    SELECT UF.FOLLOW_TARGET_IDX,
+                            U.USER_NICKNAME,
+                            U.USER_PROFILE_IMAGE
+                    FROM USER_FOLLOW AS UF
+                        INNER JOIN USER AS U
+                        ON UF.FOLLOW_TARGET_IDX = U.IDX
+                    WHERE UF.USER_IDX = :userIdx
+                ) AS T
+                    LEFT JOIN (
+                        SELECT UF2.IDX,
+                            UF2.FOLLOW_TARGET_IDX
+                        FROM USER_FOLLOW AS UF2
+                        WHERE UF2.USER_IDX = :myIdx
+                    ) AS T2 ON T.FOLLOW_TARGET_IDX = T2.FOLLOW_TARGET_IDX;
+            `;
+        } else if (option === 'follower') {
+            query = `
+                SELECT T.USER_IDX,
+                        T.USER_NICKNAME,
+                        T.USER_PROFILE_IMAGE,
+                        CASE
+                            WHEN ISNULL(T2.IDX) = 1 AND T.USER_IDX = :myIdx THEN 'M'
+                            WHEN ISNULL(T2.IDX) = 1 AND T.USER_IDX != :myIdx THEN 'N'
+                            ELSE 'Y'
+                        END AS 'isFollowing'
+                FROM (
+                    SELECT UF.USER_IDX,
+                            U.USER_NICKNAME,
+                            U.USER_PROFILE_IMAGE
+                    FROM USER_FOLLOW AS UF
+                        INNER JOIN USER AS U
+                        ON U.IDX = UF.USER_IDX
+                    WHERE UF.FOLLOW_TARGET_IDX = :userIdx
+                ) AS T
+                    LEFT JOIN (
+                        SELECT UF2.IDX,
+                                UF2.FOLLOW_TARGET_IDX
+                        FROM USER_FOLLOW AS UF2
+                        WHERE UF2.USER_IDX = :myIdx
+                    ) AS T2 ON T.USER_IDX = T2.FOLLOW_TARGET_IDX;
+            `;
+        }
     }
 
     listResult = await sequelize.query(query, {
         type: QueryTypes.SELECT,
         replacements: {
             myIdx: 11,
+            userIdx: 16
             // myIdx: myIdx
+            // userIdx: userIdx
         }
     });
 
