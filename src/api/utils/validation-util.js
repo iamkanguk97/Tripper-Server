@@ -14,19 +14,23 @@ const { validationErrorResponse } = require('../../config/response/response-temp
 
 // 회원 탈퇴 및 존재 유무 확인하는 Validation Function
 const checkUserStatusFunc = async (value) => {
-    try {
-        const checkUserResult = await User.findOne({
-            where: {
-                IDX: value,
-                USER_STATUS: 'A'
-            }
-        });
-        
-        if (!checkUserResult)
-            return Promise.reject(responseMessage.USER_NOT_EXIST);
-    } catch (err) {
-        Logger.error(err);
-        return Promise.reject(validationErrorResponse(true, err));
+    if (!value)   // value가 없으면 넘겨보냄
+        return Promise.resolve();
+    else {
+        try {
+            const checkUserResult = await User.findOne({
+                where: {
+                    IDX: value,
+                    USER_STATUS: 'A'
+                }
+            });
+            
+            if (!checkUserResult)
+                return Promise.reject(responseMessage.USER_NOT_EXIST);
+        } catch (err) {
+            Logger.error(err);
+            return Promise.reject(validationErrorResponse(true, err));
+        }
     }
 };
 
