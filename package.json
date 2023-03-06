@@ -6,7 +6,7 @@
   "scripts": {
     "local": "cross-env NODE_ENV=local nodemon ./src/index.js",
     "dev": "cross-env NODE_ENV=development nodemon ./src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "KANGUK LEE <rkddnrdl97@naver.com>",
   "license": "ISC",
@@ -42,6 +42,7 @@
     "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
+    "jest": "^29.4.3",
     "nodemon": "^2.0.20"
   }
 }
