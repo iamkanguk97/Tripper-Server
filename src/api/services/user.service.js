@@ -48,6 +48,8 @@ const followList = async (myIdx, userIdx, option) => {
     let listResult = null;
     let query = '';
 
+    // TODO: 추후 클라이언트랑 협의해서 페이징 적용필요
+
     if (!userIdx) {   // 상대방 고유값이 없음 -> 본인의 팔로잉 또는 팔로워 조회
         if (option === 'following') {   // 팔로잉 조회
             query = `

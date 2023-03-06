@@ -104,8 +104,179 @@ router.post(
  * paths:
  *  /api/users/follow-list?userIdx=&option=:
  *      get:
+ *          security:
+ *              - JWT: []
  *          summary: '팔로잉 또는 팔로워 조회 API'
  *          tags: [User]
+ *          parameters:
+ *              - in: query
+ *                name: userIdx
+ *                required: false
+ *                schema:
+ *                  type: integer
+ *                  example: 1
+ *              - in: query
+ *                name: option
+ *                required: true
+ *                schema:
+ *                  type: string
+ *                  example: 'following (또는) follower'
+ *          responses:
+ *              '200':
+ *                  description: '요청 성공'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              required:
+ *                                  - isSuccess
+ *                                  - code
+ *                                  - message
+ *                                  - result
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: true
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 200
+ *                                  message:
+ *                                      type: string
+ *                                      example: '요청 성공'
+ *                                  result:
+ *                                      type: object
+ *                                      required:
+ *                                          - followingUserIdx
+ *                                          - followingUserNick
+ *                                          - isFollowing
+ *                                      properties:
+ *                                          followingUserIdx:
+ *                                              type: integer
+ *                                              example: 1
+ *                                          followingUserNick:
+ *                                              type: string
+ *                                              example: '욱이네이버계정'
+ *                                          followingUserProfileImage:
+ *                                              type: string
+ *                                              example: 'https://tripper-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/profile_snsId_427GrSiUaxdwyLDyZLZ-U_8GYMiwPHIPmP1ZoP95EE0'
+ *                                          isFollowing:
+ *                                              type: string
+ *                                              description: 'Y: 내가 팔로잉하는 중, N: 내가 팔로잉 안하는 중, M: 나'
+ *                                              example: 'Y 또는 N 또는 M'
+ *              '_200':
+ *                  description: '요청 성공'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              required:
+ *                                  - isSuccess
+ *                                  - code
+ *                                  - message
+ *                                  - result
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: true
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 200
+ *                                  message:
+ *                                      type: string
+ *                                      example: '요청 성공'
+ *                                  result:
+ *                                      type: object
+ *                                      required:
+ *                                          - followerIdx
+ *                                          - followerUserNick
+ *                                          - isFollowing
+ *                                      properties:
+ *                                          followerIdx:
+ *                                              type: integer
+ *                                              example: 1
+ *                                          followerUserNick:
+ *                                              type: string
+ *                                              example: '욱이네이버계정'
+ *                                          followerUserProfileImage:
+ *                                              type: string
+ *                                              example: 'https://tripper-s3-bucket.s3.ap-northeast-2.amazonaws.com/profile/profile_snsId_427GrSiUaxdwyLDyZLZ-U_8GYMiwPHIPmP1ZoP95EE0'
+ *                                          isFollowing:
+ *                                              type: string
+ *                                              description: 'Y: 내가 팔로잉하는 중, N: 내가 팔로잉 안하는 중, M: 나'
+ *                                              example: 'Y 또는 N 또는 M'
+ *              '401':
+ *                  description: 'JWT 인증 에러 발생 (또는) JWT 토근 만료'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              required:
+ *                                  - isSuccess
+ *                                  - code
+ *                                  - message
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: false
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 401
+ *                                  message:
+ *                                      type: string
+ *                                      example: 'JWT 인증 에러 발생 (또는) JWT 토근 만료'
+ *              '500':
+ *                  description: '서버 내부 에러 발생'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              required:
+ *                                  - isSuccess
+ *                                  - code
+ *                                  - message
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: false
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 500
+ *                                  message:
+ *                                      type: string
+ *                                      example: '서버 내부 에러 발생.'
+ *                                  error:
+ *                                      type: object
+ *                                      properties:
+ *                                          message:
+ *                                              type: string
+ *                                              example: '에러 메세지 내용'
+ *                                          stack:
+ *                                              type: string
+ *                                              example: '에러 위치'
+ *              '2018':
+ *                  description: '팔로잉 또는 팔로워 조회 옵션을 입력해주세요.'
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              required:
+ *                                  - isSuccess
+ *                                  - code
+ *                                  - message
+ *                              properties:
+ *                                  isSuccess:
+ *                                      type: boolean
+ *                                      example: false
+ *                                  code:
+ *                                      type: integer
+ *                                      example: 2018
+ *                                  message:
+ *                                      type: string
+ *                                      example: '팔로잉 또는 팔로워 조회 옵션을 입력해주세요.'
+ *              '2019':
+ *                  description: '팔로잉 또는 팔로워 조회 옵션이 잘못 입력되었습니다. 다시 입력해주세요.'
+ *              '3011':
+ *                  description: '존재하지 않는 유저입니다.'
  */
 router.get(
     '/follow-list',
