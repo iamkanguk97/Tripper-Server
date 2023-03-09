@@ -142,7 +142,7 @@ const router = express.Router();
  *                                          stack:
  *                                              type: string
  *                                              example: '에러가 발생한 위치 내용'
- *                  
+ *
  *              '2025':
  *                  description: '검색하실 장소명을 입력해주세요.'
  *                  content:
@@ -183,6 +183,6 @@ router.get(
     searchAreaValidation,
     validationMiddleware,
     wrapAsync(CommonController.searchArea)
-);   // 장소검색 API (OK)
+); // 장소검색 API (OK)
 
 module.exports = router;

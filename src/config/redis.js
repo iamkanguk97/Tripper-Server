@@ -9,7 +9,7 @@ class RedisClient {
 
     setRedis() {
         this.setRedisClient();
-        
+
         this.redisClient.on('connect', this.connectMessageHandler);
         this.redisClient.on('error', this.errorMessageHandler);
         this.redisClient.on('end', this.quitMessageHandler);
@@ -18,7 +18,7 @@ class RedisClient {
     setRedisClient() {
         this.redisClient = redis.createClient({
             url: `redis://${REDIS.USERNAME}:${REDIS.PASSWORD}@${REDIS.HOST}:${REDIS.PORT}/0`,
-            legacyMode: false,
+            legacyMode: false
         });
     }
 
@@ -39,9 +39,8 @@ class RedisClient {
 
     // Redis hSet
     async hSet(key, field, value, expireTime = null) {
-        await this.redisClient.hSet(key, field, value);   // key-value 설정
-        if (expireTime !== null)
-            await this.redisClient.expire(key, expireTime);   // expireTime 설정
+        await this.redisClient.hSet(key, field, value); // key-value 설정
+        if (expireTime !== null) await this.redisClient.expire(key, expireTime); // expireTime 설정
     }
 
     // Redis hGet

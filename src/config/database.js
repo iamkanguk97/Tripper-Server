@@ -6,7 +6,7 @@ const development = {
     password: RDS.PASSWORD,
     database: RDS.DATABASE,
     dialect: 'mysql',
-    logging: true   // console에 sequelize log 출력 여부
+    logging: true // console에 sequelize log 출력 여부
 };
 
 const local = {

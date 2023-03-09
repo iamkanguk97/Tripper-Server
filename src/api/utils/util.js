@@ -11,24 +11,24 @@ const { ServerError } = require('../../api/utils/errors');
 /**
  * 에러 핸들링을 위한 헬퍼 함수
  */
-const wrapAsync = (fn) => {
+const wrapAsync = fn => {
     // 모든 오류를 .catch()로 처리하고 체인의 next() 미들웨어에 전달.
     return (req, res, next) => {
         fn(req, res, next).catch(next);
-    }
-}
+    };
+};
 
 /**
  * 부적절한 단어가 포함되어 있는지 확인 (욕설, 성적 단어 등)
  * @param nickname (추후 게시글 내용에도 포함되어 있는지 확인을 위해 파라미터 수정)
  * @returns true / false
  */
-const checkBadWord = async (nickname) => {
+const checkBadWord = async nickname => {
     let badWordArray = await readFile('src/docs/fword_list.txt', 'utf-8');
-    badWordArray = badWordArray.toString().replace(/\r/gi, "").split("\n");
+    badWordArray = badWordArray.toString().replace(/\r/gi, '').split('\n');
 
     let check = 0;
-    badWordArray.forEach((word) => {
+    badWordArray.forEach(word => {
         if (nickname.includes(word)) {
             check = 1;
             return;
@@ -43,7 +43,7 @@ const checkBadWord = async (nickname) => {
  * @param gender
  * @returns M / F
  */
-const getFirstLetter = (gender) => {
+const getFirstLetter = gender => {
     return gender.charAt(0).toUpperCase();
 };
 
@@ -52,7 +52,7 @@ const getFirstLetter = (gender) => {
  * @param ageGroup
  * @returns ex) 20대
  */
-const ageGroupToString = (ageGroup) => {
+const ageGroupToString = ageGroup => {
     const age = parseInt(ageGroup.split('~')[0]);
     return age < 10 ? '10대 미만' : `${age}대`;
 };
@@ -79,7 +79,8 @@ const returnS3Module = () => {
 const uploadProfileImage = async (profileImage, snsId) => {
     const s3 = returnS3Module();
     const fileContent = Buffer.from(profileImage.data, 'binary');
-    const params = {   // S3 Upload Parameters
+    const params = {
+        // S3 Upload Parameters
         Bucket: S3.BUCKET_NAME,
         Key: `profile/profile_snsId_${snsId}`,
         Body: fileContent
@@ -91,7 +92,7 @@ const uploadProfileImage = async (profileImage, snsId) => {
 
 /**
  * 소셜로그인 고유값을 가지고 회원 존재하는지 확인
- * @param provider, snsId 
+ * @param provider, snsId
  * @returns userIdx / false
  */
 const checkUserExistWithSnsId = async (provider, snsId) => {
@@ -121,7 +122,7 @@ const getKeyByValue = (obj, value) => {
  * @param method (여행 이동수단)
  * @return C, T, B, W, ''
  */
-const getTravelTrans = (method) => {
+const getTravelTrans = method => {
     switch (method) {
         case '자차로 여행':
             return 'C';

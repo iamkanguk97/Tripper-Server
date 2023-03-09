@@ -1,7 +1,12 @@
 'use strict';
-const { query, body, header } = require("express-validator");
+const { query, body, header } = require('express-validator');
 const { REGEX_NICKNAME } = require('../../utils/regex');
-const { checkNickDuplicate, checkBadWordInclude, checkSnsIdDuplicate, checkAccessTokenEmpty } = require('../../utils/validation-util');
+const {
+    checkNickDuplicate,
+    checkBadWordInclude,
+    checkSnsIdDuplicate,
+    checkAccessTokenEmpty
+} = require('../../utils/validation-util');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 
 /**
@@ -13,10 +18,16 @@ const responseMessage = require('../../../config/response/baseResponseStatus');
  */
 const verifyNickValidation = [
     query('nickname')
-        .notEmpty().withMessage(responseMessage.NICKNAME_EMPTY).bail()
-        .matches(REGEX_NICKNAME).withMessage(responseMessage.NICKNAME_ERROR_TYPE).bail()
-        .custom(checkBadWordInclude).bail()
-        .custom(checkNickDuplicate).bail()
+        .notEmpty()
+        .withMessage(responseMessage.NICKNAME_EMPTY)
+        .bail()
+        .matches(REGEX_NICKNAME)
+        .withMessage(responseMessage.NICKNAME_ERROR_TYPE)
+        .bail()
+        .custom(checkBadWordInclude)
+        .bail()
+        .custom(checkNickDuplicate)
+        .bail()
 ];
 
 /**
@@ -28,19 +39,36 @@ const verifyNickValidation = [
  */
 const signUpValidation = [
     body('email')
-        .notEmpty().withMessage(responseMessage.EMAIL_EMPTY).bail()
-        .isEmail().withMessage(responseMessage.EMAIL_TYPE_ERROR).bail(),
+        .notEmpty()
+        .withMessage(responseMessage.EMAIL_EMPTY)
+        .bail()
+        .isEmail()
+        .withMessage(responseMessage.EMAIL_TYPE_ERROR)
+        .bail(),
     body('nickname')
-        .notEmpty().withMessage(responseMessage.NICKNAME_EMPTY).bail()
-        .matches(REGEX_NICKNAME).withMessage(responseMessage.NICKNAME_ERROR_TYPE).bail()
-        .custom(checkNickDuplicate).bail()
-        .custom(checkBadWordInclude).bail(),
+        .notEmpty()
+        .withMessage(responseMessage.NICKNAME_EMPTY)
+        .bail()
+        .matches(REGEX_NICKNAME)
+        .withMessage(responseMessage.NICKNAME_ERROR_TYPE)
+        .bail()
+        .custom(checkNickDuplicate)
+        .bail()
+        .custom(checkBadWordInclude)
+        .bail(),
     body('snsId')
-        .notEmpty().withMessage(responseMessage.SNS_ID_EMPTY).bail()
-        .custom(checkSnsIdDuplicate).bail(),
+        .notEmpty()
+        .withMessage(responseMessage.SNS_ID_EMPTY)
+        .bail()
+        .custom(checkSnsIdDuplicate)
+        .bail(),
     body('provider')
-        .notEmpty().withMessage(responseMessage.PROVIDER_EMPTY).bail()
-        .isIn(['kakao', 'naver']).withMessage(responseMessage.PROVIDER_ERROR_TYPE).bail()
+        .notEmpty()
+        .withMessage(responseMessage.PROVIDER_EMPTY)
+        .bail()
+        .isIn(['kakao', 'naver'])
+        .withMessage(responseMessage.PROVIDER_ERROR_TYPE)
+        .bail()
 ];
 
 /**
@@ -50,10 +78,12 @@ const signUpValidation = [
  */
 const tokenRefreshValidation = [
     header('authorization')
-        .notEmpty().withMessage(responseMessage.JWT_ACCESS_TOKEN_EMPTY).bail()   // authorization 부분이 아예 없을 때
-        .custom(checkAccessTokenEmpty).bail(),   // authorization key는 있지만 Bearer을 입력하지 않았거나 아예 비어있는 경우
-    header('refresh_token')
-        .notEmpty().withMessage(responseMessage.JWT_REFRESH_TOKEN_EMPTY).bail()   // refresh_token이 없는 경우
+        .notEmpty()
+        .withMessage(responseMessage.JWT_ACCESS_TOKEN_EMPTY) // authorization 부분이 아예 없을 때
+        .bail()
+        .custom(checkAccessTokenEmpty) // authorization key는 있지만 Bearer을 입력하지 않았거나 아예 비어있는 경우
+        .bail(),
+    header('refresh_token').notEmpty().withMessage(responseMessage.JWT_REFRESH_TOKEN_EMPTY).bail() // refresh_token이 없는 경우
 ];
 
 module.exports = {

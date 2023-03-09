@@ -24,30 +24,33 @@ const travelRoutes = require('../api/routes/travel.route');
 const commonRoutes = require('../api/routes/common.route');
 
 /**
-* Express instance
-* @public
-*/
+ * Express instance
+ * @public
+ */
 const app = express();
 
 // Sequelize setting
-sequelize.sync({
-    // force: false   // force가 true면 모든 table의 데이터를 초기화!
-    alter: true 
-}).then(() => {
-    Logger.info('Success for DB Connection!'); 
-}).catch((err) => {
-    Logger.error(err);
-});
+sequelize
+    .sync({
+        // force: false   // force가 true면 모든 table의 데이터를 초기화!
+        alter: true
+    })
+    .then(() => {
+        Logger.info('Success for DB Connection!');
+    })
+    .catch(err => {
+        Logger.error(err);
+    });
 
-app.use(express.json());   // JSON 형태의 데이터 해석
-app.use(express.urlencoded({ extended: true }));   // x-www-form-urlencoded 형태 데이터 해석
+app.use(express.json()); // JSON 형태의 데이터 해석
+app.use(express.urlencoded({ extended: true })); // x-www-form-urlencoded 형태 데이터 해석
 // app.use(cookieParser());   // cookie-parser 설정
 
-app.use(methodOverride());   // PUT, DELETE Method를 위한 library
+app.use(methodOverride()); // PUT, DELETE Method를 위한 library
 
-app.use(helmet());   // HTTP Secure
-app.use(cors());   // CORS
-app.use(fileUpload());   // for file-upload
+app.use(helmet()); // HTTP Secure
+app.use(cors()); // CORS
+app.use(fileUpload()); // for file-upload
 
 app.use(morganMiddleware);
 
@@ -63,10 +66,10 @@ app.use('/api/commons', commonRoutes);
 app.use(
     '/api-docs',
     basicAuth({
-        users: { [ SWAGGER.ID ]: SWAGGER.PASSWORD },
+        users: { [SWAGGER.ID]: SWAGGER.PASSWORD },
         challenge: true
     }),
-    swaggerUi.serve, 
+    swaggerUi.serve,
     swaggerUi.setup(specs, { explorer: true })
 );
 

@@ -13,7 +13,7 @@ class CustomServerError extends Error {
 class BadRequestError extends Error {
     constructor(message) {
         super(message);
-		this.statusCode = httpStatus.BAD_REQUEST;
+        this.statusCode = httpStatus.BAD_REQUEST;
     }
 }
 

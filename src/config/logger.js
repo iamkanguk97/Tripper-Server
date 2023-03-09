@@ -4,7 +4,7 @@ const path = require('path');
 const { combine, timestamp, printf, colorize } = winston.format;
 const { NODE_ENV } = require('./vars');
 
-const logDirectory = 'logs';   // log 저장 디렉토리
+const logDirectory = 'logs'; // log 저장 디렉토리
 
 const levels = {
     error: 0,
@@ -34,11 +34,11 @@ const logFormat = combine(
     timestamp({
         format: 'YYYY-MM-DD HH:mm:ss:ms'
     }),
-    printf((info) => {
+    printf(info => {
         if (info.stack) {
             return `${info.timestamp} ${info.level}: ${info.message} \n Error Stack: ${info.stack}`;
         }
-        return `${info.timestamp} ${info.level}: ${info.message}`
+        return `${info.timestamp} ${info.level}: ${info.message}`;
     })
 );
 
@@ -56,27 +56,27 @@ const consoleOption = {
 };
 
 const _transports = [
-    new winston.transports.Console(consoleOption),   // 콘솔 로그 찍을때만 색깔 추가
+    new winston.transports.Console(consoleOption), // 콘솔 로그 찍을때만 색깔 추가
 
     // error 레벨 로그를 저장할 파일 설정
     new winstonDaily({
-      level: 'error',
-      datePattern: 'YYYY-MM-DD',
-      dirname: path.join(__dirname, '../', logDirectory, '/error'),
-      filename: '%DATE%.error.log',
-      maxFiles: 30,
-      zippedArchive: true
+        level: 'error',
+        datePattern: 'YYYY-MM-DD',
+        dirname: path.join(__dirname, '../', logDirectory, '/error'),
+        filename: '%DATE%.error.log',
+        maxFiles: 30,
+        zippedArchive: true
     }),
     // 모든 레벨 로그를 저장할 파일 설정
     new winstonDaily({
-      level: 'debug',
-      datePattern: 'YYYY-MM-DD',
-      dirname: path.join(__dirname, '../', logDirectory, '/all'),
-      filename: '%DATE%.all.log',
-      maxFiles: 7,
-      zippedArchive: true
+        level: 'debug',
+        datePattern: 'YYYY-MM-DD',
+        dirname: path.join(__dirname, '../', logDirectory, '/all'),
+        filename: '%DATE%.all.log',
+        maxFiles: 7,
+        zippedArchive: true
     })
-  ];
+];
 
 const logger = winston.createLogger({
     level: level(),
@@ -84,6 +84,5 @@ const logger = winston.createLogger({
     format: logFormat,
     transports: _transports
 });
-
 
 module.exports = logger;

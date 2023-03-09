@@ -17,9 +17,15 @@ const updateTravelStatus = async (req, res) => {
     const userIdx = req.verifiedToken.userIdx;
     const travelIdx = parseInt(req.params.travelIdx);
     const travelStatus = req.travelStatus;
-    
-    const updateTravelStatusResult = await TravelService.updateTravelStatus(userIdx, travelIdx, travelStatus);
-    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, updateTravelStatusResult ));
+
+    const updateTravelStatusResult = await TravelService.updateTravelStatus(
+        userIdx,
+        travelIdx,
+        travelStatus
+    );
+    return res
+        .status(httpStatus.OK)
+        .json(response(responseMessage.SUCCESS, updateTravelStatusResult));
 };
 
 module.exports = {

@@ -10,7 +10,11 @@ const express = require('express');
 const UserController = require('../controllers/user.controller');
 const jwtMiddleware = require('../middlewares/jwtMiddleware');
 const validationMiddleware = require('../middlewares/validationMiddleware');
-const { followValidation, followListValidation, deleteFollowerValidation } = require('../middlewares/validations/user.validation');
+const {
+    followValidation,
+    followListValidation,
+    deleteFollowerValidation
+} = require('../middlewares/validations/user.validation');
 const { wrapAsync } = require('../utils/util');
 
 const router = express.Router();
@@ -25,7 +29,7 @@ const router = express.Router();
  *          summary: '팔로우 API'
  *          description: '팔로우 기능입니다.'
  *          tags: [User]
- *          requestBody: 
+ *          requestBody:
  *              description: '팔로우 요청을 할 유저의 고유값을 입력해주세요.'
  *              required: true
  *              content:
@@ -97,7 +101,7 @@ router.post(
     followValidation,
     validationMiddleware,
     wrapAsync(UserController.follow)
-);   // 팔로우 API (OK)
+); // 팔로우 API (OK)
 
 /**
  * @swagger
@@ -284,7 +288,7 @@ router.get(
     followListValidation,
     validationMiddleware,
     wrapAsync(UserController.followList)
-);   // 팔로잉 또는 팔로워 조회 API
+); // 팔로잉 또는 팔로워 조회 API
 
 /**
  * @swagger
@@ -370,6 +374,6 @@ router.delete(
     deleteFollowerValidation,
     validationMiddleware,
     wrapAsync(UserController.deleteFollower)
-);   // 본인 팔로워 삭제 API (OK)
+); // 본인 팔로워 삭제 API (OK)
 
 module.exports = router;

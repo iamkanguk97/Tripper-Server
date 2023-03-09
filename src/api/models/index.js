@@ -14,10 +14,10 @@ const db_config = require('../../config/database')[env];
 const db = {};
 
 const sequelize = new Sequelize(
-  db_config.database, 
-  db_config.username,
-  db_config.password,
-  db_config
+    db_config.database,
+    db_config.username,
+    db_config.password,
+    db_config
 );
 
 db.sequelize = sequelize;

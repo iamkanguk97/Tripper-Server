@@ -7,15 +7,15 @@ const format = () => {
 };
 
 const stream = {
-    write: (message) => Logger.http(message)
+    write: message => Logger.http(message)
 };
 
-const skip = ( _, res ) => {
+const skip = (_, res) => {
     if (NODE_ENV === 'production') {
         return res.statusCode < 400;
     }
     return false;
-}
+};
 
 const morganMiddleware = morgan(format(), { stream, skip });
 

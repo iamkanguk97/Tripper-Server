@@ -14,7 +14,7 @@ const upload = multer({
         s3: s3,
         bucket: S3.BUCKET_NAME,
         acl: 'public-read',
-        contentType: multerS3.AUTO_CONTENT_TYPE,
+        contentType: multerS3.AUTO_CONTENT_TYPE
     })
 });
 

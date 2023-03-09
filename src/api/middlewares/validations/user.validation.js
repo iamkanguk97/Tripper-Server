@@ -1,5 +1,5 @@
 'use strict';
-const { body, query, header } = require("express-validator");
+const { body, query, header } = require('express-validator');
 const { checkUserStatusFunc, checkUserFollowMe } = require('../../utils/validation-util');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 
@@ -9,8 +9,11 @@ const responseMessage = require('../../../config/response/baseResponseStatus');
  */
 const followValidation = [
     body('followUserIdx')
-        .notEmpty().withMessage(responseMessage.FOLLOW_TARGET_IDX_EMPTY).bail()
-        .custom(checkUserStatusFunc).bail()
+        .notEmpty()
+        .withMessage(responseMessage.FOLLOW_TARGET_IDX_EMPTY)
+        .bail()
+        .custom(checkUserStatusFunc)
+        .bail()
 ];
 
 /**
@@ -19,11 +22,14 @@ const followValidation = [
  * - option 유무 확인 + following 또는 follower인지 확인
  */
 const followListValidation = [
-    query('userIdx')
-        .custom(checkUserStatusFunc).withMessage(responseMessage.USER_NOT_EXIST).bail(),
+    query('userIdx').custom(checkUserStatusFunc).withMessage(responseMessage.USER_NOT_EXIST).bail(),
     query('option')
-        .notEmpty().withMessage(responseMessage.FOLLOW_LIST_OPTION_EMPTY).bail()
-        .isIn(['following', 'follower']).withMessage(responseMessage.FOLLOW_LIST_OPTION_ERROR_TYPE).bail()
+        .notEmpty()
+        .withMessage(responseMessage.FOLLOW_LIST_OPTION_EMPTY)
+        .bail()
+        .isIn(['following', 'follower'])
+        .withMessage(responseMessage.FOLLOW_LIST_OPTION_ERROR_TYPE)
+        .bail()
 ];
 
 /**
@@ -33,9 +39,13 @@ const followListValidation = [
  */
 const deleteFollowerValidation = [
     header('useridx')
-        .notEmpty().withMessage(responseMessage.DELETE_FOLLOWER_IDX_EMPTY).bail()
-        .custom(checkUserStatusFunc).bail()
-        .custom(checkUserFollowMe).bail()
+        .notEmpty()
+        .withMessage(responseMessage.DELETE_FOLLOWER_IDX_EMPTY)
+        .bail()
+        .custom(checkUserStatusFunc)
+        .bail()
+        .custom(checkUserFollowMe)
+        .bail()
 ];
 
 module.exports = {

@@ -11,7 +11,11 @@ const passport = require('passport');
 const AuthController = require('../controllers/auth.controller');
 const validationMiddleware = require('../middlewares/validationMiddleware');
 const jwtMiddleware = require('../middlewares/jwtMiddleware');
-const { verifyNickValidation, signUpValidation, tokenRefreshValidation } = require('../middlewares/validations/auth.validation');
+const {
+    verifyNickValidation,
+    signUpValidation,
+    tokenRefreshValidation
+} = require('../middlewares/validations/auth.validation');
 const { wrapAsync } = require('../utils/util');
 
 const router = express.Router();
@@ -366,11 +370,11 @@ router.get(
     verifyNickValidation,
     validationMiddleware,
     AuthController.verifyNickname
-);   // 닉네임 확인 API
+); // 닉네임 확인 API
 
 /**
  * @swagger
- * paths: 
+ * paths:
  *  /api/auth/sign-up:
  *      post:
  *          summary: '회원가입 API'
@@ -521,16 +525,11 @@ router.get(
  *              '3013':
  *                  description: '중복된 소셜로그인 고유값입니다.'
  */
-router.post(
-    '/sign-up',
-    signUpValidation,
-    validationMiddleware,
-    wrapAsync(AuthController.signUp)
-);   // 회원가입 API
+router.post('/sign-up', signUpValidation, validationMiddleware, wrapAsync(AuthController.signUp)); // 회원가입 API
 
 /**
  * @swagger
- * paths: 
+ * paths:
  *  /api/auth/auto-login:
  *      get:
  *          security:
@@ -615,15 +614,11 @@ router.post(
  *                                      type: string
  *                                      example: 'JWT 인증 에러 발생 (또는) JWT 토큰 만료'
  */
-router.get(
-    '/auto-login',
-    jwtMiddleware,
-    AuthController.autoLogin
-);   // 자동로그인 API
+router.get('/auto-login', jwtMiddleware, AuthController.autoLogin); // 자동로그인 API
 
 /**
  * @swagger
- * paths: 
+ * paths:
  *  /api/auth/token-refresh:
  *      post:
  *          summary: 'JWT 재발급을 위한 Router'
@@ -841,6 +836,6 @@ router.post(
     tokenRefreshValidation,
     validationMiddleware,
     wrapAsync(AuthController.tokenRefresh)
-);   // JWT 재발급을 위한 Router
+); // JWT 재발급을 위한 Router
 
 module.exports = router;

@@ -23,12 +23,7 @@ const router = express.Router();
  *          summary: '게시물 생성 API'
  *          tags: [Travel]
  */
-router.post(
-    '/',
-    validationMiddleware,
-    jwtMiddleware,
-    TravelController.createTravel
-);
+router.post('/', validationMiddleware, jwtMiddleware, TravelController.createTravel);
 
 /**
  * @swagger
@@ -160,6 +155,6 @@ router.patch(
     updateTravelStatusValidation,
     validationMiddleware,
     wrapAsync(TravelController.updateTravelStatus)
-);   // 게시물 공개 범위 수정 API (OK)
+); // 게시물 공개 범위 수정 API (OK)
 
 module.exports = router;
