@@ -1,5 +1,6 @@
 'use strict';
 const Travel = require('../models/Travel/Travel');
+const TravelScore = require('../models/Travel/TravelScore');
 const { Op } = require('sequelize');
 
 const updateTravelStatus = async (userIdx, travelIdx, travelStatus) => {
@@ -30,6 +31,36 @@ const updateTravelStatus = async (userIdx, travelIdx, travelStatus) => {
         };
 };
 
+const createTravelReviewScore = async (userIdx, travelIdx, reviewScore) => {
+    /** <Logic>
+     * 유저가 전에 점수를 부여한적이 있음 -> update
+     * 점수를 부여한적이 없음 -> create
+     */
+    const whereOption = {
+        TRAVEL_IDX: travelIdx,
+        USER_IDX: userIdx
+    };
+
+    const checkUserScoreExist = !(await TravelScore.findOne({ where: whereOption })) ? 'N' : 'Y'; // DB에서 찾아서 null이면 N 아니면 Y
+
+    let result;
+    if (checkUserScoreExist === 'N') {
+        // 점수를 한번도 부여한적 없음
+        result = await TravelScore.create({
+            TRAVEL_IDX: travelIdx,
+            USER_IDX: userIdx,
+            TRAVEL_SCORE: reviewScore
+        });
+    } else {
+        // 점수를 이전에 부여했음
+        result = await TravelScore.update({ TRAVEL_SCORE: reviewScore }, { where: whereOption });
+    }
+};
+
+const createTravelLike = async (userIdx, travelIdx) => {};
+
 module.exports = {
-    updateTravelStatus
+    updateTravelStatus,
+    createTravelReviewScore,
+    createTravelLike
 };

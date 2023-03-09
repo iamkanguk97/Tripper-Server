@@ -11,8 +11,12 @@ const TravelController = require('../controllers/travel.controller');
 const jwtMiddleware = require('../middlewares/jwtMiddleware');
 const validationMiddleware = require('../middlewares/validationMiddleware');
 const { wrapAsync } = require('../utils/util');
-const { updateTravelStatusValidation } = require('../middlewares/validations/travel.validation');
-
+const {
+    updateTravelStatusValidation,
+    createTravelValidation,
+    createTravelReviewScoreValidation,
+    createTravelLikeValidation
+} = require('../middlewares/validations/travel.validation');
 const router = express.Router();
 
 /**
@@ -23,7 +27,7 @@ const router = express.Router();
  *          summary: '게시물 생성 API'
  *          tags: [Travel]
  */
-router.post('/', validationMiddleware, jwtMiddleware, TravelController.createTravel);
+router.post('/', createTravelValidation, validationMiddleware, jwtMiddleware, TravelController.createTravel);
 
 /**
  * @swagger
@@ -156,5 +160,21 @@ router.patch(
     validationMiddleware,
     wrapAsync(TravelController.updateTravelStatus)
 ); // 게시물 공개 범위 수정 API (OK)
+
+router.post(
+    '/review-score',
+    jwtMiddleware,
+    // createTravelReviewScoreValidation,
+    // validationMiddleware,
+    wrapAsync(TravelController.createTravelReviewScore)
+); // 게시물 평점등록 API
+
+router.post(
+    '/like',
+    jwtMiddleware,
+    // createTravelLikeValidation,
+    // validationMiddleware,
+    wrapAsync(TravelController.createTravelLike)
+); // 게시물 좋아요 API
 
 module.exports = router;

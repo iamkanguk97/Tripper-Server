@@ -3,6 +3,8 @@ const { param } = require('express-validator');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 const { checkTravelExist } = require('../../utils/validation-util');
 
+const createTravelValidation = [];
+
 const updateTravelStatusValidation = [
     param('travelIdx')
         .notEmpty()
@@ -12,6 +14,13 @@ const updateTravelStatusValidation = [
         .bail()
 ];
 
+const createTravelReviewScoreValidation = [];
+
+const createTravelLikeValidation = [];
+
 module.exports = {
-    updateTravelStatusValidation
+    createTravelValidation,
+    updateTravelStatusValidation,
+    createTravelReviewScoreValidation,
+    createTravelLikeValidation
 };

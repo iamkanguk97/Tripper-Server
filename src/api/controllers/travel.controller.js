@@ -11,6 +11,7 @@ const createTravel = async (req, res) => {
     // 해시태그 (선택)
     // 썸네일 사진 (최대 5장)
     // 여행 소개
+    const userIdx = req.verifiedToken.userIdx;
 };
 
 const updateTravelStatus = async (req, res) => {
@@ -18,17 +19,29 @@ const updateTravelStatus = async (req, res) => {
     const travelIdx = parseInt(req.params.travelIdx);
     const travelStatus = req.travelStatus;
 
-    const updateTravelStatusResult = await TravelService.updateTravelStatus(
-        userIdx,
-        travelIdx,
-        travelStatus
-    );
-    return res
-        .status(httpStatus.OK)
-        .json(response(responseMessage.SUCCESS, updateTravelStatusResult));
+    const updateTravelStatusResult = await TravelService.updateTravelStatus(userIdx, travelIdx, travelStatus);
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, updateTravelStatusResult));
+};
+
+const createTravelReviewScore = async (req, res) => {
+    const userIdx = req.verifiedToken.userIdx;
+    const { travelIdx, reviewScore } = req.body;
+
+    const createTravelReviewScoreResult = await TravelService.createTravelReviewScore(userIdx, travelIdx, reviewScore);
+    return;
+};
+
+const createTravelLike = async (req, res) => {
+    const userIdx = req.verifiedToken.userIdx;
+    const travelIdx = req.body.travelIdx;
+
+    const createTravelLikeResult = await TravelService.createTravelLike(userIdx, travelIdx);
+    return;
 };
 
 module.exports = {
     createTravel,
-    updateTravelStatus
+    updateTravelStatus,
+    createTravelReviewScore,
+    createTravelLike
 };
