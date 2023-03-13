@@ -364,7 +364,12 @@ router.get('/naver-login/callback', AuthController.naverLoginCallback);
  *              '3010':
  *                  description: '중복된 닉네임입니다.'
  */
-router.get('/verify-nickname', verifyNickValidation, validationMiddleware, AuthController.verifyNickname); // 닉네임 확인 API
+router.get(
+    '/verify-nickname',
+    verifyNickValidation,
+    validationMiddleware,
+    AuthController.verifyNickname
+); // 닉네임 확인 API
 
 /**
  * @swagger
@@ -825,6 +830,11 @@ router.get('/auto-login', jwtMiddleware, AuthController.autoLogin); // 자동로
  *              '2024':
  *                  description: 'JWT Refresh-Token을 입력해주세요.'
  */
-router.post('/token-refresh', tokenRefreshValidation, validationMiddleware, wrapAsync(AuthController.tokenRefresh)); // JWT 재발급을 위한 Router
+router.post(
+    '/token-refresh',
+    tokenRefreshValidation,
+    validationMiddleware,
+    wrapAsync(AuthController.tokenRefresh)
+); // JWT 재발급을 위한 Router
 
 module.exports = router;

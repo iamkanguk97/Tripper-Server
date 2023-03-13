@@ -94,7 +94,13 @@ const router = express.Router();
  *              '3011':
  *                  description: '존재하지 않는 유저입니다.'
  */
-router.post('/following', jwtMiddleware, followValidation, validationMiddleware, wrapAsync(UserController.follow)); // 팔로우 API (OK)
+router.post(
+    '/following',
+    jwtMiddleware,
+    followValidation,
+    validationMiddleware,
+    wrapAsync(UserController.follow)
+); // 팔로우 API (OK)
 
 /**
  * @swagger

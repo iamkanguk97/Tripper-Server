@@ -7,7 +7,11 @@ const { response, errResponse } = require('../../config/response/response-templa
 const kakaoLoginCallback = async (req, res, next) => {
     // Kakao Access-Token이랑 Refresh Token은 특별하게 사용할 곳이 없다고 판단되어서 따로 저장은 안함.
     passport.authenticate('kakao', async ({ accessToken, refreshToken, profile }) => {
-        const kakaoLoginResult = await AuthService.kakaoLoginCallback(accessToken, refreshToken, profile);
+        const kakaoLoginResult = await AuthService.kakaoLoginCallback(
+            accessToken,
+            refreshToken,
+            profile
+        );
         if (kakaoLoginResult.isError) next(kakaoLoginResult.error);
         else {
             if (kakaoLoginResult.requireSignUp)
@@ -16,7 +20,9 @@ const kakaoLoginCallback = async (req, res, next) => {
                     .json(response(responseMessage.REQUIRE_SIGN_UP, kakaoLoginResult.result));
 
             // res.cookie();   // Access Token + Refresh Token cookie로 전달.
-            return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, kakaoLoginResult.result));
+            return res
+                .status(httpStatus.OK)
+                .json(response(responseMessage.SUCCESS, kakaoLoginResult.result));
         }
     })(req, res, next);
 };
@@ -24,7 +30,11 @@ const kakaoLoginCallback = async (req, res, next) => {
 const naverLoginCallback = async (req, res, next) => {
     // Naver Access-Token이랑 Refresh Token은 특별하게 사용할 곳이 없다고 판단되어서 따로 저장 안함.
     passport.authenticate('naver', async ({ accessToken, refreshToken, profile }) => {
-        const naverLoginResult = await AuthService.naverLoginCallback(accessToken, refreshToken, profile);
+        const naverLoginResult = await AuthService.naverLoginCallback(
+            accessToken,
+            refreshToken,
+            profile
+        );
         if (naverLoginResult.isError) next(naverLoginResult.error);
         else {
             if (naverLoginResult.requireSignUp)
@@ -33,7 +43,9 @@ const naverLoginCallback = async (req, res, next) => {
                     .json(response(responseMessage.REQUIRE_SIGN_UP, naverLoginResult.result));
 
             // res.cookie();   // Access Token + Refresh Token cookie로 전달.
-            return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, naverLoginResult.result));
+            return res
+                .status(httpStatus.OK)
+                .json(response(responseMessage.SUCCESS, naverLoginResult.result));
         }
     })(req, res, next);
 };
@@ -46,7 +58,15 @@ const signUp = async (req, res) => {
     const { email, nickname, snsId, ageGroup, gender, provider } = req.body;
     const profileImage = req.files ? req.files.pimage : null;
 
-    const signUpResult = await AuthService.signUp(email, nickname, profileImage, snsId, ageGroup, gender, provider);
+    const signUpResult = await AuthService.signUp(
+        email,
+        nickname,
+        profileImage,
+        snsId,
+        ageGroup,
+        gender,
+        provider
+    );
 
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, signUpResult));
 };
@@ -57,8 +77,12 @@ const autoLogin = async (req, res) => {
     const { userIdx } = req.verifiedToken;
     if (!userIdx)
         // userIdx가 없다 -> Refresh-Token을 보냈을 경우임!
-        return res.status(httpStatus.BAD_REQUEST).json(errResponse(responseMessage.AUTO_LOGIN_ERROR));
-    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, { userIdx: parseInt(userIdx) }));
+        return res
+            .status(httpStatus.BAD_REQUEST)
+            .json(errResponse(responseMessage.AUTO_LOGIN_ERROR));
+    return res
+        .status(httpStatus.OK)
+        .json(response(responseMessage.SUCCESS, { userIdx: parseInt(userIdx) }));
 };
 
 const tokenRefresh = async (req, res) => {

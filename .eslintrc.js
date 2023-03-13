@@ -26,6 +26,8 @@ module.exports = {
         'max-classes-per-file': 'warn',
         'prefer-promise-reject-errors': 'off',
         'new-cap': 'off',
+        'prefer-destructuring': 'off',
+        'prettier/prettier': 'off',
         radix: 'off'
     }
 };

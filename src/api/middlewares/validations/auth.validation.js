@@ -55,7 +55,12 @@ const signUpValidation = [
         .bail()
         .custom(checkBadWordInclude)
         .bail(),
-    body('snsId').notEmpty().withMessage(responseMessage.SNS_ID_EMPTY).bail().custom(checkSnsIdDuplicate).bail(),
+    body('snsId')
+        .notEmpty()
+        .withMessage(responseMessage.SNS_ID_EMPTY)
+        .bail()
+        .custom(checkSnsIdDuplicate)
+        .bail(),
     body('provider')
         .notEmpty()
         .withMessage(responseMessage.PROVIDER_EMPTY)

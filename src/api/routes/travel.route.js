@@ -27,7 +27,13 @@ const router = express.Router();
  *          summary: '게시물 생성 API'
  *          tags: [Travel]
  */
-router.post('/', createTravelValidation, validationMiddleware, jwtMiddleware, TravelController.createTravel);
+router.post(
+    '/',
+    createTravelValidation,
+    validationMiddleware,
+    jwtMiddleware,
+    TravelController.createTravel
+);
 
 /**
  * @swagger
@@ -172,8 +178,8 @@ router.post(
 router.post(
     '/like',
     jwtMiddleware,
-    // createTravelLikeValidation,
-    // validationMiddleware,
+    createTravelLikeValidation,
+    validationMiddleware,
     wrapAsync(TravelController.createTravelLike)
 ); // 게시물 좋아요 API
 

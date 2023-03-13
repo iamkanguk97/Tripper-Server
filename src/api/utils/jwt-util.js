@@ -39,7 +39,12 @@ const generateRefreshToken = async (userIdx, redisClient = null) => {
         }
     } else {
         // Redis에 Refresh-Token 저장
-        await redisClient.hSet('refreshToken', `userId_${userIdx}`, newRefreshToken, JWT_REFRESH_TOKEN_EXPIRE_TIME);
+        await redisClient.hSet(
+            'refreshToken',
+            `userId_${userIdx}`,
+            newRefreshToken,
+            JWT_REFRESH_TOKEN_EXPIRE_TIME
+        );
     }
 
     return newRefreshToken;

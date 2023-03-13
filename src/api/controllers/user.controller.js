@@ -8,7 +8,9 @@ const follow = async (req, res) => {
     const myIdx = req.verifiedToken.userIdx;
 
     const followResultMessage = await UserService.follow(myIdx, followUserIdx);
-    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, { message: followResultMessage }));
+    return res
+        .status(httpStatus.OK)
+        .json(response(responseMessage.SUCCESS, { message: followResultMessage }));
 };
 
 const followList = async (req, res) => {
@@ -24,7 +26,9 @@ const deleteFollower = async (req, res) => {
     const deleteUserIdx = parseInt(req.headers.useridx);
 
     const deleteFollowerIdx = await UserService.deleteFollower(myIdx, deleteUserIdx);
-    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, { deleteUserIdx: deleteFollowerIdx }));
+    return res
+        .status(httpStatus.OK)
+        .json(response(responseMessage.SUCCESS, { deleteUserIdx: deleteFollowerIdx }));
 };
 
 module.exports = {

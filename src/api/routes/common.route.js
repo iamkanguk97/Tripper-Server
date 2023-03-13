@@ -178,6 +178,11 @@ const router = express.Router();
  *              '3015':
  *                  description: '조회 결과가 없습니다. 조금 더 정확하게 키워드를 입력해주세요.'
  */
-router.get('/search-area', searchAreaValidation, validationMiddleware, wrapAsync(CommonController.searchArea)); // 장소검색 API (OK)
+router.get(
+    '/search-area',
+    searchAreaValidation,
+    validationMiddleware,
+    wrapAsync(CommonController.searchArea)
+); // 장소검색 API (OK)
 
 module.exports = router;

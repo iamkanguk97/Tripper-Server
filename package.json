@@ -8,7 +8,7 @@
         "dev": "cross-env NODE_ENV=development nodemon ./src/index.js",
         "test": "jest",
         "lint": "eslint .",
-        "lintfix": "eslint . --fix"
+        "prettier": "prettier --write ."
     },
     "author": "KANGUK LEE <rkddnrdl97@naver.com>",
     "license": "ISC",
