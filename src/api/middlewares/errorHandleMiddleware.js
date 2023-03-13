@@ -1,4 +1,3 @@
-'use strict';
 const httpStatus = require('http-status');
 const Logger = require('../../config/logger');
 const responseMessage = require('../../config/response/baseResponseStatus');
@@ -18,21 +17,21 @@ const errorHandleMiddleware = (error, req, res, next) => {
 
     if (error instanceof JWTError) {
         // JWT 관련 에러일 경우
-        const _responseMessage = error.message.includes('expired') // expired라는 단어가 있으면 => 토큰 만료 에러 메세지 전달
+        const resMessage = error.message.includes('expired') // expired라는 단어가 있으면 => 토큰 만료 에러 메세지 전달
             ? responseMessage.JWT_TOKEN_EXPIRED_ERROR
             : responseMessage.JWT_AUTHORIZATION_ERROR;
 
-        message = { ..._responseMessage };
+        message = { ...resMessage };
     }
 
     if (statusCode === httpStatus.INTERNAL_SERVER_ERROR) {
         // 이외의 500번 에러일 경우
-        const _error = error instanceof CustomServerError ? JSON.parse(error.message) : error;
+        const e = error instanceof CustomServerError ? JSON.parse(error.message) : error;
         message = {
             ...responseMessage.INTERNAL_SERVER_ERROR,
             error: {
-                message: _error.message,
-                stack: _error.stack
+                message: e.message,
+                stack: e.stack
             }
         };
     }

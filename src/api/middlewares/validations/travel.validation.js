@@ -1,4 +1,3 @@
-'use strict';
 const { param } = require('express-validator');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 const { checkTravelExist } = require('../../utils/validation-util');

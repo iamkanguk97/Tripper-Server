@@ -1,6 +1,5 @@
-'use strict';
-const { JWT_SECRET_KEY, JWT_REFRESH_TOKEN_EXPIRE_TIME } = require('../../config/vars');
 const jwt = require('jsonwebtoken');
+const { JWT_SECRET_KEY, JWT_REFRESH_TOKEN_EXPIRE_TIME } = require('../../config/vars');
 const RedisClient = require('../../config/redis');
 const { getKeyByValue } = require('./util');
 
@@ -40,12 +39,7 @@ const generateRefreshToken = async (userIdx, redisClient = null) => {
         }
     } else {
         // Redis에 Refresh-Token 저장
-        await redisClient.hSet(
-            'refreshToken',
-            `userId_${userIdx}`,
-            newRefreshToken,
-            JWT_REFRESH_TOKEN_EXPIRE_TIME
-        );
+        await redisClient.hSet('refreshToken', `userId_${userIdx}`, newRefreshToken, JWT_REFRESH_TOKEN_EXPIRE_TIME);
     }
 
     return newRefreshToken;

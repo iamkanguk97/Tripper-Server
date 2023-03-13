@@ -1,4 +1,4 @@
-const { RDS } = require('../config/vars');
+const { RDS } = require('./vars');
 
 const development = {
     host: RDS.END_POINT,

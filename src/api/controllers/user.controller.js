@@ -1,17 +1,14 @@
-'use strict';
 const httpStatus = require('http-status');
 const UserService = require('../services/user.service');
 const responseMessage = require('../../config/response/baseResponseStatus');
 const { response } = require('../../config/response/response-template');
 
 const follow = async (req, res) => {
-    const followUserIdx = req.body.followUserIdx;
+    const { followUserIdx } = req.body;
     const myIdx = req.verifiedToken.userIdx;
 
     const followResultMessage = await UserService.follow(myIdx, followUserIdx);
-    return res
-        .status(httpStatus.OK)
-        .json(response(responseMessage.SUCCESS, { message: followResultMessage }));
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, { message: followResultMessage }));
 };
 
 const followList = async (req, res) => {
@@ -27,9 +24,7 @@ const deleteFollower = async (req, res) => {
     const deleteUserIdx = parseInt(req.headers.useridx);
 
     const deleteFollowerIdx = await UserService.deleteFollower(myIdx, deleteUserIdx);
-    return res
-        .status(httpStatus.OK)
-        .json(response(responseMessage.SUCCESS, { deleteUserIdx: deleteFollowerIdx }));
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, { deleteUserIdx: deleteFollowerIdx }));
 };
 
 module.exports = {

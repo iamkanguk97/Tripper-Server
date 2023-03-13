@@ -1,4 +1,3 @@
-'use strict';
 const httpStatus = require('http-status');
 
 // 500번 서버에러 (validationMiddleware 에러)

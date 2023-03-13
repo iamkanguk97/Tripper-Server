@@ -5,7 +5,6 @@
  *  description: 회원 관련 기능 리스트
  */
 
-'use strict';
 const express = require('express');
 const UserController = require('../controllers/user.controller');
 const jwtMiddleware = require('../middlewares/jwtMiddleware');
@@ -95,13 +94,7 @@ const router = express.Router();
  *              '3011':
  *                  description: '존재하지 않는 유저입니다.'
  */
-router.post(
-    '/following',
-    jwtMiddleware,
-    followValidation,
-    validationMiddleware,
-    wrapAsync(UserController.follow)
-); // 팔로우 API (OK)
+router.post('/following', jwtMiddleware, followValidation, validationMiddleware, wrapAsync(UserController.follow)); // 팔로우 API (OK)
 
 /**
  * @swagger

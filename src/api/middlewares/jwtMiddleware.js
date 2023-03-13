@@ -1,6 +1,4 @@
-'use strict';
 const jwt = require('jsonwebtoken');
-const responseMessage = require('../../config/response/baseResponseStatus');
 const { JWT_SECRET_KEY } = require('../../config/vars');
 const { JWTError } = require('../utils/errors');
 

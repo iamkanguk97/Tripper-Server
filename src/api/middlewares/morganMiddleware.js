@@ -2,9 +2,7 @@ const morgan = require('morgan');
 const Logger = require('../../config/logger');
 const { NODE_ENV } = require('../../config/vars');
 
-const format = () => {
-    return NODE_ENV === 'production' ? 'combined' : 'common';
-};
+const format = () => (NODE_ENV === 'production' ? 'combined' : 'common');
 
 const stream = {
     write: message => Logger.http(message)

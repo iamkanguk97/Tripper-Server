@@ -1,7 +1,6 @@
-'use strict';
 const httpStatus = require('http-status');
 const TravelService = require('../services/travel.service');
-const { response, errResponse } = require('../../config/response/response-template');
+const { response } = require('../../config/response/response-template');
 const responseMessage = require('../../config/response/baseResponseStatus');
 
 const createTravel = async (req, res) => {
@@ -11,32 +10,31 @@ const createTravel = async (req, res) => {
     // 해시태그 (선택)
     // 썸네일 사진 (최대 5장)
     // 여행 소개
-    const userIdx = req.verifiedToken.userIdx;
+    const { userIdx } = req.verifiedToken;
 };
 
 const updateTravelStatus = async (req, res) => {
-    const userIdx = req.verifiedToken.userIdx;
+    const { userIdx } = req.verifiedToken;
     const travelIdx = parseInt(req.params.travelIdx);
-    const travelStatus = req.travelStatus;
+    const { travelStatus } = req;
 
     const updateTravelStatusResult = await TravelService.updateTravelStatus(userIdx, travelIdx, travelStatus);
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, updateTravelStatusResult));
 };
 
 const createTravelReviewScore = async (req, res) => {
-    const userIdx = req.verifiedToken.userIdx;
+    const { userIdx } = req.verifiedToken;
     const { travelIdx, reviewScore } = req.body;
 
     const createTravelReviewScoreResult = await TravelService.createTravelReviewScore(userIdx, travelIdx, reviewScore);
-    return;
+    return res.send(createTravelReviewScoreResult);
 };
 
 const createTravelLike = async (req, res) => {
-    const userIdx = req.verifiedToken.userIdx;
-    const travelIdx = req.body.travelIdx;
+    const { userIdx } = req.verifiedToken;
+    const { travelIdx } = req.body;
 
     const createTravelLikeResult = await TravelService.createTravelLike(userIdx, travelIdx);
-    return;
 };
 
 module.exports = {

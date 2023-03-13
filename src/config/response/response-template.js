@@ -1,26 +1,20 @@
-const response = ({ isSuccess, code, message }, result) => {
-    return {
-        isSuccess: isSuccess,
-        code: code,
-        message: message,
-        result: result
-    };
-};
+const response = ({ isSuccess, code, message }, result) => ({
+    isSuccess,
+    code,
+    message,
+    result
+});
 
-const errResponse = ({ isSuccess, code, message }) => {
-    return {
-        isSuccess: isSuccess,
-        code: code,
-        message: message
-    };
-};
+const errResponse = ({ isSuccess, code, message }) => ({
+    isSuccess,
+    code,
+    message
+});
 
-const validationErrorResponse = (isServerError, error) => {
-    return {
-        isServerError: isServerError,
-        error: error
-    };
-};
+const validationErrorResponse = (isServerError, error) => ({
+    isServerError,
+    error
+});
 
 module.exports = {
     response,

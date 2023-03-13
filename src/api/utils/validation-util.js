@@ -2,14 +2,14 @@
  * express-validator에서 사용할 custom-function을 정리해놓은 파일
  * *.validation.js에서 직접 작성해도 되지만 코드가 더러워 보여서 따로 정리.
  */
-'use strict';
+
+const { Op } = require('sequelize');
 const User = require('../models/User/User');
 const UserFollow = require('../models/User/UserFollow');
 const Travel = require('../models/Travel/Travel');
 const responseMessage = require('../../config/response/baseResponseStatus');
 const Logger = require('../../config/logger');
-const { Op } = require('sequelize');
-const { checkBadWord } = require('../utils/util');
+const { checkBadWord } = require('./util');
 const { validationErrorResponse } = require('../../config/response/response-template');
 
 // 회원 탈퇴 및 존재 유무 확인하는 Validation Function
@@ -17,20 +17,19 @@ const checkUserStatusFunc = async value => {
     if (!value)
         // value가 없으면 넘겨보냄
         return Promise.resolve();
-    else {
-        try {
-            const checkUserResult = await User.findOne({
-                where: {
-                    IDX: value,
-                    USER_STATUS: 'A'
-                }
-            });
 
-            if (!checkUserResult) return Promise.reject(responseMessage.USER_NOT_EXIST);
-        } catch (err) {
-            Logger.error(err);
-            return Promise.reject(validationErrorResponse(true, err));
-        }
+    try {
+        const checkUserResult = await User.findOne({
+            where: {
+                IDX: value,
+                USER_STATUS: 'A'
+            }
+        });
+
+        if (!checkUserResult) return Promise.reject(responseMessage.USER_NOT_EXIST);
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(validationErrorResponse(true, err));
     }
 };
 
@@ -131,9 +130,8 @@ const checkTravelExist = async (value, { req }) => {
         });
 
         if (!checkMyTravelValid) return Promise.reject(responseMessage.TRAVEL_NOT_EXIST);
-        else {
-            req.travelStatus = checkMyTravelValid.dataValues.TRAVEL_STATUS;
-        }
+
+        req.travelStatus = checkMyTravelValid.dataValues.TRAVEL_STATUS;
     } catch (err) {
         Logger.error(err);
         return Promise.reject(validationErrorResponse(true, err));

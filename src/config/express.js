@@ -8,14 +8,14 @@ const methodOverride = require('method-override');
 const fileUpload = require('express-fileupload');
 // const cookieParser = require('cookie-parser');
 const morganMiddleware = require('../api/middlewares/morganMiddleware');
-const passportConfig = require('../config/passport');
+const passportConfig = require('./passport');
 const Logger = require('./logger');
-const responseMessage = require('../config/response/baseResponseStatus');
+const responseMessage = require('./response/baseResponseStatus');
 const errorHandleMiddleware = require('../api/middlewares/errorHandleMiddleware');
 
-const { errResponse } = require('../config/response/response-template');
+const { errResponse } = require('./response/response-template');
 const { sequelize } = require('../api/models/index');
-const { swaggerUi, specs } = require('../config/swagger');
+const { swaggerUi, specs } = require('./swagger');
 const { SWAGGER } = require('./vars');
 
 const authRoutes = require('../api/routes/auth.route');
@@ -78,7 +78,7 @@ passportConfig();
 
 // 404 NOT FOUND Middleware
 app.use((req, res, next) => {
-    let errMessage = responseMessage.API_NOT_FOUND;
+    const errMessage = responseMessage.API_NOT_FOUND;
     errMessage.message += ` (${req.method} ${req.url})`;
 
     Logger.error(`API NOT FOUND! (${req.method} ${req.url})`);

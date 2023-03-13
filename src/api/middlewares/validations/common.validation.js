@@ -1,4 +1,3 @@
-'use strict';
 const { query } = require('express-validator');
 const { REGEX_LONGITUDE, REGEX_LATITUDE } = require('../../utils/regex');
 const responseMessage = require('../../../config/response/baseResponseStatus');

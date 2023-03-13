@@ -10,15 +10,11 @@ const UserFollow = require('./User/UserFollow');
 const Hashtag = require('./Hashtag');
 
 const env = process.env.NODE_ENV;
-const db_config = require('../../config/database')[env];
+const dbConfig = require('../../config/database')[env];
+
 const db = {};
 
-const sequelize = new Sequelize(
-    db_config.database,
-    db_config.username,
-    db_config.password,
-    db_config
-);
+const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig);
 
 db.sequelize = sequelize;
 

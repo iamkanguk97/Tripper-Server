@@ -1,4 +1,3 @@
-'use strict';
 const { body, query, header } = require('express-validator');
 const { checkUserStatusFunc, checkUserFollowMe } = require('../../utils/validation-util');
 const responseMessage = require('../../../config/response/baseResponseStatus');

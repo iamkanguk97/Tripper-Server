@@ -1,13 +1,7 @@
-'use strict';
 const User = require('../models/User/User');
 const RedisClient = require('../../config/redis');
 const { verify, refreshVerify } = require('../utils/jwt-util');
-const {
-    getFirstLetter,
-    ageGroupToString,
-    uploadProfileImage,
-    checkUserExistWithSnsId
-} = require('../utils/util');
+const { getFirstLetter, ageGroupToString, uploadProfileImage, checkUserExistWithSnsId } = require('../utils/util');
 const { generateAccessToken, generateRefreshToken } = require('../utils/jwt-util');
 const { JWTError } = require('../utils/errors');
 
@@ -28,8 +22,8 @@ const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
             await redisClient.connect();
 
             const userIdx = checkIsUserExist;
-            const jwt_at = generateAccessToken(userIdx);
-            const jwt_rt = await generateRefreshToken(userIdx, redisClient);
+            const jwtAt = generateAccessToken(userIdx);
+            const jwtRt = await generateRefreshToken(userIdx, redisClient);
 
             // TODO: 카카오쪽에서 발급받은 AccessToken과 RefreshToken은 추후 필요할 때 클라쪽으로 Response 보내주자!
             return {
@@ -38,29 +32,28 @@ const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
                 result: {
                     userIdx,
                     jwt_token: {
-                        accessToken: jwt_at,
-                        refreshToken: jwt_rt
+                        accessToken: jwtAt,
+                        refreshToken: jwtRt
                     }
                 }
             };
-        } else {
-            // 유저가 없음
-            const isAgeGroup = profile._json.kakao_account.has_age_range; // 유저가 연령대 동의했는지 여부
-            const isGender = profile._json.kakao_account.has_gender; // 유저가 성별 동의했는지 여부
-
-            // 회원가입 API로 넘기기
-            return {
-                isError: false,
-                requireSignUp: true,
-                result: {
-                    snsId: profile.id,
-                    email: profile._json.kakao_account.email,
-                    age_group: isAgeGroup ? profile._json.kakao_account.age_range : null,
-                    gender: isGender ? profile._json.kakao_account.gender : null,
-                    provider: 'kakao'
-                }
-            };
         }
+        // 유저가 없음
+        const isAgeGroup = profile._json.kakao_account.has_age_range; // 유저가 연령대 동의했는지 여부
+        const isGender = profile._json.kakao_account.has_gender; // 유저가 성별 동의했는지 여부
+
+        // 회원가입 API로 넘기기
+        return {
+            isError: false,
+            requireSignUp: true,
+            result: {
+                snsId: profile.id,
+                email: profile._json.kakao_account.email,
+                age_group: isAgeGroup ? profile._json.kakao_account.age_range : null,
+                gender: isGender ? profile._json.kakao_account.gender : null,
+                provider: 'kakao'
+            }
+        };
     } catch (err) {
         // 에러 발생 -> Middleware로 넘기기 위해 Return
         return { isError: true, error: err };
@@ -85,8 +78,8 @@ const naverLoginCallback = async (accessToken, refreshToken, profile) => {
             await redisClient.connect();
 
             const userIdx = checkIsUserExist;
-            const jwt_at = generateAccessToken(userIdx);
-            const jwt_rt = await generateRefreshToken(userIdx, redisClient);
+            const jwtAt = generateAccessToken(userIdx);
+            const jwtRt = await generateRefreshToken(userIdx, redisClient);
 
             return {
                 isError: false,
@@ -94,25 +87,24 @@ const naverLoginCallback = async (accessToken, refreshToken, profile) => {
                 result: {
                     userIdx,
                     jwt_token: {
-                        accessToken: jwt_at,
-                        refreshToken: jwt_rt
+                        accessToken: jwtAt,
+                        refreshToken: jwtRt
                     }
                 }
             };
-        } else {
-            // 회원가입 API로 넘기기
-            return {
-                isError: false,
-                requireSignUp: true,
-                result: {
-                    snsId: profile.id,
-                    email: profile._json.email,
-                    age_group: profile._json.age ? profile._json.age : null,
-                    gender: profile._json.gender ? profile._json.gender : null,
-                    provider: 'naver'
-                }
-            };
         }
+        // 회원가입 API로 넘기기
+        return {
+            isError: false,
+            requireSignUp: true,
+            result: {
+                snsId: profile.id,
+                email: profile._json.email,
+                age_group: profile._json.age ? profile._json.age : null,
+                gender: profile._json.gender ? profile._json.gender : null,
+                provider: 'naver'
+            }
+        };
     } catch (err) {
         // 에러 발생 -> Middleware로 넘기기 위해 Return
         return { isError: true, error: err };
@@ -153,14 +145,14 @@ const signUp = async (email, nickname, profileImage, snsId, ageGroup, gender, pr
         ).dataValues.IDX;
 
         // JWT Access + Refresh 발급
-        const jwt_at = generateAccessToken(newUserIdx);
-        const jwt_rt = await generateRefreshToken(newUserIdx, redisClient);
+        const jwtAt = generateAccessToken(newUserIdx);
+        const jwtRt = await generateRefreshToken(newUserIdx, redisClient);
 
         return {
             newUserIdx,
             jwt_token: {
-                accessToken: jwt_at,
-                refreshToken: jwt_rt
+                accessToken: jwtAt,
+                refreshToken: jwtRt
             }
         };
     } catch (err) {

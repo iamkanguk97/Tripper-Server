@@ -5,7 +5,6 @@
  *  description: 게시물 관련 기능 리스트
  */
 
-'use strict';
 const express = require('express');
 const TravelController = require('../controllers/travel.controller');
 const jwtMiddleware = require('../middlewares/jwtMiddleware');
@@ -17,6 +16,7 @@ const {
     createTravelReviewScoreValidation,
     createTravelLikeValidation
 } = require('../middlewares/validations/travel.validation');
+
 const router = express.Router();
 
 /**

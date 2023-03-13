@@ -1,6 +1,5 @@
-'use strict';
-const UserFollow = require('../models/User/UserFollow');
 const { Op, QueryTypes } = require('sequelize');
+const UserFollow = require('../models/User/UserFollow');
 const { sequelize } = require('../models/index');
 
 const follow = async (myIdx, followUserIdx) => {

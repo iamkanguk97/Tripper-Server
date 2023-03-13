@@ -25,9 +25,11 @@ class RedisClient {
     connectMessageHandler() {
         Logger.info('### Success for Redis Connection! ###');
     }
+
     errorMessageHandler(err) {
         Logger.error('### Redis Connection Error! >> ###', err);
     }
+
     quitMessageHandler() {
         Logger.info('### Redis Connection Close! ###');
     }

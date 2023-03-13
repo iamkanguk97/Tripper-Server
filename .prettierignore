@@ -1,2 +1,6 @@
 src/config/response/baseResponseStatus.js
 src/config/vars.js
+node_modules/
+src/docs
+src/logs
+package-lock.json
