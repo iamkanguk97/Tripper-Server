@@ -3,7 +3,7 @@ const RedisClient = require('../../config/redis');
 const { verify, refreshVerify } = require('../utils/jwt-util');
 const { getFirstLetter, ageGroupToString, uploadProfileImage, checkUserExistWithSnsId } = require('../utils/util');
 const { generateAccessToken, generateRefreshToken } = require('../utils/jwt-util');
-const { JWTError } = require('../utils/errors');
+const { JWTError } = require('../errors/index');
 
 const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
     let redisClient = null;

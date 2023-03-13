@@ -30,6 +30,8 @@ module.exports = {
     KAKAO_SEARCH_LONGITUDE_ERROR_TYPE: { "isSuccess": false, "code": 2030, "message": "잘못된 경도 형식입니다." },
     KAKAO_SEARCH_LATITUDE_EMPTY: { "isSuccess": false, "code": 2031, "message": "위도를 입력해주세요." },
     KAKAO_SEARCH_LATITUDE_ERROR_TYPE: { "isSuccess": false, "code": 2032, "message": "잘못된 위도 형식입니다." },
+    TRAVEL_REVIEW_SCORE_EMPTY: { "isSuccess": false, "code": 2033, "message": "게시물 평점을 입력해주세요." },
+    TRAVEL_REVIEW_SCORE_ERROR_TYPE: { "isSuccess": false, "code": 2034, "message": "게시물 평점은 1점에서 5점 사이로 입력해주세요." },
 
     NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3010, "message": "중복된 닉네임입니다." },
     USER_NOT_EXIST: { "isSuccess": false, "code": 3011, "message": "존재하지 않는 유저입니다." },

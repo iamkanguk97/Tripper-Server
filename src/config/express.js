@@ -77,6 +77,7 @@ app.use(
 passportConfig();
 
 // 404 NOT FOUND Middleware
+// TODO: 이 부분 수정이 필요함! errMessage가 계속해서 쌓이는 에러 발생중
 app.use((req, res, next) => {
     const errMessage = responseMessage.API_NOT_FOUND;
     errMessage.message += ` (${req.method} ${req.url})`;

@@ -117,8 +117,8 @@ const checkUserFollowMe = async (value, { req }) => {
     }
 };
 
-// 여행 게시물이 실제로 있는지 확인
-const checkTravelExist = async (value, { req }) => {
+// 내 여행 게시물이 실제로 있는지 확인
+const checkMyTravelExist = async (value, { req }) => {
     try {
         const checkMyTravelValid = await Travel.findOne({
             where: {
@@ -138,6 +138,25 @@ const checkTravelExist = async (value, { req }) => {
     }
 };
 
+// 게시물 고유값을 통해 유효한 게시물인지 확인
+const checkTravelStatus = async value => {
+    try {
+        const checkTravelStatusResult = await Travel.findOne({
+            where: {
+                IDX: value,
+                TRAVEL_STATUS: {
+                    [Op.ne]: 'C'
+                }
+            }
+        });
+
+        if (!checkTravelStatusResult) return Promise.reject(responseMessage.TRAVEL_NOT_EXIST);
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(validationErrorResponse(true, err));
+    }
+};
+
 module.exports = {
     checkUserStatusFunc,
     checkNickDuplicate,
@@ -145,5 +164,6 @@ module.exports = {
     checkSnsIdDuplicate,
     checkAccessTokenEmpty,
     checkUserFollowMe,
-    checkTravelExist
+    checkMyTravelExist,
+    checkTravelStatus
 };

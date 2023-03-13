@@ -42,7 +42,7 @@ const createTravelReviewScore = async (userIdx, travelIdx, reviewScore) => {
 
     const checkUserScoreExist = !(await TravelScore.findOne({ where: whereOption })) ? 'N' : 'Y'; // DB에서 찾아서 null이면 N 아니면 Y
 
-    let result;
+    let result = null;
     if (checkUserScoreExist === 'N') {
         // 점수를 한번도 부여한적 없음
         result = await TravelScore.create({
@@ -50,9 +50,11 @@ const createTravelReviewScore = async (userIdx, travelIdx, reviewScore) => {
             USER_IDX: userIdx,
             TRAVEL_SCORE: reviewScore
         });
+        console.log(result);
     } else {
         // 점수를 이전에 부여했음
         result = await TravelScore.update({ TRAVEL_SCORE: reviewScore }, { where: whereOption });
+        console.log(result);
     }
 };
 

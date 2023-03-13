@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET_KEY } = require('../../config/vars');
-const { JWTError } = require('../utils/errors');
+const { JWTError } = require('../errors/index');
 
 // JWT 인증 미들웨어
 const jwtMiddleware = (req, res, next) => {

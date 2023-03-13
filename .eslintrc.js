@@ -15,7 +15,7 @@ module.exports = {
     },
     rules: {
         'no-unused-vars': 'warn',
-        'no-console': 'off',
+        'no-console': 'warn',
         'func-names': 'off',
         'no-plusplus': 'off',
         'no-process-exit': 'off',
@@ -24,6 +24,8 @@ module.exports = {
         'no-underscore-dangle': 'off',
         'no-lonely-if': 'off',
         'max-classes-per-file': 'warn',
+        'prefer-promise-reject-errors': 'off',
+        'new-cap': 'off',
         radix: 'off'
     }
 };

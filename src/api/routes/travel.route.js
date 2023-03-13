@@ -164,8 +164,8 @@ router.patch(
 router.post(
     '/review-score',
     jwtMiddleware,
-    // createTravelReviewScoreValidation,
-    // validationMiddleware,
+    createTravelReviewScoreValidation,
+    validationMiddleware,
     wrapAsync(TravelController.createTravelReviewScore)
 ); // 게시물 평점등록 API
 
