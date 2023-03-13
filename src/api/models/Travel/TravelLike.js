@@ -21,12 +21,6 @@ module.exports = class TravelLike extends Sequelize.Model {
                     allowNull: false,
                     comment: '사용자 고유값'
                 },
-                TRAVEL_LIKE_STATUS: {
-                    type: Sequelize.CHAR(1),
-                    allowNull: false,
-                    defaultValue: 'Y',
-                    comment: '여행 게시물 좋아요 상태'
-                },
                 CREATED_AT: {
                     type: 'TIMESTAMP',
                     allowNull: false,

@@ -143,10 +143,7 @@ const checkTravelStatus = async value => {
     try {
         const checkTravelStatusResult = await Travel.findOne({
             where: {
-                IDX: value,
-                TRAVEL_STATUS: {
-                    [Op.ne]: 'C'
-                }
+                [Op.and]: [{ IDX: value }, { TRAVEL_STATUS: 'A' }]
             }
         });
 

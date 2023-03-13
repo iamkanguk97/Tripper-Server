@@ -40,10 +40,10 @@ const createTravelReviewScoreValidation = [
  */
 const createTravelLikeValidation = [
     body('travelIdx')
-        .notEmpty()
+        .notEmpty() // 게시물 고유값 유무 확인
         .withMessage(responseMessage.TRAVEL_IDX_EMPTY)
         .bail()
-        .custom(checkTravelStatus)
+        .custom(checkTravelStatus) // 게시물이 실제로 존재하는지 확인
         .bail()
 ];
 

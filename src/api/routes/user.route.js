@@ -375,4 +375,20 @@ router.delete(
     wrapAsync(UserController.deleteFollower)
 ); // 본인 팔로워 삭제 API (OK)
 
+router.get(
+    '/my-page',
+    jwtMiddleware,
+    // validationMiddleware,
+    wrapAsync(UserController.getMyPage)
+); // 마이페이지 조회 API
+
+router.put('/my-page', jwtMiddleware, validationMiddleware, wrapAsync(UserController.updateMyPage)); // 마이페이지 수정 API
+
+router.get(
+    '/profile',
+    jwtMiddleware,
+    // validationMiddleware,
+    wrapAsync(UserController.getProfile)
+); // 상대방 프로필 조회 API
+
 module.exports = router;

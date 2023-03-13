@@ -1,0 +1,18 @@
+{
+    "workbench.startupEditor": "none",
+    "workbench.iconTheme": "material-icon-theme",
+    "editor.fontSize": 14,
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true
+    },
+    "editor.semanticTokenColorCustomizations": {},
+    "eslint.enable": true,
+    "eslint.validate": ["javascript"],
+    "javascript.format.enable": false
+}

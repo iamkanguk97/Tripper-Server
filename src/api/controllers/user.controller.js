@@ -31,8 +31,17 @@ const deleteFollower = async (req, res) => {
         .json(response(responseMessage.SUCCESS, { deleteUserIdx: deleteFollowerIdx }));
 };
 
+const getProfile = async (req, res) => {};
+
+const getMyPage = async (req, res) => {};
+
+const updateMyPage = async (req, res) => {};
+
 module.exports = {
     follow,
     followList,
-    deleteFollower
+    deleteFollower,
+    getProfile,
+    getMyPage,
+    updateMyPage
 };

@@ -42,7 +42,7 @@ const createTravelReviewScore = async (req, res) => {
 
 const createTravelLike = async (req, res) => {
     const userIdx = req.verifiedToken.userIdx;
-    const { travelIdx } = req.body;
+    const travelIdx = req.body.travelIdx;
 
     const createTravelLikeResult = await TravelService.createTravelLike(userIdx, travelIdx);
     return res.send(createTravelLikeResult);

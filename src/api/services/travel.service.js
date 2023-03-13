@@ -1,6 +1,7 @@
 const { Op } = require('sequelize');
 const Travel = require('../models/Travel/Travel');
 const TravelScore = require('../models/Travel/TravelScore');
+const TravelLike = require('../models/Travel/TravelLike');
 
 const updateTravelStatus = async (userIdx, travelIdx, travelStatus) => {
     const _newTravelStatus = travelStatus === 'A' ? 'B' : 'A';
@@ -58,7 +59,18 @@ const createTravelReviewScore = async (userIdx, travelIdx, reviewScore) => {
     }
 };
 
-const createTravelLike = async (userIdx, travelIdx) => {};
+const createTravelLike = async (userIdx, travelIdx) => {
+    /** <Logic>
+     * 1. 사용자가 해당 게시물을 좋아요 하고 있는지 안하고 있는지 확인
+     * 2. 1번에서 나온 상태에 따라서 처리 (생성 또는 삭제)
+     */
+    const isUserLike = await TravelLike.findOne({
+        where: {
+            [Op.and]: [{ USER_IDX: userIdx }, { TRAVEL_IDX: travelIdx }]
+        }
+    });
+    console.log(isUserLike);
+};
 
 module.exports = {
     updateTravelStatus,

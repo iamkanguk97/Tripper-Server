@@ -185,4 +185,6 @@ router.get(
     wrapAsync(CommonController.searchArea)
 ); // 장소검색 API (OK)
 
+router.get('/search-map'); // 지도검색 API
+
 module.exports = router;
