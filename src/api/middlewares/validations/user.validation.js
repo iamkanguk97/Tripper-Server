@@ -47,8 +47,14 @@ const deleteFollowerValidation = [
         .bail()
 ];
 
+/**
+ * 상대방 프로필 조회 API Validator
+ */
+const getProfileValidation = [];
+
 module.exports = {
     followValidation,
     followListValidation,
-    deleteFollowerValidation
+    deleteFollowerValidation,
+    getProfileValidation
 };

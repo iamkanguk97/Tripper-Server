@@ -37,7 +37,9 @@ const createTravelReviewScore = async (req, res) => {
         travelIdx,
         reviewScore
     );
-    return res.status(httpStatus.OK).json(createTravelReviewScoreResult);
+    return res
+        .status(httpStatus.OK)
+        .json(response(responseMessage.SUCCESS, { message: createTravelReviewScoreResult }));
 };
 
 const createTravelLike = async (req, res) => {

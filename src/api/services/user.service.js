@@ -86,8 +86,13 @@ const deleteFollower = async (myIdx, userIdx) => {
     else return userIdx;
 };
 
+const getMyPage = async userIdx => {
+    // 프로필사진, 닉네임, 팔로잉 및 팔로워 수, 내 게시물, 내가 좋아요 누른 게시물
+};
+
 module.exports = {
     follow,
     followList,
-    deleteFollower
+    deleteFollower,
+    getMyPage
 };

@@ -1,6 +1,6 @@
 const { param, body } = require('express-validator');
 const responseMessage = require('../../../config/response/baseResponseStatus');
-const { checkMyTravelExist, checkTravelStatus } = require('../../utils/validation-util');
+const { checkMyTravelExist, checkTravelStatusAble } = require('../../utils/validation-util');
 
 const createTravelValidation = [];
 
@@ -17,19 +17,20 @@ const updateTravelStatusValidation = [
  * 게시물 평점등록 API Validator
  * - 게시물 고유값 유무 + 게시물 유효성 확인
  * - 점수 유무 + 1-5점 사이인지 확인
+ * - 본인 PRIVATE 게시물에도 가능하게 기능 구현 필요
  */
 const createTravelReviewScoreValidation = [
     body('travelIdx')
-        .notEmpty()
+        .notEmpty() // 게시물 고유값 유무 확인
         .withMessage(responseMessage.TRAVEL_IDX_EMPTY)
         .bail()
-        .custom(checkTravelStatus)
+        .custom(checkTravelStatusAble) // 게시물 유효성 확인
         .bail(),
     body('reviewScore')
-        .notEmpty()
+        .notEmpty() // 점수 유무 확인
         .withMessage(responseMessage.TRAVEL_REVIEW_SCORE_EMPTY)
         .bail()
-        .isInt({ min: 1, max: 5 })
+        .isInt({ min: 1, max: 5 }) // 1점에서 5점 사이인지 확인
         .withMessage(responseMessage.TRAVEL_REVIEW_SCORE_ERROR_TYPE)
         .bail()
 ];
@@ -44,7 +45,7 @@ const createTravelLikeValidation = [
         .notEmpty() // 게시물 고유값 유무 확인
         .withMessage(responseMessage.TRAVEL_IDX_EMPTY)
         .bail()
-        .custom(checkTravelStatus) // 게시물이 실제로 존재하는지 확인
+        .custom(checkTravelStatusAble) // 게시물이 실제로 존재하는지 확인
         .bail()
 ];
 

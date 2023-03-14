@@ -139,39 +139,32 @@ const checkMyTravelExist = async (value, { req }) => {
 };
 
 // 게시물 고유값을 통해 유효한 게시물인지 확인
-const checkTravelStatus = async (value, { req }) => {
+// 본인 게시물도 허용시켜야 할 때 사용하는 Validation 함수
+const checkTravelStatusAble = async (value, { req }) => {
     try {
-        const travel = (
-            await Travel.findOne({
-                attributes: ['IDX', 'USER_IDX', 'TRAVEL_STATUS'],
-                where: {
-                    [Op.and]: [{ IDX: value }]
-                }
-            })
-        ).dataValues;
-        const userIdx = req.verifiedToken.userIdx;
-
-        let whereOption = null;
-        if (travel.USER_IDX === userIdx) {
-            // 게시글 작성자가 본인이면 => TRAVEL_STATUS가 'A' 또는 'B'
-            whereOption = {
+        const travel = await Travel.findOne({
+            attributes: ['IDX', 'USER_IDX', 'TRAVEL_STATUS'],
+            where: {
                 IDX: value,
                 TRAVEL_STATUS: {
                     [Op.ne]: 'C'
                 }
-            };
-        } else {
-            // 본인이 아님 => TRAVEL_STATUS가 'A'인 것만
-            whereOption = {
-                IDX: value,
-                TRAVEL_STATUS: 'A'
-            };
-        }
+            }
+        }); // 해당 고유값으로 게시물 있는지 확인
 
-        const checkTravelStatusResult = await Travel.findOne({
-            where: whereOption
-        });
-        if (!checkTravelStatusResult) return Promise.reject(responseMessage.TRAVEL_NOT_EXIST);
+        // travel이 null이면 해당 게시물이 존재하지 않는 것 -> 에러 발생
+        if (!travel) return Promise.reject(responseMessage.TRAVEL_NOT_EXIST);
+
+        const isTravelWriterIsMe = travel.dataValues.IDX === req.verifiedToken.userIdx;
+        const travelStatus = travel.dataValues.TRAVEL_STATUS;
+
+        /**
+         * 본인 게시물일 경우 -> travelStatus가 'A'와 'B'이면 모두 가능 => 검사 필요 X
+         * 본인 게시물이 아닐 경우 -> travelStatus가 only 'A'일 경우만 가능
+         */
+        if (!isTravelWriterIsMe && travelStatus !== 'A')
+            // 본인게시물이 아니고 A가 아닐 경우 -> 에러 발생
+            return Promise.reject(responseMessage.TRAVEL_CANT_SET_REVIEW_SCORE);
     } catch (err) {
         Logger.error(err);
         return Promise.reject(validationErrorResponse(true, err));
@@ -186,5 +179,5 @@ module.exports = {
     checkAccessTokenEmpty,
     checkUserFollowMe,
     checkMyTravelExist,
-    checkTravelStatus
+    checkTravelStatusAble
 };

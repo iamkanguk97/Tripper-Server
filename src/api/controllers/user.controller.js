@@ -33,7 +33,11 @@ const deleteFollower = async (req, res) => {
 
 const getProfile = async (req, res) => {};
 
-const getMyPage = async (req, res) => {};
+const getMyPage = async (req, res) => {
+    const userIdx = req.verifiedToken.userIdx;
+    const getMyPageResult = await UserService.getMyPage(userIdx);
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, getMyPageResult));
+};
 
 const updateMyPage = async (req, res) => {};
 

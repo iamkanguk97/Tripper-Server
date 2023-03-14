@@ -43,20 +43,19 @@ const createTravelReviewScore = async (userIdx, travelIdx, reviewScore) => {
 
     const checkUserScoreExist = !(await TravelScore.findOne({ where: whereOption })) ? 'N' : 'Y'; // DB에서 찾아서 null이면 N 아니면 Y
 
-    let result = null;
     if (checkUserScoreExist === 'N') {
         // 점수를 한번도 부여한적 없음
-        result = await TravelScore.create({
+        await TravelScore.create({
             TRAVEL_IDX: travelIdx,
             USER_IDX: userIdx,
             TRAVEL_SCORE: reviewScore
         });
-        console.log(result);
     } else {
         // 점수를 이전에 부여했음
-        result = await TravelScore.update({ TRAVEL_SCORE: reviewScore }, { where: whereOption });
-        console.log(result);
+        await TravelScore.update({ TRAVEL_SCORE: reviewScore }, { where: whereOption });
     }
+
+    return `게시물 점수 ${reviewScore}점 부여 성공!`;
 };
 
 const createTravelLike = async (userIdx, travelIdx) => {
@@ -64,27 +63,25 @@ const createTravelLike = async (userIdx, travelIdx) => {
      * 1. 사용자가 해당 게시물을 좋아요 하고 있는지 안하고 있는지 확인
      * 2. 1번에서 나온 상태에 따라서 처리 (생성 또는 삭제)
      */
+    const option = {
+        USER_IDX: userIdx,
+        TRAVEL_IDX: travelIdx
+    };
+
     let isUserLike = await TravelLike.findOne({
-        where: {
-            [Op.and]: [{ USER_IDX: userIdx }, { TRAVEL_IDX: travelIdx }]
-        }
+        where: option
     });
     isUserLike = !isUserLike ? 'N' : 'Y';
 
     let rm = '';
     if (isUserLike === 'N') {
         // 좋아요를 안누른 상태 -> create
-        await TravelLike.create({
-            USER_IDX: userIdx,
-            TRAVEL_IDX: travelIdx
-        });
+        await TravelLike.create(option);
         rm = '게시글 좋아요 활성화 성공';
     } else {
         // 좋아요 누른 상태 -> delete
         await TravelLike.destroy({
-            where: {
-                [Op.and]: [{ USER_IDX: userIdx }, { TRAVEL_IDX: travelIdx }]
-            }
+            where: option
         });
         rm = '게시글 좋아요 비활성화 성공';
     }
