@@ -64,12 +64,32 @@ const createTravelLike = async (userIdx, travelIdx) => {
      * 1. 사용자가 해당 게시물을 좋아요 하고 있는지 안하고 있는지 확인
      * 2. 1번에서 나온 상태에 따라서 처리 (생성 또는 삭제)
      */
-    const isUserLike = await TravelLike.findOne({
+    let isUserLike = await TravelLike.findOne({
         where: {
             [Op.and]: [{ USER_IDX: userIdx }, { TRAVEL_IDX: travelIdx }]
         }
     });
-    console.log(isUserLike);
+    isUserLike = !isUserLike ? 'N' : 'Y';
+
+    let rm = '';
+    if (isUserLike === 'N') {
+        // 좋아요를 안누른 상태 -> create
+        await TravelLike.create({
+            USER_IDX: userIdx,
+            TRAVEL_IDX: travelIdx
+        });
+        rm = '게시글 좋아요 활성화 성공';
+    } else {
+        // 좋아요 누른 상태 -> delete
+        await TravelLike.destroy({
+            where: {
+                [Op.and]: [{ USER_IDX: userIdx }, { TRAVEL_IDX: travelIdx }]
+            }
+        });
+        rm = '게시글 좋아요 비활성화 성공';
+    }
+
+    return rm;
 };
 
 module.exports = {

@@ -29,7 +29,7 @@ const updateTravelStatus = async (req, res) => {
 };
 
 const createTravelReviewScore = async (req, res) => {
-    const { userIdx } = req.verifiedToken;
+    const userIdx = req.verifiedToken.userIdx;
     const { travelIdx, reviewScore } = req.body;
 
     const createTravelReviewScoreResult = await TravelService.createTravelReviewScore(
@@ -37,7 +37,7 @@ const createTravelReviewScore = async (req, res) => {
         travelIdx,
         reviewScore
     );
-    return res.send(createTravelReviewScoreResult);
+    return res.status(httpStatus.OK).json(createTravelReviewScoreResult);
 };
 
 const createTravelLike = async (req, res) => {
@@ -45,7 +45,9 @@ const createTravelLike = async (req, res) => {
     const travelIdx = req.body.travelIdx;
 
     const createTravelLikeResult = await TravelService.createTravelLike(userIdx, travelIdx);
-    return res.send(createTravelLikeResult);
+    return res
+        .status(httpStatus.OK)
+        .json(response(responseMessage.SUCCESS, { message: createTravelLikeResult }));
 };
 
 module.exports = {

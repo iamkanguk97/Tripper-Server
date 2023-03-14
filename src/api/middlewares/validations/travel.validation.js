@@ -37,6 +37,7 @@ const createTravelReviewScoreValidation = [
 /**
  * 게시물 좋아요 API Validator
  * - 게시물 고유값 유무 + 게시물 유효성 확인
+ * - 본인의 게시물일 때는 비공개 상태에서도 좋아요를 누를 수 있어야함.
  */
 const createTravelLikeValidation = [
     body('travelIdx')

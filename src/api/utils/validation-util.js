@@ -139,14 +139,38 @@ const checkMyTravelExist = async (value, { req }) => {
 };
 
 // 게시물 고유값을 통해 유효한 게시물인지 확인
-const checkTravelStatus = async value => {
+const checkTravelStatus = async (value, { req }) => {
     try {
-        const checkTravelStatusResult = await Travel.findOne({
-            where: {
-                [Op.and]: [{ IDX: value }, { TRAVEL_STATUS: 'A' }]
-            }
-        });
+        const travel = (
+            await Travel.findOne({
+                attributes: ['IDX', 'USER_IDX', 'TRAVEL_STATUS'],
+                where: {
+                    [Op.and]: [{ IDX: value }]
+                }
+            })
+        ).dataValues;
+        const userIdx = req.verifiedToken.userIdx;
 
+        let whereOption = null;
+        if (travel.USER_IDX === userIdx) {
+            // 게시글 작성자가 본인이면 => TRAVEL_STATUS가 'A' 또는 'B'
+            whereOption = {
+                IDX: value,
+                TRAVEL_STATUS: {
+                    [Op.ne]: 'C'
+                }
+            };
+        } else {
+            // 본인이 아님 => TRAVEL_STATUS가 'A'인 것만
+            whereOption = {
+                IDX: value,
+                TRAVEL_STATUS: 'A'
+            };
+        }
+
+        const checkTravelStatusResult = await Travel.findOne({
+            where: whereOption
+        });
         if (!checkTravelStatusResult) return Promise.reject(responseMessage.TRAVEL_NOT_EXIST);
     } catch (err) {
         Logger.error(err);

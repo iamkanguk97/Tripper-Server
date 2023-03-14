@@ -24,6 +24,89 @@ const options = {
                 }
             }
         },
+        definitions: {
+            CommonResponse: {
+                type: 'object',
+                required: ['isSuccess', 'code', 'message'],
+                properties: {
+                    isSuccess: {
+                        type: 'boolean',
+                        description: 'Request 성공 여부'
+                    },
+                    code: {
+                        type: 'integer',
+                        description: 'Response Code'
+                    },
+                    message: {
+                        type: 'string',
+                        description: 'Response Message'
+                    }
+                }
+            },
+            InternalServerError: {
+                type: 'object',
+                required: ['isSuccess', 'code', 'message', 'error'],
+                properties: {
+                    isSuccess: {
+                        type: 'boolean',
+                        description: 'Request 성공 여부'
+                    },
+                    code: {
+                        type: 'integer',
+                        description: 'Response Code'
+                    },
+                    message: {
+                        type: 'string',
+                        description: 'Response Message'
+                    },
+                    error: {
+                        type: 'object',
+                        required: ['message', 'stack'],
+                        properties: {
+                            message: {
+                                type: 'string',
+                                description: '에러 메세지 내용'
+                            },
+                            stack: {
+                                type: 'string',
+                                description: '에러 위치'
+                            }
+                        }
+                    }
+                },
+                example: {
+                    isSuccess: false,
+                    code: 500,
+                    message: '서버 내부 에러 발생.',
+                    error: {
+                        message: '에러 메세지 내용',
+                        stack: '에러 위치'
+                    }
+                }
+            },
+            SuccessWithResult: {
+                type: 'object',
+                required: ['isSuccess', 'code', 'message', 'result'],
+                properties: {
+                    isSuccess: {
+                        type: 'boolean',
+                        description: 'Request 성공 여부'
+                    },
+                    code: {
+                        type: 'integer',
+                        description: 'Response Code'
+                    },
+                    message: {
+                        type: 'string',
+                        description: 'Response Message'
+                    },
+                    result: {
+                        type: 'object',
+                        description: 'Response optional elements'
+                    }
+                }
+            }
+        },
         servers: [
             {
                 url: 'http://localhost:3030',
@@ -35,7 +118,7 @@ const options = {
             }
         ]
     },
-    apis: ['src/api/routes/*.route.js', 'src/api/models/User/*.js']
+    apis: ['src/api/models/User/*.js', 'src/api/swaggers/*.swagger.js']
 };
 
 const specs = swaggerJsDoc(options);
