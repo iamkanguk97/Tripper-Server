@@ -36,15 +36,14 @@ const createTravelReviewScoreValidation = [
 
 /**
  * 게시물 좋아요 API Validator
- * - 게시물 고유값 유무 + 게시물 유효성 확인
- * - 본인의 게시물일 때는 비공개 상태에서도 좋아요를 누를 수 있어야함.
+ * - 게시물 고유값 유무 + 게시물 유효성 확인 + 본인 PRIVATE 게시물에도 가능하게 기능 구현 필요
  */
 const createTravelLikeValidation = [
     body('travelIdx')
         .notEmpty() // 게시물 고유값 유무 확인
         .withMessage(responseMessage.TRAVEL_IDX_EMPTY)
         .bail()
-        .custom(checkTravelStatusAble) // 게시물이 실제로 존재하는지 확인
+        .custom(checkTravelStatusAble) // 게시물 유효성 확인 + 본인 게시물인지까지 확인
         .bail()
 ];
 

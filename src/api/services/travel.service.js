@@ -68,10 +68,7 @@ const createTravelLike = async (userIdx, travelIdx) => {
         TRAVEL_IDX: travelIdx
     };
 
-    let isUserLike = await TravelLike.findOne({
-        where: option
-    });
-    isUserLike = !isUserLike ? 'N' : 'Y';
+    const isUserLike = !(await TravelLike.findOne({ where: option })) ? 'N' : 'Y';
 
     let rm = '';
     if (isUserLike === 'N') {
@@ -80,9 +77,7 @@ const createTravelLike = async (userIdx, travelIdx) => {
         rm = '게시글 좋아요 활성화 성공';
     } else {
         // 좋아요 누른 상태 -> delete
-        await TravelLike.destroy({
-            where: option
-        });
+        await TravelLike.destroy({ where: option });
         rm = '게시글 좋아요 비활성화 성공';
     }
 
