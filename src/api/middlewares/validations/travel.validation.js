@@ -15,16 +15,15 @@ const updateTravelStatusValidation = [
 
 /**
  * 게시물 평점등록 API Validator
- * - 게시물 고유값 유무 + 게시물 유효성 확인
+ * - 게시물 고유값 유무 + 게시물 유효성 확인 + 본인 PRIVATE 게시물에도 가능하게 기능 구현 필요
  * - 점수 유무 + 1-5점 사이인지 확인
- * - 본인 PRIVATE 게시물에도 가능하게 기능 구현 필요
  */
 const createTravelReviewScoreValidation = [
     body('travelIdx')
         .notEmpty() // 게시물 고유값 유무 확인
         .withMessage(responseMessage.TRAVEL_IDX_EMPTY)
         .bail()
-        .custom(checkTravelStatusAble) // 게시물 유효성 확인
+        .custom(checkTravelStatusAble) // 게시물 유효성 확인 + 본인 게시물인지까지 확인
         .bail(),
     body('reviewScore')
         .notEmpty() // 점수 유무 확인

@@ -30,7 +30,7 @@ router.patch(
     wrapAsync(TravelController.updateTravelStatus)
 );
 
-// 게시물 평점등록 API
+// 게시물 평점등록 API -> 등록한 평점은 삭제할수는 없음. (OK)
 router.post(
     '/review-score',
     jwtMiddleware,

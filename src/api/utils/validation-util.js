@@ -155,7 +155,7 @@ const checkTravelStatusAble = async (value, { req }) => {
         // travel이 null이면 해당 게시물이 존재하지 않는 것 -> 에러 발생
         if (!travel) return Promise.reject(responseMessage.TRAVEL_NOT_EXIST);
 
-        const isTravelWriterIsMe = travel.dataValues.IDX === req.verifiedToken.userIdx;
+        const isTravelWriterIsMe = travel.dataValues.USER_IDX === req.verifiedToken.userIdx;
         const travelStatus = travel.dataValues.TRAVEL_STATUS;
 
         /**
