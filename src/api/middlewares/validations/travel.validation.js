@@ -4,6 +4,10 @@ const { checkMyTravelExist, checkTravelStatusAble } = require('../../utils/valid
 
 const createTravelValidation = [];
 
+/**
+ * 게시물 공개 범위 수정 API Validator
+ * - 게시물 고유값 유무 + 본인 게시물이 맞는지 확인
+ */
 const updateTravelStatusValidation = [
     param('travelIdx')
         .notEmpty()

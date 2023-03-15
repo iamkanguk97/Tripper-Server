@@ -39,7 +39,7 @@ router.post(
     wrapAsync(TravelController.createTravelReviewScore)
 );
 
-// 게시물 좋아요 API
+// 게시물 좋아요 API (OK)
 router.post(
     '/like',
     jwtMiddleware,
