@@ -84,8 +84,16 @@ const createTravelLike = async (userIdx, travelIdx) => {
     return rm;
 };
 
+const createTravel = async (userIdx, request, imgFiles) => {
+    // 1. travel_data + travelThumImage 부분 DB에 insert
+    // 2. day_data 부분 DB에 insert
+    // 3. 1번과 2번 모두 Promise.all로 성능개선
+    // const travelDataInsertResult = await Travel.
+};
+
 module.exports = {
     updateTravelStatus,
     createTravelReviewScore,
-    createTravelLike
+    createTravelLike,
+    createTravel
 };

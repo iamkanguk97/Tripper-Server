@@ -2,6 +2,10 @@ const { param, body } = require('express-validator');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 const { checkMyTravelExist, checkTravelStatusAble } = require('../../utils/validation-util');
 
+/**
+ * 게시물 생성 API Validator
+ * -
+ */
 const createTravelValidation = [];
 
 /**

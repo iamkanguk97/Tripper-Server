@@ -15,10 +15,10 @@ const router = express.Router();
 // 게시물 생성 API
 router.post(
     '/',
-    createTravelValidation,
-    validationMiddleware,
     jwtMiddleware,
-    TravelController.createTravel
+    // createTravelValidation,
+    // validationMiddleware,
+    wrapAsync(TravelController.createTravel)
 );
 
 // 게시물 공개 범위 수정 API (OK)

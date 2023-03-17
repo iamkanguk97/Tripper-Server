@@ -4,13 +4,14 @@ const { response } = require('../../config/response/response-template');
 const responseMessage = require('../../config/response/baseResponseStatus');
 
 const createTravel = async (req, res) => {
-    // 여행 시작일자와 종료일자
-    // 여행 이동수단
-    // 여행 제목
-    // 해시태그 (선택)
-    // 썸네일 사진 (최대 5장)
-    // 여행 소개
-    const { userIdx } = req.verifiedToken;
+    const userIdx = req.verifiedToken.userIdx;
+    const imgFiles = req.files;
+    const request = JSON.parse(req.body.request);
+
+    console.log(userIdx, imgFiles, request);
+
+    const createTravelResult = await TravelService.createTravel(userIdx, request, imgFiles);
+    return res.status(httpStatus.CREATED).json(createTravelResult);
 };
 
 const updateTravelStatus = async (req, res) => {

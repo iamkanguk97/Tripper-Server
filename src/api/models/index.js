@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 const Travel = require('./Travel/Travel');
 const TravelHashtag = require('./Travel/TravelHashtag');
-const TravelImage = require('./Travel/TravelImage');
+const TravelThumImage = require('./Travel/TravelThumImage');
 const TravelLike = require('./Travel/TravelLike');
 const TravelScore = require('./Travel/TravelScore');
 const User = require('./User/User');
@@ -21,7 +21,7 @@ db.sequelize = sequelize;
 // DB와 테이블 연결
 db.Travel = Travel;
 db.TravelHashtag = TravelHashtag;
-db.TravelImage = TravelImage;
+db.TravelImage = TravelThumImage;
 db.TravelLike = TravelLike;
 db.TravelScore = TravelScore;
 
@@ -32,7 +32,7 @@ db.Hashtag = Hashtag;
 
 Travel.init(sequelize);
 TravelHashtag.init(sequelize);
-TravelImage.init(sequelize);
+TravelThumImage.init(sequelize);
 TravelLike.init(sequelize);
 TravelScore.init(sequelize);
 
