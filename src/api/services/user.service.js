@@ -1,4 +1,4 @@
-const { Op, QueryTypes } = require('sequelize');
+const { Op, QueryTypes, Sequelize } = require('sequelize');
 const UserFollow = require('../models/User/UserFollow');
 const { sequelize } = require('../models/index');
 const {

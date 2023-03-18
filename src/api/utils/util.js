@@ -84,6 +84,11 @@ const uploadProfileImage = async (profileImage, snsId) => {
     return uploadProfileImageResult.Location;
 };
 
+// const uploadThumImage = async () => {
+//     const s3 = returnS3Module();
+//     const fileContent =
+// };
+
 /**
  * 소셜로그인 고유값을 가지고 회원 존재하는지 확인
  * @param provider, snsId
@@ -141,4 +146,5 @@ module.exports = {
     checkUserExistWithSnsId,
     getKeyByValue,
     getTravelTrans
+    // uploadThumImage
 };

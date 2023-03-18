@@ -2,6 +2,9 @@ const { Op } = require('sequelize');
 const Travel = require('../models/Travel/Travel');
 const TravelScore = require('../models/Travel/TravelScore');
 const TravelLike = require('../models/Travel/TravelLike');
+const { getTravelTrans } = require('../utils/util');
+// const TravelThum = require('../models/Travel/TravelThumImage');
+// const TravelHashtag = require('../models/Travel/TravelHashtag');
 
 const updateTravelStatus = async (userIdx, travelIdx, travelStatus) => {
     const _newTravelStatus = travelStatus === 'A' ? 'B' : 'A';
@@ -88,7 +91,30 @@ const createTravel = async (userIdx, request, imgFiles) => {
     // 1. travel_data + travelThumImage 부분 DB에 insert
     // 2. day_data 부분 DB에 insert
     // 3. 1번과 2번 모두 Promise.all로 성능개선
-    // const travelDataInsertResult = await Travel.
+    console.log(request);
+    console.log(imgFiles);
+    const travelData = request.travel_data;
+    const travelThumImage = imgFiles.travelThumImage;
+
+    // TRAVEL 테이블에 Data INSERT + 새로운 TRAVEL_IDX Return
+    const newTravelIdx = (
+        await Travel.create({
+            USER_IDX: userIdx,
+            TRAVEL_TITLE: travelData.travelTitle,
+            TRAVEL_INTRO: travelData.travelIntroduce,
+            TRAVEL_START_DATE: travelData.travelStartDate,
+            TRAVEL_END_DATE: travelData.travelEndDate,
+            TRAVEL_MOVE_METHOD: getTravelTrans(travelData.travelTransportation)
+        })
+    ).dataValues.IDX;
+
+    // TRAVEL_THUMNAIL_IMAGE 테이블
+    // 썸네일 이미지는 최대 5장으로 업로드 가능하기 때문에 forEach를 사용해도 성능에 크게 문제가 안될거 같다.
+    travelThumImage.forEach(img => {
+        const imgKey = `travel_${newTravelIdx}_thum_${img.md5}`;
+    });
+
+    // const travelHashtagInsertResult = await TravelHashtag.create();
 };
 
 module.exports = {
