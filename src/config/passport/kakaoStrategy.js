@@ -10,7 +10,17 @@ module.exports = () => {
                 callbackURL: KAKAO.CALLBACK_URL
             },
             (accessToken, refreshToken, profile, done) => {
-                done({ accessToken, refreshToken, profile });
+                console.log(accessToken);
+                console.log(refreshToken);
+                console.log(profile);
+
+                const profileJson = profile._json;
+                const kakaoAccount = profileJson.kakao_account;
+                const kakaoLoginUser = {
+                    kakaoId: profileJson.id
+                };
+
+                done(null, kakaoLoginUser);
             }
         )
     );

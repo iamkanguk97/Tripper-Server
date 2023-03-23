@@ -42,10 +42,7 @@ const checkNickDuplicate = async value => {
             return Promise.reject(responseMessage.NICKNAME_DUPLICATED);
     } catch (err) {
         Logger.error(err);
-        return Promise.reject({
-            isServerError: true,
-            error: err
-        });
+        return Promise.reject(validationErrorResponse(true, err));
     }
 };
 
@@ -58,10 +55,7 @@ const checkBadWordInclude = async value => {
             return Promise.reject(responseMessage.NICKNAME_BAD_WORD_INCLUDE);
     } catch (err) {
         Logger.error(err);
-        return Promise.reject({
-            isServerError: true,
-            error: err
-        });
+        return Promise.reject(validationErrorResponse(true, err));
     }
 };
 

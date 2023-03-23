@@ -6,6 +6,7 @@ const { wrapAsync } = require('../utils/util');
 const {
     updateTravelStatusValidation,
     createTravelValidation,
+    deleteTravelValidation,
     createTravelReviewScoreValidation,
     createTravelLikeValidation
 } = require('../middlewares/validations/travel.validation');
@@ -19,6 +20,17 @@ router.post(
     // createTravelValidation,
     // validationMiddleware,
     wrapAsync(TravelController.createTravel)
+);
+
+// 게시물 삭제 API
+// TODO: 특정 기간동안 보관했다가 삭제할 것인지, 아니면 바로 삭제할 것인지에 따라 HTTP METHOD가 다를듯 (DELETE / PATCH)
+// 지금은 DELETE로 구현
+router.delete(
+    '/:travelIdx',
+    jwtMiddleware,
+    deleteTravelValidation,
+    validationMiddleware,
+    wrapAsync(TravelController.deleteTravel)
 );
 
 // 게시물 공개 범위 수정 API (OK)
@@ -47,5 +59,10 @@ router.post(
     validationMiddleware,
     wrapAsync(TravelController.createTravelLike)
 );
+
+// 게시물 댓글 조회 API
+// 게시물 댓글 생성 API
+// 게시물 댓글 수정 API
+// 게시물 댓글 삭제 API
 
 module.exports = router;

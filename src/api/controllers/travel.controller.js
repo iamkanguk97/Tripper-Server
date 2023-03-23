@@ -12,6 +12,8 @@ const createTravel = async (req, res) => {
     return res.status(httpStatus.CREATED).json(createTravelResult);
 };
 
+const deleteTravel = async (req, res) => {};
+
 const updateTravelStatus = async (req, res) => {
     const { userIdx } = req.verifiedToken;
     const travelIdx = parseInt(req.params.travelIdx);
@@ -53,6 +55,7 @@ const createTravelLike = async (req, res) => {
 
 module.exports = {
     createTravel,
+    deleteTravel,
     updateTravelStatus,
     createTravelReviewScore,
     createTravelLike

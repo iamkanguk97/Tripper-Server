@@ -18,14 +18,14 @@ const responseMessage = require('../../../config/response/baseResponseStatus');
 const verifyNickValidation = [
     query('nickname')
         .notEmpty()
-        .withMessage(responseMessage.NICKNAME_EMPTY)
+        .withMessage(responseMessage.NICKNAME_EMPTY) // 닉네임 유무 확인
         .bail()
         .matches(REGEX_NICKNAME)
-        .withMessage(responseMessage.NICKNAME_ERROR_TYPE)
+        .withMessage(responseMessage.NICKNAME_ERROR_TYPE) // 닉네임 형식 확인
         .bail()
-        .custom(checkBadWordInclude)
+        .custom(checkBadWordInclude) // 닉네임에 부적절한 단어 포함 유무 확인
         .bail()
-        .custom(checkNickDuplicate)
+        .custom(checkNickDuplicate) // 중복 닉네임 확인
         .bail()
 ];
 
