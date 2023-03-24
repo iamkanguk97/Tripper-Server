@@ -11,7 +11,9 @@ module.exports = () => {
                 callbackURL: NAVER.CALLBACK_URL
             },
             (accessToken, refreshToken, profile, done) => {
-                done({ accessToken, refreshToken, profile });
+                console.log(accessToken);
+                console.log(refreshToken);
+                console.log(profile);
             }
         )
     );

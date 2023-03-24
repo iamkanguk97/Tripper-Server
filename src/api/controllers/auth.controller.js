@@ -5,26 +5,28 @@ const responseMessage = require('../../config/response/baseResponseStatus');
 const { response, errResponse } = require('../../config/response/response-template');
 
 const kakaoLoginCallback = async (req, res, next) => {
-    // Kakao Access-Token이랑 Refresh Token은 특별하게 사용할 곳이 없다고 판단되어서 따로 저장은 안함.
-    passport.authenticate('kakao', async ({ accessToken, refreshToken, profile }) => {
-        const kakaoLoginResult = await AuthService.kakaoLoginCallback(
-            accessToken,
-            refreshToken,
-            profile
-        );
-        if (kakaoLoginResult.isError) next(kakaoLoginResult.error);
-        else {
-            if (kakaoLoginResult.requireSignUp)
-                return res
-                    .status(httpStatus.OK)
-                    .json(response(responseMessage.REQUIRE_SIGN_UP, kakaoLoginResult.result));
+    const { kakaoId, email, ageGroup, gender } = req.user;
+    const kakaoLoginResult = await AuthService.kakaoLoginCallback(kakaoId, email, ageGroup, gender);
 
-            // res.cookie();   // Access Token + Refresh Token cookie로 전달.
-            return res
-                .status(httpStatus.OK)
-                .json(response(responseMessage.SUCCESS, kakaoLoginResult.result));
-        }
-    })(req, res, next);
+    // // Kakao Access-Token이랑 Refresh Token은 특별하게 사용할 곳이 없다고 판단되어서 따로 저장은 안함.
+    // passport.authenticate('kakao', async ({ accessToken, refreshToken, profile }) => {
+    //     const kakaoLoginResult = await AuthService.kakaoLoginCallback(
+    //         accessToken,
+    //         refreshToken,
+    //         profile
+    //     );
+    //     if (kakaoLoginResult.isError) next(kakaoLoginResult.error);
+    //     else {
+    //         if (kakaoLoginResult.requireSignUp)
+    //             return res
+    //                 .status(httpStatus.OK)
+    //                 .json(response(responseMessage.REQUIRE_SIGN_UP, kakaoLoginResult.result));
+    //         // res.cookie();   // Access Token + Refresh Token cookie로 전달.
+    //         return res
+    //             .status(httpStatus.OK)
+    //             .json(response(responseMessage.SUCCESS, kakaoLoginResult.result));
+    //     }
+    // })(req, res, next);
 };
 
 const naverLoginCallback = async (req, res, next) => {
@@ -69,7 +71,9 @@ const signUp = async (req, res) => {
         provider
     );
 
-    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, signUpResult));
+    return res
+        .status(httpStatus.CREATED)
+        .json(response(responseMessage.CREATE_SUCCESS, signUpResult));
 };
 
 const autoLogin = async (req, res) => {

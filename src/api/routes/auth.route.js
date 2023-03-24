@@ -17,12 +17,16 @@ router.get('/kakao-login', passport.authenticate('kakao'));
 router.get(
     '/kakao-login/callback',
     passport.authenticate('kakao', { session: false }),
-    AuthController.kakaoLoginCallback
+    wrapAsync(AuthController.kakaoLoginCallback)
 );
 
 // 네이버 로그인 API
 router.get('/naver-login', passport.authenticate('naver'));
-router.get('/naver-login/callback', AuthController.naverLoginCallback);
+router.get(
+    '/naver-login/callback',
+    passport.authenticate('naver', { session: false }),
+    AuthController.naverLoginCallback
+);
 
 // 닉네임 확인 API
 router.get(

@@ -10,11 +10,11 @@ const {
 const { generateAccessToken, generateRefreshToken } = require('../utils/jwt-util');
 const { JWTError } = require('../errors/index');
 
-const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
+const kakaoLoginCallback = async (kakaoId, email, ageGroup, gender) => {
     let redisClient = null;
     try {
         // 소셜로그인 고유값으로 유저 존재하는지 확인
-        const checkIsUserExist = await checkUserExistWithSnsId('K', profile.id);
+        const checkIsUserExist = await checkUserExistWithSnsId('K', kakaoId);
 
         /**
          * 유저가 있다 -> token 발급해주기
@@ -30,7 +30,6 @@ const kakaoLoginCallback = async (accessToken, refreshToken, profile) => {
             const jwtAt = generateAccessToken(userIdx);
             const jwtRt = await generateRefreshToken(userIdx, redisClient);
 
-            // TODO: 카카오쪽에서 발급받은 AccessToken과 RefreshToken은 추후 필요할 때 클라쪽으로 Response 보내주자!
             return {
                 isError: false,
                 requireSignUp: false,
