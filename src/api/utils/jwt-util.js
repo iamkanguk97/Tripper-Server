@@ -1,5 +1,9 @@
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET_KEY, JWT_REFRESH_TOKEN_EXPIRE_TIME } = require('../../config/vars');
+const {
+    JWT_ACCESS_SECRET_KEY,
+    JWT_REFRESH_SECRET_KEY,
+    JWT_REFRESH_TOKEN_EXPIRE_TIME
+} = require('../../config/vars');
 const RedisClient = require('../../config/redis');
 const { getKeyByValue } = require('./util');
 
@@ -10,14 +14,14 @@ const generateAccessToken = newUserIdx => {
         userIdx: newUserIdx
     };
 
-    return jwt.sign(payload, JWT_SECRET_KEY, { algorithm: 'HS256', expiresIn: '1h' });
+    return jwt.sign(payload, JWT_ACCESS_SECRET_KEY, { algorithm: 'HS256', expiresIn: '1h' });
 };
 
 // JWT Refresh Token 발급
 const generateRefreshToken = async (userIdx, redisClient = null) => {
     const newRefreshToken = jwt.sign(
         {}, // refresh token은 payload 없이 발급
-        JWT_SECRET_KEY,
+        JWT_REFRESH_SECRET_KEY,
         { algorithm: 'HS256', expiresIn: '14d' }
     );
 

@@ -10,15 +10,32 @@ module.exports = () => {
                 callbackURL: KAKAO.CALLBACK_URL
             },
             (accessToken, refreshToken, profile, done) => {
-                // 이메일이 제일 중요
+                console.log(accessToken);
+                console.log(refreshToken);
+                console.log(profile);
+
                 const profileJson = profile._json;
                 const kakaoAccount = profileJson.kakao_account;
                 const kakaoLoginUser = {
                     kakaoId: profileJson.id,
-                    // email: !kakaoAccount.has_email || (kakaoAccount.has_email && ),
-                    ageGroup: 1,
-                    gender: true
+                    email:
+                        !kakaoAccount.has_email ||
+                        (kakaoAccount.has_email && kakaoAccount.email_needs_agreement)
+                            ? null
+                            : kakaoAccount.email,
+                    ageGroup:
+                        !kakaoAccount.has_age_range ||
+                        (kakaoAccount.has_age_range && kakaoAccount.age_range_needs_agreement)
+                            ? null
+                            : kakaoAccount.age_range,
+                    gender:
+                        !kakaoAccount.has_gender ||
+                        (kakaoAccount.has_gender && kakaoAccount.gender_needs_agreement)
+                            ? null
+                            : kakaoAccount.age_range
                 };
+
+                done(null, kakaoLoginUser);
             }
         )
     );

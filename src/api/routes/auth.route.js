@@ -25,7 +25,7 @@ router.get('/naver-login', passport.authenticate('naver'));
 router.get(
     '/naver-login/callback',
     passport.authenticate('naver', { session: false }),
-    AuthController.naverLoginCallback
+    wrapAsync(AuthController.naverLoginCallback)
 );
 
 // 닉네임 확인 API
