@@ -30,26 +30,28 @@ const kakaoLoginCallback = async (req, res, next) => {
 };
 
 const naverLoginCallback = async (req, res, next) => {
-    // Naver Access-Token이랑 Refresh Token은 특별하게 사용할 곳이 없다고 판단되어서 따로 저장 안함.
-    passport.authenticate('naver', async ({ accessToken, refreshToken, profile }) => {
-        const naverLoginResult = await AuthService.naverLoginCallback(
-            accessToken,
-            refreshToken,
-            profile
-        );
-        if (naverLoginResult.isError) next(naverLoginResult.error);
-        else {
-            if (naverLoginResult.requireSignUp)
-                return res
-                    .status(httpStatus.OK)
-                    .json(response(responseMessage.REQUIRE_SIGN_UP, naverLoginResult.result));
+    const { naverId, email, ageGroup, gender } = req.user;
+    const naverLoginResult = await AuthService.naverLoginCallback(naverId, email, ageGroup, gender);
+    // // Naver Access-Token이랑 Refresh Token은 특별하게 사용할 곳이 없다고 판단되어서 따로 저장 안함.
+    // passport.authenticate('naver', async ({ accessToken, refreshToken, profile }) => {
+    //     const naverLoginResult = await AuthService.naverLoginCallback(
+    //         accessToken,
+    //         refreshToken,
+    //         profile
+    //     );
+    //     if (naverLoginResult.isError) next(naverLoginResult.error);
+    //     else {
+    //         if (naverLoginResult.requireSignUp)
+    //             return res
+    //                 .status(httpStatus.OK)
+    //                 .json(response(responseMessage.REQUIRE_SIGN_UP, naverLoginResult.result));
 
-            // res.cookie();   // Access Token + Refresh Token cookie로 전달.
-            return res
-                .status(httpStatus.OK)
-                .json(response(responseMessage.SUCCESS, naverLoginResult.result));
-        }
-    })(req, res, next);
+    //         // res.cookie();   // Access Token + Refresh Token cookie로 전달.
+    //         return res
+    //             .status(httpStatus.OK)
+    //             .json(response(responseMessage.SUCCESS, naverLoginResult.result));
+    //     }
+    // })(req, res, next);
 };
 
 const verifyNickname = (req, res) =>
