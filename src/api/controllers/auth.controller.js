@@ -1,5 +1,4 @@
 const httpStatus = require('http-status');
-const passport = require('passport');
 const AuthService = require('../services/auth.service');
 const responseMessage = require('../../config/response/baseResponseStatus');
 const { response, errResponse } = require('../../config/response/response-template');
