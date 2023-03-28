@@ -58,8 +58,8 @@ class RedisClient {
     }
 
     // RedisClient 연결 끊기
-    quit() {
-        this.redisClient.quit();
+    async quit() {
+        await this.redisClient.quit();
     }
 }
 

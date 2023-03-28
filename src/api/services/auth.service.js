@@ -1,6 +1,6 @@
 const User = require('../models/User/User');
 const RedisClient = require('../../config/redis');
-const { verify, refreshVerify } = require('../utils/jwt-util');
+const { verify, refreshVerify, saveRefreshToken } = require('../utils/jwt-util');
 const {
     getFirstLetter,
     ageGroupToString,
@@ -11,110 +11,91 @@ const { generateAccessToken, generateRefreshToken } = require('../utils/jwt-util
 const { JWTError } = require('../errors/index');
 
 const kakaoLoginCallback = async (kakaoId, email, ageGroup, gender) => {
-    let redisClient = null;
-    try {
-        // 소셜로그인 고유값으로 유저 존재하는지 확인
-        const checkIsUserExist = await checkUserExistWithSnsId('K', kakaoId);
+    // 소셜로그인 고유값으로 유저 존재하는지 확인
+    const checkIsUserExist = await checkUserExistWithSnsId('K', kakaoId);
 
-        /**
-         * 유저가 있다 -> token 발급해주기
-         * 유저가 없다 -> 회원가입 API로 넘기기
-         */
-        if (checkIsUserExist !== false && typeof checkIsUserExist === 'number') {
-            // 유저가 있음
-            // Redis Connection
-            redisClient = new RedisClient();
-            await redisClient.connect();
+    /**
+     * 유저가 있다 -> token 발급해주기
+     * 유저가 없다 -> 회원가입 API로 넘기기
+     */
+    if (checkIsUserExist !== -1) {
+        // 유저가 있다
+        const userIdx = checkIsUserExist;
+        const jwtAT = generateAccessToken(userIdx); // Access-Token 발급
+        const jwtRT = generateRefreshToken(); // Refresh-Token 발급
 
-            const userIdx = checkIsUserExist;
-            const jwtAt = generateAccessToken(userIdx);
-            const jwtRt = await generateRefreshToken(userIdx, redisClient);
+        const redisClient = new RedisClient();
+        await redisClient.connect(); // Redis 연결
 
-            return {
-                isError: false,
-                requireSignUp: false,
-                result: {
-                    userIdx,
-                    jwt_token: {
-                        accessToken: jwtAt,
-                        refreshToken: jwtRt
-                    }
-                }
-            };
-        }
-        // 유저가 없음
-        const isAgeGroup = profile._json.kakao_account.has_age_range; // 유저가 연령대 동의했는지 여부
-        const isGender = profile._json.kakao_account.has_gender; // 유저가 성별 동의했는지 여부
+        // Redis에 RT 저장 + Redis 연결 끊기
+        await saveRefreshToken(redisClient, userIdx, jwtRT);
+        await redisClient.quit();
 
-        // 회원가입 API로 넘기기
         return {
-            isError: false,
-            requireSignUp: true,
+            requireSignUp: false,
             result: {
-                snsId: profile.id,
-                email: profile._json.kakao_account.email,
-                age_group: isAgeGroup ? profile._json.kakao_account.age_range : null,
-                gender: isGender ? profile._json.kakao_account.gender : null,
-                provider: 'kakao'
+                userIdx,
+                jwt_token: {
+                    accessToken: jwtAT,
+                    refreshToken: jwtRT
+                }
             }
         };
-    } catch (err) {
-        // 에러 발생 -> Middleware로 넘기기 위해 Return
-        return { isError: true, error: err };
-    } finally {
-        if (redisClient) redisClient.quit();
     }
+    return {
+        requireSignUp: true,
+        result: {
+            snsId: kakaoId,
+            email,
+            age_group: ageGroup,
+            gender,
+            provider: 'kakao'
+        }
+    };
 };
 
-const naverLoginCallback = async (accessToken, refreshToken, profile) => {
-    let redisClient = null;
-    try {
-        // 소셜로그인 고유값으로 유저 존재하는지 확인
-        const checkIsUserExist = await checkUserExistWithSnsId('N', profile.id);
+const naverLoginCallback = async (naverId, email, ageGroup, gender) => {
+    // 소셜로그인 고유값으로 유저 존재하는지 확인
+    const checkIsUserExist = await checkUserExistWithSnsId('N', naverId);
 
-        /**
-         * 유저가 있다 -> token 발급해주기
-         * 유저가 없다 -> 회원가입 API로 넘기기
-         */
-        if (checkIsUserExist !== false && typeof checkIsUserExist === 'number') {
-            // Redis Connection
-            redisClient = new RedisClient();
-            await redisClient.connect();
+    /**
+     * 유저가 있다 -> token 발급해주기
+     * 유저가 없다 -> 회원가입 API로 넘기기
+     */
+    if (checkIsUserExist !== -1) {
+        // 유저가 있다
+        const userIdx = checkIsUserExist;
+        const jwtAT = generateAccessToken(userIdx); // Access-Token 발급
+        const jwtRT = generateRefreshToken(); // Refresh-Token 발급
 
-            const userIdx = checkIsUserExist;
-            const jwtAt = generateAccessToken(userIdx);
-            const jwtRt = await generateRefreshToken(userIdx, redisClient);
+        const redisClient = new RedisClient();
+        await redisClient.connect(); // Redis 연결
 
-            return {
-                isError: false,
-                requireSignUp: false,
-                result: {
-                    userIdx,
-                    jwt_token: {
-                        accessToken: jwtAt,
-                        refreshToken: jwtRt
-                    }
-                }
-            };
-        }
-        // 회원가입 API로 넘기기
+        // Redis에 RT 저장 + Redis 연결 끊기
+        await saveRefreshToken(redisClient, userIdx, jwtRT);
+        await redisClient.quit();
+
         return {
-            isError: false,
-            requireSignUp: true,
+            requireSignUp: false,
             result: {
-                snsId: profile.id,
-                email: profile._json.email,
-                age_group: profile._json.age ? profile._json.age : null,
-                gender: profile._json.gender ? profile._json.gender : null,
-                provider: 'naver'
+                userIdx,
+                jwt_token: {
+                    accessToken: jwtAT,
+                    refreshToken: jwtRT
+                }
             }
         };
-    } catch (err) {
-        // 에러 발생 -> Middleware로 넘기기 위해 Return
-        return { isError: true, error: err };
-    } finally {
-        if (redisClient) redisClient.quit();
     }
+    return {
+        requireSignUp: true,
+        result: {
+            snsId: naverId,
+            email,
+            age_group: ageGroup,
+            gender,
+            provider: 'naver'
+        }
+    };
 };
 
 const signUp = async (email, nickname, profileImage, snsId, ageGroup, gender, provider) => {

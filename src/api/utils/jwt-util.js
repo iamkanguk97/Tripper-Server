@@ -1,64 +1,38 @@
 const jwt = require('jsonwebtoken');
-const {
-    JWT_ACCESS_SECRET_KEY,
-    JWT_REFRESH_SECRET_KEY,
-    JWT_REFRESH_TOKEN_EXPIRE_TIME
-} = require('../../config/vars');
 const RedisClient = require('../../config/redis');
+const { JWT } = require('../../config/vars');
 const { getKeyByValue } = require('./util');
 
 // JWT Access Token 발급
-const generateAccessToken = newUserIdx => {
+const generateAccessToken = userIdx => {
     const payload = {
         // access token에 들어갈 payload
-        userIdx: newUserIdx
+        userIdx
     };
 
-    return jwt.sign(payload, JWT_ACCESS_SECRET_KEY, { algorithm: 'HS256', expiresIn: '1h' });
+    return jwt.sign(payload, JWT.ACCESS_SECRET_KEY, { algorithm: 'HS256', expiresIn: '1h' });
 };
 
-// JWT Refresh Token 발급
-const generateRefreshToken = async (userIdx, redisClient = null) => {
-    const newRefreshToken = jwt.sign(
-        {}, // refresh token은 payload 없이 발급
-        JWT_REFRESH_SECRET_KEY,
-        { algorithm: 'HS256', expiresIn: '14d' }
+// JWT Refresh Token 발급 -> payload 없음
+const generateRefreshToken = () => {
+    return jwt.sign({}, JWT.REFRESH_SECRET_KEY, { algorithm: 'HS256', expiresIn: '14d' });
+};
+
+// JWT Refresh Token 저장
+const saveRefreshToken = async (redisClient, userIdx, refreshToken) => {
+    await redisClient.hSet(
+        'refreshToken',
+        `userId_${userIdx}`,
+        refreshToken,
+        JWT.REFRESH_TOKEN_EXPIRE_TIME
     );
-
-    if (!redisClient) {
-        let _redisClient = null;
-        try {
-            _redisClient = new RedisClient();
-            await _redisClient.connect();
-            await _redisClient.hSet(
-                'refreshToken',
-                `userId_${userIdx}`,
-                newRefreshToken,
-                JWT_REFRESH_TOKEN_EXPIRE_TIME
-            );
-        } catch (err) {
-            throw new Error(err);
-        } finally {
-            _redisClient.quit();
-        }
-    } else {
-        // Redis에 Refresh-Token 저장
-        await redisClient.hSet(
-            'refreshToken',
-            `userId_${userIdx}`,
-            newRefreshToken,
-            JWT_REFRESH_TOKEN_EXPIRE_TIME
-        );
-    }
-
-    return newRefreshToken;
 };
 
 // JWT Access Token 검증
 const verify = token => {
     let decoded = null;
     try {
-        decoded = jwt.verify(token, JWT_SECRET_KEY);
+        decoded = jwt.verify(token, JWT.ACCESS_SECRET_KEY);
         return {
             isSuccess: true,
             result: decoded
@@ -91,6 +65,7 @@ const refreshVerify = async token => {
 module.exports = {
     generateAccessToken,
     generateRefreshToken,
+    saveRefreshToken,
     verify,
     refreshVerify
 };

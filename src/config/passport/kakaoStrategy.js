@@ -32,7 +32,7 @@ module.exports = () => {
                         !kakaoAccount.has_gender ||
                         (kakaoAccount.has_gender && kakaoAccount.gender_needs_agreement)
                             ? null
-                            : kakaoAccount.age_range
+                            : kakaoAccount.gender
                 };
 
                 done(null, kakaoLoginUser);

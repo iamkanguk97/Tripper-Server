@@ -103,7 +103,7 @@ const checkUserExistWithSnsId = async (provider, snsId) => {
         }
     });
 
-    return userExistResult ? userExistResult.dataValues.IDX : false;
+    return userExistResult ? userExistResult.dataValues.IDX : -1;
 };
 
 /**

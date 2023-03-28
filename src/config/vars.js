@@ -4,8 +4,11 @@ require('dotenv').config({ path: path.join(__dirname, `/envs/.env.${process.env.
 module.exports = {
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT,
-    JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
-    JWT_REFRESH_TOKEN_EXPIRE_TIME: (60 * 60 * 24 * 14),
+    JWT: {
+        ACCESS_SECRET_KEY: process.env.JWT_ACCESS_SECRET_KEY,
+        REFRESH_SECRET_KEY: process.env.JWT_REFRESH_SECRET_KEY,
+        REFRESH_TOKEN_EXPIRE_TIME: (60 * 60 * 24 * 14)
+    },
     RDS: {
         END_POINT: process.env.RDS_ENDPOINT,
         PORT: process.env.RDS_PORT,
