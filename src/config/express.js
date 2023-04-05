@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const basicAuth = require('express-basic-auth');
+// const basicAuth = require('express-basic-auth');
 const helmet = require('helmet');
 const passport = require('passport');
 const httpStatus = require('http-status');
@@ -15,8 +15,8 @@ const errorHandleMiddleware = require('../api/middlewares/errorHandleMiddleware'
 
 const { errResponse } = require('./response/response-template');
 const { sequelize } = require('../api/models/index');
-const { swaggerUi, specs } = require('./swagger');
-const { SWAGGER } = require('./vars');
+// const { swaggerUi, specs } = require('./swagger');
+// const { SWAGGER } = require('./vars');
 
 const authRoutes = require('../api/routes/auth.route');
 const userRoutes = require('../api/routes/user.route');
