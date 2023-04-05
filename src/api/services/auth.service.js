@@ -33,24 +33,20 @@ const kakaoLoginCallback = async (kakaoId, email, ageGroup, gender) => {
 
         return {
             requireSignUp: false,
-            result: {
-                userIdx,
-                jwt_token: {
-                    accessToken: jwtAT,
-                    refreshToken: jwtRT
-                }
+            userIdx,
+            jwt_token: {
+                accessToken: jwtAT,
+                refreshToken: jwtRT
             }
         };
     }
     return {
         requireSignUp: true,
-        result: {
-            snsId: kakaoId,
-            email,
-            age_group: ageGroup,
-            gender,
-            provider: 'kakao'
-        }
+        snsId: kakaoId,
+        email,
+        age_group: ageGroup,
+        gender,
+        provider: 'kakao'
     };
 };
 
@@ -77,24 +73,20 @@ const naverLoginCallback = async (naverId, email, ageGroup, gender) => {
 
         return {
             requireSignUp: false,
-            result: {
-                userIdx,
-                jwt_token: {
-                    accessToken: jwtAT,
-                    refreshToken: jwtRT
-                }
+            userIdx,
+            jwt_token: {
+                accessToken: jwtAT,
+                refreshToken: jwtRT
             }
         };
     }
     return {
         requireSignUp: true,
-        result: {
-            snsId: naverId,
-            email,
-            age_group: ageGroup,
-            gender,
-            provider: 'naver'
-        }
+        snsId: naverId,
+        email,
+        age_group: ageGroup,
+        gender,
+        provider: 'naver'
     };
 };
 

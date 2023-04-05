@@ -63,15 +63,15 @@ app.use('/api/travels', travelRoutes);
 app.use('/api/commons', commonRoutes);
 
 // Swagger
-app.use(
-    '/api-docs',
-    basicAuth({
-        users: { [SWAGGER.ID]: SWAGGER.PASSWORD },
-        challenge: true
-    }),
-    swaggerUi.serve,
-    swaggerUi.setup(specs, { explorer: true })
-);
+// app.use(
+//     '/api-docs',
+//     basicAuth({
+//         users: { [SWAGGER.ID]: SWAGGER.PASSWORD },
+//         challenge: true
+//     }),
+//     swaggerUi.serve,
+//     swaggerUi.setup(specs, { explorer: true })
+// );
 
 // Passport setting
 passportConfig();

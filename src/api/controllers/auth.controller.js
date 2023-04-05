@@ -14,7 +14,7 @@ const kakaoLoginCallback = async (req, res) => {
                 kakaoLoginResult.requireSignUp
                     ? responseMessage.REQUIRE_SIGN_UP
                     : responseMessage.SUCCESS,
-                kakaoLoginResult.result
+                kakaoLoginResult
             )
         );
 };
@@ -30,7 +30,7 @@ const naverLoginCallback = async (req, res) => {
                 naverLoginResult.requireSignUp
                     ? responseMessage.REQUIRE_SIGN_UP
                     : responseMessage.SUCCESS,
-                naverLoginResult.result
+                naverLoginResult
             )
         );
 };
@@ -62,7 +62,7 @@ const signUp = async (req, res) => {
 const autoLogin = async (req, res) => {
     // jwtMiddleware에서 Access-Token에 대한 유효 여부를 체크함.
     // 따라서 해당 Controller까지 도달하면 성공메세지 Return
-    const { userIdx } = req.verifiedToken;
+    const userIdx = req.verifiedToken.userIdx;
     if (!userIdx)
         // userIdx가 없다 -> Refresh-Token을 보냈을 경우임!
         return res
