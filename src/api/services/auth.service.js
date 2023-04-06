@@ -91,52 +91,55 @@ const naverLoginCallback = async (naverId, email, ageGroup, gender) => {
 };
 
 const signUp = async (email, nickname, profileImage, snsId, ageGroup, gender, provider) => {
-    let redisClient = null;
-    let __profileImage = null;
+    const _gender = !gender ? gender : getFirstLetter(gender);
+    const _ageGroup = !ageGroup ? ageGroup : ageGroupToString(ageGroup);
+    const _provider = getFirstLetter(provider);
 
-    try {
-        redisClient = new RedisClient();
-        await redisClient.connect();
+    /**
+     * 프로필 사진을 카카오에서 가져오는걸로 하지말고 본인 갤러리에서 직접 설정할 수 있게하는걸로 하자!
+     * profileImage가 null일 경우 -> 클라쪽에서 처리 가능
+     */
+    const _profileImage = profileImage ? await uploadProfileImage(profileImage, snsId) : null;
 
-        const _gender = !gender ? gender : getFirstLetter(gender);
-        const _ageGroup = !ageGroup ? ageGroup : ageGroupToString(ageGroup);
-        const _provider = getFirstLetter(provider);
+    // DB에 해당 User 등록
+    const newUserIdx = (
+        await User.create({
+            USER_EMAIL: email,
+            USER_NICKNAME: nickname,
+            USER_PROFILE_IMAGE: _profileImage,
+            USER_SNS_ID: snsId,
+            USER_AGE_GROUP: _ageGroup,
+            USER_GENDER: _gender,
+            USER_PROVIDER: _provider
+        })
+    ).dataValues.IDX;
 
-        /**
-         * 프로필 사진을 카카오에서 가져오는걸로 하지말고 본인 갤러리에서 직접 설정할 수 있게하는걸로 하자!
-         * profileImage가 null일 경우 -> 클라쪽에서 처리 가능
-         */
-        __profileImage = profileImage ? await uploadProfileImage(profileImage, snsId) : null;
+    // JWT Access + Refresh 발급
+    const jwtAT = generateAccessToken(newUserIdx);
+    const jwtRT = generateRefreshToken();
 
-        // DB에 해당 User 등록
-        const newUserIdx = (
-            await User.create({
-                USER_EMAIL: email,
-                USER_NICKNAME: nickname,
-                USER_PROFILE_IMAGE: __profileImage,
-                USER_SNS_ID: snsId,
-                USER_AGE_GROUP: _ageGroup,
-                USER_GENDER: _gender,
-                USER_PROVIDER: _provider
-            })
-        ).dataValues.IDX;
+    const redisClient = new RedisClient();
+    await redisClient.connect(); // Redis 연결
 
-        // JWT Access + Refresh 발급
-        const jwtAt = generateAccessToken(newUserIdx);
-        const jwtRt = await generateRefreshToken(newUserIdx, redisClient);
+    // Redis에 RT 저장 + Redis 연결 끊기
+    await saveRefreshToken(redisClient, newUserIdx, jwtRT);
+    await redisClient.quit();
 
-        return {
-            newUserIdx,
-            jwt_token: {
-                accessToken: jwtAt,
-                refreshToken: jwtRt
-            }
-        };
-    } catch (err) {
-        throw new Error(err);
-    } finally {
-        if (redisClient) redisClient.quit();
-    }
+    return {
+        new_user: {
+            userId: newUserIdx,
+            email,
+            snsId,
+            profileImage: _profileImage,
+            ageGroup: _ageGroup,
+            gender: _gender,
+            provider: _provider
+        },
+        jwt_token: {
+            accessToken: jwtAT,
+            refreshToken: jwtRT
+        }
+    };
 };
 
 const tokenRefresh = async (accessToken, refreshToken) => {

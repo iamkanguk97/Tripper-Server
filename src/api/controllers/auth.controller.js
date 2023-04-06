@@ -41,7 +41,9 @@ const verifyNickname = (req, res) =>
     res.status(httpStatus.OK).json(response(responseMessage.SUCCESS));
 
 const signUp = async (req, res) => {
-    const { email, nickname, snsId, ageGroup, gender, provider } = req.body;
+    const { email, nickname, snsId, provider } = req.body;
+    const ageGroup = req.body.ageGroup ?? null;
+    const gender = req.body.gender ?? null;
     const profileImage = req.files ? req.files.pimage : null;
 
     const signUpResult = await AuthService.signUp(
