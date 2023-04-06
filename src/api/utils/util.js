@@ -36,10 +36,10 @@ const checkBadWord = async nickname => {
 
 /**
  * 첫 문자열을 받아오는 함수 (성별, 유저 로그인 타입 등)
- * @param gender
+ * @param word
  * @returns M / F
  */
-const getFirstLetter = gender => gender.charAt(0).toUpperCase();
+const getFirstLetter = word => word.charAt(0).toUpperCase();
 
 /**
  * 카카오에서 받은 연령대 정보를 새로운 문자열로 변경하는 함수
