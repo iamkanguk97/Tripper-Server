@@ -1,6 +1,7 @@
 const passport = require('passport');
 const NaverStrategy = require('passport-naver').Strategy;
 const { NAVER } = require('../vars');
+const { ageGroupToString, getFirstLetter } = require('../../api/utils/util');
 
 module.exports = () => {
     passport.use(
@@ -18,9 +19,9 @@ module.exports = () => {
                 const profileJson = profile._json;
                 const naverLoginUser = {
                     naverId: profileJson.id,
-                    email: profileJson.email,
-                    ageGroup: profileJson.age ?? null,
-                    gender: profileJson.gender ?? null
+                    email: profileJson.email ?? null,
+                    ageGroup: !profileJson.age ? null : ageGroupToString(profileJson.age),
+                    gender: !profileJson.gender ? null : getFirstLetter(profileJson.gender)
                 };
 
                 done(null, naverLoginUser);

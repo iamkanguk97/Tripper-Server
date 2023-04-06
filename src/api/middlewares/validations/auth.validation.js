@@ -31,17 +31,15 @@ const verifyNickValidation = [
 
 /**
  * 회원가입 API Validator
- * - 이메일 유무 확인 + 이메일 형식 확인
- * - 닉네임 유무 + 형식 확인 (안해도 되지만.. 2중 보안이면 더 좋으니까!)
+ * - 이메일이 있으면 -> 이메일 형식 확인
+ * - 닉네임 유무 + 형식 확인
  * - 카카오 고유 번호 유무 확인
  * - 사용자 로그인 타입 유무 + 형식 확인
  */
 const signUpValidation = [
     body('email')
-        .notEmpty()
-        .withMessage(responseMessage.EMAIL_EMPTY)
-        .bail()
         .isEmail()
+        .optional({ nullable: true })
         .withMessage(responseMessage.EMAIL_TYPE_ERROR)
         .bail(),
     body('nickname')

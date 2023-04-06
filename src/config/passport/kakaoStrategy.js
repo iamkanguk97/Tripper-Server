@@ -1,6 +1,7 @@
 const passport = require('passport');
 const KakaoStrategy = require('passport-kakao').Strategy;
 const { KAKAO } = require('../vars');
+const { ageGroupToString, getFirstLetter } = require('../../api/utils/util');
 
 module.exports = () => {
     passport.use(
@@ -27,12 +28,12 @@ module.exports = () => {
                         !kakaoAccount.has_age_range ||
                         (kakaoAccount.has_age_range && kakaoAccount.age_range_needs_agreement)
                             ? null
-                            : kakaoAccount.age_range,
+                            : ageGroupToString(kakaoAccount.age_range),
                     gender:
                         !kakaoAccount.has_gender ||
                         (kakaoAccount.has_gender && kakaoAccount.gender_needs_agreement)
                             ? null
-                            : kakaoAccount.gender
+                            : getFirstLetter(kakaoAccount.gender)
                 };
 
                 done(null, kakaoLoginUser);

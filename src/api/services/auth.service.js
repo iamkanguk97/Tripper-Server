@@ -1,12 +1,7 @@
 const User = require('../models/User/User');
 const RedisClient = require('../../config/redis');
 const { verify, refreshVerify, saveRefreshToken } = require('../utils/jwt-util');
-const {
-    getFirstLetter,
-    ageGroupToString,
-    uploadProfileImage,
-    checkUserExistWithSnsId
-} = require('../utils/util');
+const { getFirstLetter, uploadProfileImage, checkUserExistWithSnsId } = require('../utils/util');
 const { generateAccessToken, generateRefreshToken } = require('../utils/jwt-util');
 const { JWTError } = require('../errors/index');
 
@@ -33,7 +28,14 @@ const kakaoLoginCallback = async (kakaoId, email, ageGroup, gender) => {
 
         return {
             requireSignUp: false,
-            userIdx,
+            loginUser: {
+                userIdx,
+                snsId: kakaoId,
+                email,
+                ageGroup,
+                gender,
+                provider: 'K'
+            },
             jwt_token: {
                 accessToken: jwtAT,
                 refreshToken: jwtRT
@@ -73,7 +75,14 @@ const naverLoginCallback = async (naverId, email, ageGroup, gender) => {
 
         return {
             requireSignUp: false,
-            userIdx,
+            loginUser: {
+                userIdx,
+                snsId: naverId,
+                email,
+                ageGroup,
+                gender,
+                provider: 'N'
+            },
             jwt_token: {
                 accessToken: jwtAT,
                 refreshToken: jwtRT
@@ -91,15 +100,12 @@ const naverLoginCallback = async (naverId, email, ageGroup, gender) => {
 };
 
 const signUp = async (email, nickname, profileImage, snsId, ageGroup, gender, provider) => {
-    const _gender = !gender ? gender : getFirstLetter(gender);
-    const _ageGroup = !ageGroup ? ageGroup : ageGroupToString(ageGroup);
-    const _provider = getFirstLetter(provider);
-
     /**
      * 프로필 사진을 카카오에서 가져오는걸로 하지말고 본인 갤러리에서 직접 설정할 수 있게하는걸로 하자!
      * profileImage가 null일 경우 -> 클라쪽에서 처리 가능
      */
     const _profileImage = profileImage ? await uploadProfileImage(profileImage, snsId) : null;
+    const _provider = getFirstLetter(provider);
 
     // DB에 해당 User 등록
     const newUserIdx = (
@@ -108,8 +114,8 @@ const signUp = async (email, nickname, profileImage, snsId, ageGroup, gender, pr
             USER_NICKNAME: nickname,
             USER_PROFILE_IMAGE: _profileImage,
             USER_SNS_ID: snsId,
-            USER_AGE_GROUP: _ageGroup,
-            USER_GENDER: _gender,
+            USER_AGE_GROUP: ageGroup,
+            USER_GENDER: gender,
             USER_PROVIDER: _provider
         })
     ).dataValues.IDX;
@@ -131,8 +137,8 @@ const signUp = async (email, nickname, profileImage, snsId, ageGroup, gender, pr
             email,
             snsId,
             profileImage: _profileImage,
-            ageGroup: _ageGroup,
-            gender: _gender,
+            ageGroup,
+            gender,
             provider: _provider
         },
         jwt_token: {
