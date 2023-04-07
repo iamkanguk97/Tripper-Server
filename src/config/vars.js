@@ -38,7 +38,8 @@ module.exports = {
         HOST: process.env.REDIS_HOST,
         PORT: process.env.REDIS_PORT,
         USERNAME: process.env.REDIS_USERNAME,
-        PASSWORD: process.env.REDIS_PASSWORD
+        PASSWORD: process.env.REDIS_PASSWORD,
+        DATABASE: 0
     },
     NAVER: {
         CLIENT_ID: process.env.NAVER_CLIENT_ID,

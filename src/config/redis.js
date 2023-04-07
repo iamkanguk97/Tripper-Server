@@ -17,7 +17,12 @@ class RedisClient {
 
     setRedisClient() {
         this.redisClient = redis.createClient({
-            url: `redis://${REDIS.USERNAME}:${REDIS.PASSWORD}@${REDIS.HOST}:${REDIS.PORT}/0`,
+            socket: {
+                host: REDIS.HOST,
+                port: REDIS.PORT
+            },
+            db: REDIS.DATABASE,
+            password: REDIS.PASSWORD,
             legacyMode: false
         });
     }
