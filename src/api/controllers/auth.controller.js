@@ -35,6 +35,22 @@ const naverLoginCallback = async (req, res) => {
         );
 };
 
+const socialLogin = async (req, res) => {
+    const { vendor, socialAccessToken } = req.body;
+
+    const socialLoginResult = await AuthService.socialLogin(vendor, socialAccessToken);
+    return res
+        .status(httpStatus.OK)
+        .json(
+            response(
+                socialLoginResult.requireSignUp
+                    ? responseMessage.REQUIRE_SIGN_UP
+                    : responseMessage.SUCCESS,
+                socialLoginResult
+            )
+        );
+};
+
 const verifyNickname = (req, res) =>
     // 이전 Middleware 부분에서 Validation 체크를 함
     // 해당 Controller까지 들어오면 바로 성공 메세지를 return
@@ -90,5 +106,6 @@ module.exports = {
     verifyNickname,
     signUp,
     autoLogin,
-    tokenRefresh
+    tokenRefresh,
+    socialLogin
 };

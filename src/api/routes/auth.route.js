@@ -6,13 +6,14 @@ const jwtMiddleware = require('../middlewares/jwtMiddleware');
 const {
     verifyNickValidation,
     signUpValidation,
-    tokenRefreshValidation
+    tokenRefreshValidation,
+    socialLoginValidation
 } = require('../middlewares/validations/auth.validation');
 const { wrapAsync } = require('../utils/util');
 
 const router = express.Router();
 
-// 카카오 로그인 API
+// 카카오 로그인 API with passport
 router.get('/kakao-login', passport.authenticate('kakao'));
 router.get(
     '/kakao-login/callback',
@@ -20,12 +21,20 @@ router.get(
     wrapAsync(AuthController.kakaoLoginCallback)
 );
 
-// 네이버 로그인 API
+// 네이버 로그인 API with passport
 router.get('/naver-login', passport.authenticate('naver'));
 router.get(
     '/naver-login/callback',
     passport.authenticate('naver', { session: false }),
     wrapAsync(AuthController.naverLoginCallback)
+);
+
+// 소셜로그인 API without passport
+router.post(
+    '/social-login',
+    socialLoginValidation,
+    validationMiddleware,
+    wrapAsync(AuthController.socialLogin)
 );
 
 // 닉네임 확인 API

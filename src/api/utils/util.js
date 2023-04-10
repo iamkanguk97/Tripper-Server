@@ -47,7 +47,7 @@ const getFirstLetter = word => word.charAt(0).toUpperCase();
  * @returns ex) 20대
  */
 const ageGroupToString = ageGroup => {
-    const age = parseInt(ageGroup.split('~')[0]);
+    const age = parseInt(ageGroup.split(/[~,-]/)[0]);
     return age < 10 ? '10대 미만' : `${age}대`;
 };
 

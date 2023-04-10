@@ -1,9 +1,16 @@
+const axios = require('axios');
 const User = require('../models/User/User');
 const RedisClient = require('../../config/redis');
 const { verify, refreshVerify, saveRefreshToken } = require('../utils/jwt-util');
-const { getFirstLetter, uploadProfileImage, checkUserExistWithSnsId } = require('../utils/util');
+const {
+    getFirstLetter,
+    uploadProfileImage,
+    checkUserExistWithSnsId,
+    ageGroupToString
+} = require('../utils/util');
 const { generateAccessToken, generateRefreshToken } = require('../utils/jwt-util');
-const { JWTError } = require('../errors/index');
+const { JWTError, BadRequestError } = require('../errors/index');
+const responseMessage = require('../../config/response/baseResponseStatus');
 
 const kakaoLoginCallback = async (kakaoId, email, ageGroup, gender) => {
     // 소셜로그인 고유값으로 유저 존재하는지 확인
@@ -96,6 +103,105 @@ const naverLoginCallback = async (naverId, email, ageGroup, gender) => {
         age_group: ageGroup,
         gender,
         provider: 'naver'
+    };
+};
+
+const socialLogin = async (vendor, socialAccessToken) => {
+    let snsId;
+    let email;
+    let ageGroup;
+    let gender;
+    let socialUserProfile;
+
+    try {
+        socialUserProfile = (
+            await axios({
+                method: 'GET',
+                url:
+                    vendor === 'kakao'
+                        ? 'https://kapi.kakao.com/v2/user/me'
+                        : 'https://openapi.naver.com/v1/nid/me',
+                headers: {
+                    Authorization: `Bearer ${socialAccessToken}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+        ).data;
+    } catch (err) {
+        throw new BadRequestError(JSON.stringify(responseMessage.SOCIAL_LOGIN_ACCESS_TOKEN_ERROR));
+    }
+
+    if (vendor === 'kakao') {
+        const kakaoAccount = socialUserProfile.kakao_account;
+
+        snsId = socialUserProfile.id;
+        email =
+            !kakaoAccount.has_email ||
+            (kakaoAccount.has_email && kakaoAccount.email_needs_agreement)
+                ? null
+                : kakaoAccount.email;
+        ageGroup =
+            !kakaoAccount.has_age_range ||
+            (kakaoAccount.has_age_range && kakaoAccount.age_range_needs_agreement)
+                ? null
+                : ageGroupToString(kakaoAccount.age_range);
+        gender =
+            !kakaoAccount.has_gender ||
+            (kakaoAccount.has_gender && kakaoAccount.gender_needs_agreement)
+                ? null
+                : getFirstLetter(kakaoAccount.gender);
+    } else {
+        const naverResponse = socialUserProfile.response;
+
+        snsId = naverResponse.id;
+        email = naverResponse.email;
+        ageGroup = !naverResponse.age ? null : ageGroupToString(naverResponse.age);
+        gender = naverResponse.gender ?? null;
+    }
+
+    // 소셜로그인 고유값으로 유저 등록되어있는지 확인
+    const checkIsUserExist = await checkUserExistWithSnsId(getFirstLetter(vendor), snsId);
+
+    /**
+     * 유저가 있다 -> token 발급해주기
+     * 유저가 없다 -> 회원가입 API로 넘기기
+     */
+    if (checkIsUserExist !== -1) {
+        // 유저가 있다
+        const userIdx = checkIsUserExist;
+        const jwtAT = generateAccessToken(userIdx); // Access-Token 발급
+        const jwtRT = generateRefreshToken(); // Refresh-Token 발급
+
+        const redisClient = new RedisClient();
+        await redisClient.connect(); // Redis 연결
+
+        // Redis에 RT 저장 + Redis 연결 끊기
+        await saveRefreshToken(redisClient, userIdx, jwtRT);
+        await redisClient.quit();
+
+        return {
+            requireSignUp: false,
+            loginUser: {
+                userIdx,
+                snsId,
+                email,
+                ageGroup,
+                gender,
+                provider: 'K'
+            },
+            jwt_token: {
+                accessToken: jwtAT,
+                refreshToken: jwtRT
+            }
+        };
+    }
+    return {
+        requireSignUp: true,
+        snsId,
+        email,
+        age_group: ageGroup,
+        gender,
+        provider: vendor
     };
 };
 
@@ -205,5 +311,6 @@ module.exports = {
     kakaoLoginCallback,
     naverLoginCallback,
     signUp,
-    tokenRefresh
+    tokenRefresh,
+    socialLogin
 };

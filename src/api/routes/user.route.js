@@ -12,7 +12,7 @@ const { wrapAsync } = require('../utils/util');
 
 const router = express.Router();
 
-// 팔로우 API (OK)
+// 팔로우 API
 router.post(
     '/following',
     jwtMiddleware,
