@@ -94,7 +94,7 @@ const autoLogin = async (req, res) => {
 
 const tokenRefresh = async (req, res) => {
     const accessToken = req.headers.authorization.split('Bearer ')[1];
-    const refreshToken = req.headers.refresh_token;
+    const refreshToken = req.headers.refresh_token; // test
 
     const tokenRefreshResult = await AuthService.tokenRefresh(accessToken, refreshToken);
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, tokenRefreshResult));
