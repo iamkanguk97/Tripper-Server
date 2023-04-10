@@ -83,9 +83,8 @@ const autoLogin = async (req, res) => {
     // 따라서 해당 Controller까지 도달하면 성공메세지 Return
     const userIdx = req.verifiedToken.userIdx;
     if (!userIdx)
-        // userIdx가 없다 -> Refresh-Token을 보냈을 경우임!
         return res
-            .status(httpStatus.BAD_REQUEST)
+            .status(httpStatus.UNAUTHORIZED)
             .json(errResponse(responseMessage.AUTO_LOGIN_ERROR));
     return res
         .status(httpStatus.OK)
