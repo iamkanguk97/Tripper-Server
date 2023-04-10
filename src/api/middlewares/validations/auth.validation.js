@@ -83,7 +83,7 @@ const signUpValidation = [
         .notEmpty()
         .withMessage(responseMessage.PROVIDER_EMPTY)
         .bail()
-        .isIn(['kakao', 'naver'])
+        .isIn(['K', 'N'])
         .withMessage(responseMessage.PROVIDER_ERROR_TYPE)
         .bail()
 ];

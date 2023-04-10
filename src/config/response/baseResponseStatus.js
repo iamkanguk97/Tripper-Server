@@ -20,7 +20,7 @@ module.exports = {
     FOLLOW_LIST_OPTION_ERROR_TYPE: { "isSuccess": false, "code": 2019, "message": "팔로잉 또는 팔로워 조회 옵션이 잘못 입력되었습니다. 다시 입력해주세요." },
     DELETE_FOLLOWER_IDX_EMPTY: { "isSuccess": false, "code": 2020, "message": "삭제할 팔로워의 고유값을 입력해주세요." },
     PROVIDER_EMPTY: { "isSuccess": false, "code": 2021, "message": "사용자 로그인 타입을 입력해주세요." },
-    PROVIDER_ERROR_TYPE: { "isSuccess": false, "code": 2022, "message": "사용자 로그인 타입은 kakao 또는 naver로 입력해주세요." },
+    PROVIDER_ERROR_TYPE: { "isSuccess": false, "code": 2022, "message": "사용자 로그인 타입은 K(KAKAO) 또는 N(NAVER)로 입력해주세요." },
     JWT_ACCESS_TOKEN_EMPTY: { "isSuccess": false, "code": 2023, "message": "JWT Access-Token을 입력해주세요." },
     JWT_REFRESH_TOKEN_EMPTY: { "isSuccess": false, "code": 2024, "message": "JWT Refresh-Token을 입력해주세요." },
     KAKAO_SEARCH_AREA_EMPTY: { "isSuccess": false, "code": 2025, "message": "검색하실 장소명을 입력해주세요." },

@@ -154,7 +154,7 @@ const socialLogin = async (vendor, socialAccessToken) => {
         const naverResponse = socialUserProfile.response;
 
         snsId = naverResponse.id;
-        email = naverResponse.email;
+        email = naverResponse.email ?? null;
         ageGroup = !naverResponse.age ? null : ageGroupToString(naverResponse.age);
         gender = naverResponse.gender ?? null;
     }
@@ -187,7 +187,7 @@ const socialLogin = async (vendor, socialAccessToken) => {
                 email,
                 ageGroup,
                 gender,
-                provider: 'K'
+                provider: getFirstLetter(vendor)
             },
             jwt_token: {
                 accessToken: jwtAT,
@@ -201,7 +201,7 @@ const socialLogin = async (vendor, socialAccessToken) => {
         email,
         age_group: ageGroup,
         gender,
-        provider: vendor
+        provider: getFirstLetter(vendor)
     };
 };
 
@@ -211,7 +211,6 @@ const signUp = async (email, nickname, profileImage, snsId, ageGroup, gender, pr
      * profileImage가 null일 경우 -> 클라쪽에서 처리 가능
      */
     const _profileImage = profileImage ? await uploadProfileImage(profileImage, snsId) : null;
-    const _provider = getFirstLetter(provider);
 
     // DB에 해당 User 등록
     const newUserIdx = (
@@ -222,7 +221,7 @@ const signUp = async (email, nickname, profileImage, snsId, ageGroup, gender, pr
             USER_SNS_ID: snsId,
             USER_AGE_GROUP: ageGroup,
             USER_GENDER: gender,
-            USER_PROVIDER: _provider
+            USER_PROVIDER: provider
         })
     ).dataValues.IDX;
 
@@ -245,7 +244,7 @@ const signUp = async (email, nickname, profileImage, snsId, ageGroup, gender, pr
             profileImage: _profileImage,
             ageGroup,
             gender,
-            provider: _provider
+            provider
         },
         jwt_token: {
             accessToken: jwtAT,
