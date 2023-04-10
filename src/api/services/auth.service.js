@@ -160,7 +160,8 @@ const socialLogin = async (vendor, socialAccessToken) => {
     }
 
     // 소셜로그인 고유값으로 유저 등록되어있는지 확인
-    const checkIsUserExist = await checkUserExistWithSnsId(getFirstLetter(vendor), snsId);
+    const _vendor = getFirstLetter(vendor);
+    const checkIsUserExist = await checkUserExistWithSnsId(_vendor, snsId);
 
     /**
      * 유저가 있다 -> token 발급해주기
@@ -187,7 +188,7 @@ const socialLogin = async (vendor, socialAccessToken) => {
                 email,
                 ageGroup,
                 gender,
-                provider: getFirstLetter(vendor)
+                provider: _vendor
             },
             jwt_token: {
                 accessToken: jwtAT,
@@ -199,9 +200,9 @@ const socialLogin = async (vendor, socialAccessToken) => {
         requireSignUp: true,
         snsId,
         email,
-        age_group: ageGroup,
+        ageGroup,
         gender,
-        provider: getFirstLetter(vendor)
+        provider: _vendor
     };
 };
 
