@@ -32,8 +32,8 @@ const verifyNickValidation = [
 /**
  * 소셜로그인 API Validator
  * - 클라이언트 쪽에서 건네주는 Access-Token 유무
- * - vendor 유무
- * - vendor 값 확인 (naver, kakao)
+ * - provider 유무
+ * - provider 값 확인 (naver, kakao)
  */
 const socialLoginValidation = [
     body('socialAccessToken')
@@ -42,10 +42,10 @@ const socialLoginValidation = [
         .bail(),
     body('provider')
         .notEmpty()
-        .withMessage(responseMessage.SOCIAL_LOGIN_VENDOR_EMPTY)
+        .withMessage(responseMessage.SOCIAL_LOGIN_PROVIDER_EMPTY)
         .bail()
         .isIn(['kakao', 'naver'])
-        .withMessage(responseMessage.SOCIAL_LOGIN_VENDOR_ERROR_TYPE)
+        .withMessage(responseMessage.SOCIAL_LOGIN_PROVIDER_ERROR_TYPE)
         .bail()
 ];
 
