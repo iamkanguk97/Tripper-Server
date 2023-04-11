@@ -268,44 +268,47 @@ const tokenRefresh = async (accessToken, refreshToken) => {
     const accessTokenVerify = verify(accessToken); // Access-Token 검증
     const refreshTokenVerify = await refreshVerify(redisClient, refreshToken); // Refresh-Token 검증
 
-    // Access-Token 검증실패 (실패의 이유가 만료가 아닌 malformed 등의 외부 에러)
-    if (!accessTokenVerify.isSuccess && accessTokenVerify.message !== 'jwt expired')
-        throw new JWTError(accessTokenVerify.message);
-
-    // Access-Token 검증실패 (만료)
-    if (!accessTokenVerify.isSuccess && accessTokenVerify.message === 'jwt expired') {
-        if (!refreshTokenVerify && typeof refreshTokenVerify === 'boolean') {
-            rm = { message: '세션이 만료되었습니다. 로그인을 다시 진행해주세요.' };
+    if (!accessTokenVerify.isSuccess) {
+        // Access-Token 검증에 실패함
+        if (accessTokenVerify.message === 'jwt expired') {
+            // Access-Token 사용 만료
+            if (!refreshTokenVerify && typeof refreshTokenVerify === 'boolean') {
+                // Refresh-Token도 만료일 경우 => 새로 로그인 필요
+                // console.log('새로 로그인이 필요합니다!');
+                rm = { message: '세션이 만료되었습니다. 로그인을 다시 진행해주세요.' };
+            } else {
+                // Refresh-Token이 만료되지 않았음 => 새로운 Access-Token 발급
+                const userIdx = parseInt(refreshTokenVerify.split('_')[1]);
+                const newAccessToken = generateAccessToken(userIdx);
+                // console.log(`[사용자 ${userIdx}] 새로운 Access-Token 발급 완료! => ${newAccessToken}`);
+                rm = {
+                    message: '새로운 Access-Token이 발급되었습니다.',
+                    info: { userIdx, accessToken: newAccessToken }
+                };
+            }
         } else {
-            const userIdx = parseInt(refreshTokenVerify.split('_')[1]);
-            const newAccessToken = generateAccessToken(userIdx);
+            // Access-Token 검증에 문제 발생 (malformed 등) => 에러 throw
+            throw new JWTError(accessTokenVerify.message);
+        }
+    } else {
+        // Access-Token 검증에 성공
+        if (!refreshTokenVerify && typeof refreshTokenVerify === 'boolean') {
+            // Refresh-Token이 만료일 경우 => 새로운 Refresh-Token 발급
+            const userIdx = parseInt(accessTokenVerify.result.userIdx);
+            const newRefreshToken = generateRefreshToken(userIdx);
+            await saveRefreshToken(redisClient, userIdx, newRefreshToken);
+            // console.log(`[사용자 ${userIdx}] 새로운 Refresh-Token 발급 완료! => ${newRefreshToken}`);
             rm = {
-                message: '새로운 Access-Token이 발급되었습니다.',
-                info: { userIdx, accessToken: newAccessToken }
+                message: '새로운 Refresh-Token이 발급되었습니다.',
+                info: { userIdx, refreshToken: newRefreshToken }
             };
+        } else {
+            // Access-Token + Refresh-Token 모두 정상상태 => 특별한 Action 필요 없음.
+            rm = { message: 'Access-Token과 Refresh-Token이 모두 정상 상태입니다.' };
         }
     }
 
-    // Access-Token 검증성공 + Refresh-Token 만료
-    if (
-        accessTokenVerify.isSuccess &&
-        !refreshTokenVerify &&
-        typeof refreshTokenVerify === 'boolean'
-    ) {
-        const userIdx = parseInt(accessTokenVerify.result.userIdx);
-        const newRefreshToken = generateRefreshToken(userIdx);
-        await saveRefreshToken(redisClient, userIdx, newRefreshToken);
-
-        rm = {
-            message: '새로운 Refresh-Token이 발급되었습니다.',
-            info: { userIdx, refreshToken: newRefreshToken }
-        };
-    }
-    // Access-Token & Refresh-Token 모두 정상상태
-    else {
-        rm = { message: 'Access-Token과 Refresh-Token이 모두 정상 상태입니다.' };
-    }
-
+    await redisClient.quit();
     return rm;
 };
 
