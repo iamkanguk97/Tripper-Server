@@ -34,8 +34,8 @@ module.exports = {
     TRAVEL_REVIEW_SCORE_EMPTY: { "isSuccess": false, "code": 2033, "message": "게시물 평점을 입력해주세요." },
     TRAVEL_REVIEW_SCORE_ERROR_TYPE: { "isSuccess": false, "code": 2034, "message": "게시물 평점은 1점에서 5점 사이로 입력해주세요." },
     SOCIAL_LOGIN_ACCESS_TOKEN_EMPY: { "isSuccess": false, "code": 2035, "message": "소셜로그인 Access-Token을 입력해주세요." },
-    SOCIAL_LOGIN_VENDOR_EMPTY: { "isSuccess": false, "code": 2036, "message": "소셜로그인 유형을 입력해주세요." },
-    SOCIAL_LOGIN_VENDOR_ERROR_TYPE: { "isSuccess": false, "code": 2037, "message": "소셜로그인 유형이 잘못되었습니다." },
+    SOCIAL_LOGIN_PROVIDER_EMPTY: { "isSuccess": false, "code": 2036, "message": "소셜로그인 유형을 입력해주세요." },
+    SOCIAL_LOGIN_PROVIDER_ERROR_TYPE: { "isSuccess": false, "code": 2037, "message": "소셜로그인 유형이 잘못되었습니다." },
     SOCIAL_LOGIN_ACCESS_TOKEN_ERROR: { "isSuccess": false, "code": 2038, "message": "소셜로그인 Access-Token 에러가 발생했습니다." },
 
     NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3010, "message": "중복된 닉네임입니다." },

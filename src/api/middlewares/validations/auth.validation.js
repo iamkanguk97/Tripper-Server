@@ -40,7 +40,7 @@ const socialLoginValidation = [
         .notEmpty()
         .withMessage(responseMessage.SOCIAL_LOGIN_ACCESS_TOKEN_EMPY)
         .bail(),
-    body('vendor')
+    body('provider')
         .notEmpty()
         .withMessage(responseMessage.SOCIAL_LOGIN_VENDOR_EMPTY)
         .bail()
