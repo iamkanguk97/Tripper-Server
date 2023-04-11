@@ -100,7 +100,7 @@ const tokenRefreshValidation = [
         .bail()
         .custom(checkAccessTokenEmpty) // authorization key는 있지만 Bearer을 입력하지 않았거나 아예 비어있는 경우
         .bail(),
-    header('refresh_token').notEmpty().withMessage(responseMessage.JWT_REFRESH_TOKEN_EMPTY).bail() // refresh_token이 없는 경우
+    header('refreshtoken').notEmpty().withMessage(responseMessage.JWT_REFRESH_TOKEN_EMPTY).bail() // refresh_token이 없는 경우
 ];
 
 module.exports = {
