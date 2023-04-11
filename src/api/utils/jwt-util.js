@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const RedisClient = require('../../config/redis');
 const { JWT } = require('../../config/vars');
 const { getKeyByValue } = require('./util');
 
@@ -46,20 +45,9 @@ const verify = token => {
 };
 
 // JWT Refresh Token 검증
-const refreshVerify = async token => {
-    let redisClient = null;
-    try {
-        redisClient = new RedisClient();
-        await redisClient.connect();
-
-        const refreshTokens = await redisClient.hGetAll('refreshToken'); // refreshToken key에 있는 field 전부 가져옴
-        return getKeyByValue(refreshTokens, token); // Redis에 parameter로 전달된 해당 토큰이 있는지 확인
-        // return getKeyByValue(refreshTokens, 'asdf');   // Redis에 parameter로 전달된 해당 토큰이 있는지 확인
-    } catch (err) {
-        throw new Error(err);
-    } finally {
-        if (redisClient) redisClient.quit();
-    }
+const refreshVerify = async (redisClient, refreshToken) => {
+    const refreshTokens = await redisClient.hGetAll('refreshToken'); // refreshToken key에 있는 field 전부 가져옴
+    return getKeyByValue(refreshTokens, refreshToken); // Redis에 parameter로 전달된 해당 토큰이 있는지 확인
 };
 
 module.exports = {

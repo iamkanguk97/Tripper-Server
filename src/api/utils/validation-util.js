@@ -86,10 +86,7 @@ const checkAccessTokenEmpty = async token => {
             return Promise.reject(responseMessage.JWT_ACCESS_TOKEN_EMPTY);
     } catch (err) {
         Logger.error(err);
-        return Promise.reject({
-            isServerError: true,
-            error: err
-        });
+        return Promise.reject(validationErrorResponse(true, err));
     }
 };
 
