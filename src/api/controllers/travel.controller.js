@@ -5,11 +5,12 @@ const responseMessage = require('../../config/response/baseResponseStatus');
 
 const createTravel = async (req, res) => {
     const userIdx = req.verifiedToken.userIdx;
-    const imgFiles = req.files; // 게시물 생성에 필요한 이미지 파일들
-    const request = JSON.parse(req.body.request); // 나머지 string data들
+    const { travelInformation } = req.body;
 
-    const createTravelResult = await TravelService.createTravel(userIdx, request, imgFiles);
-    return res.status(httpStatus.CREATED).json(createTravelResult);
+    const createTravelResult = await TravelService.createTravel(userIdx, travelInformation);
+    return res
+        .status(httpStatus.CREATED)
+        .json(response(responseMessage.CREATE_SUCCESS, createTravelResult));
 };
 
 const deleteTravel = async (req, res) => {};

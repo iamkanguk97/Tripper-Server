@@ -41,6 +41,11 @@ module.exports = class Travel extends Sequelize.Model {
                     allowNull: false,
                     comment: '여행 이동 수단 (W: 도보, B: 자전거, P: 대중교통, C: 자차)'
                 },
+                TRAVEL_HASHTAG: {
+                    type: Sequelize.STRING(200),
+                    allowNull: true,
+                    comment: '여행 게시물 해시태그 (ex. #안녕#안녕2)'
+                },
                 TRAVEL_STATUS: {
                     type: Sequelize.CHAR(1),
                     allowNull: false,
