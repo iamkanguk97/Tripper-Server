@@ -2,9 +2,10 @@ const { Op } = require('sequelize');
 const Travel = require('../models/Travel/Travel');
 const TravelScore = require('../models/Travel/TravelScore');
 const TravelLike = require('../models/Travel/TravelLike');
+const { sequelize } = require('../models');
 const { getTravelTrans } = require('../utils/util');
-// const TravelThum = require('../models/Travel/TravelThumImage');
-// const TravelHashtag = require('../models/Travel/TravelHashtag');
+const TravelThumImage = require('../models/Travel/TravelThumImage');
+const { CustomServerError } = require('../errors');
 
 const updateTravelStatus = async (userIdx, travelIdx, travelStatus) => {
     const _newTravelStatus = travelStatus === 'A' ? 'B' : 'A';
@@ -87,8 +88,52 @@ const createTravelLike = async (userIdx, travelIdx) => {
     return rm;
 };
 
-const createTravel = async (userIdx, travelInformation) => {
-    // TRAVEL 테이블에 데이터 삽입
+const createTravel = async (userIdx, travelInformation, day) => {
+    const travelThumImages = travelInformation.travelThumnailImages;
+    const dayLength = Object.keys(day).length;
+    let transaction;
+
+    try {
+        // BEGIN TRANSACTION
+        transaction = await sequelize.transaction();
+
+        // TRAVEL 테이블에 INSERT
+        // const newTravelIdx = (
+        //     await Travel.create(
+        //         {
+        //             USER_IDX: userIdx,
+        //             TRAVEL_START_DATE: travelInformation.travelStartDate,
+        //             TRAVEL_END_DATE: travelInformation.travelEndDate,
+        //             TRAVEL_MOVE_METHOD: getTravelTrans(travelInformation.moveMethod),
+        //             TRAVEL_TITLE: travelInformation.travelTitle,
+        //             TRAVEL_HASHTAG: travelInformation.travelHashtag,
+        //             TRAVEL_INTRO: travelInformation.travelIntroduce
+        //         },
+        //         { transaction }
+        //     )
+        // ).dataValues.IDX;
+
+        // TRAVEL 썸네일 이미지 INSERT
+        // await Promise.all(
+        //     travelThumImages.map(async img => {
+        //         await TravelThumImage.create(
+        //             {
+        //                 TRAVEL_IDX: newTravelIdx,
+        //                 TRAVEL_IMAGE_URL: img
+        //             },
+        //             { transaction }
+        //         );
+        //     })
+        // );
+
+        // TRAVEL_DAY에 날짜 정보들 INSERT
+
+        // COMMIT
+        await transaction.commit();
+    } catch (err) {
+        if (transaction) await transaction.rollback();
+        throw new Error(err);
+    }
 };
 
 module.exports = {

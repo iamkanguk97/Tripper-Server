@@ -28,6 +28,7 @@ module.exports = {
         'new-cap': 'off',
         'prefer-destructuring': 'off',
         'prettier/prettier': 'off',
+        'no-restricted-syntax': 'off',
         radix: 'off'
     }
 };

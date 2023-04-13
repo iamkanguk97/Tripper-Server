@@ -5,9 +5,9 @@ const responseMessage = require('../../config/response/baseResponseStatus');
 
 const createTravel = async (req, res) => {
     const userIdx = req.verifiedToken.userIdx;
-    const { travelInformation } = req.body;
+    const { travelInformation, day } = req.body;
 
-    const createTravelResult = await TravelService.createTravel(userIdx, travelInformation);
+    const createTravelResult = await TravelService.createTravel(userIdx, travelInformation, day);
     return res
         .status(httpStatus.CREATED)
         .json(response(responseMessage.CREATE_SUCCESS, createTravelResult));
