@@ -1,11 +1,14 @@
 const { Op } = require('sequelize');
+const e = require('express');
 const Travel = require('../models/Travel/Travel');
 const TravelScore = require('../models/Travel/TravelScore');
 const TravelLike = require('../models/Travel/TravelLike');
-const { sequelize } = require('../models');
+const { sequelize, TravelDayArea } = require('../models');
 const { getTravelTrans } = require('../utils/util');
 const TravelThumImage = require('../models/Travel/TravelThumImage');
 const { CustomServerError } = require('../errors');
+const TravelDay = require('../models/Travel/TravelDay');
+const TravelDayAreaImage = require('../models/Travel/TravelDayAreaImage');
 
 const updateTravelStatus = async (userIdx, travelIdx, travelStatus) => {
     const _newTravelStatus = travelStatus === 'A' ? 'B' : 'A';
@@ -90,46 +93,101 @@ const createTravelLike = async (userIdx, travelIdx) => {
 
 const createTravel = async (userIdx, travelInformation, day) => {
     const travelThumImages = travelInformation.travelThumnailImages;
-    const dayLength = Object.keys(day).length;
     let transaction;
+    let newTravelIdx;
 
     try {
         // BEGIN TRANSACTION
         transaction = await sequelize.transaction();
 
-        // TRAVEL 테이블에 INSERT
-        // const newTravelIdx = (
-        //     await Travel.create(
-        //         {
-        //             USER_IDX: userIdx,
-        //             TRAVEL_START_DATE: travelInformation.travelStartDate,
-        //             TRAVEL_END_DATE: travelInformation.travelEndDate,
-        //             TRAVEL_MOVE_METHOD: getTravelTrans(travelInformation.moveMethod),
-        //             TRAVEL_TITLE: travelInformation.travelTitle,
-        //             TRAVEL_HASHTAG: travelInformation.travelHashtag,
-        //             TRAVEL_INTRO: travelInformation.travelIntroduce
-        //         },
-        //         { transaction }
-        //     )
-        // ).dataValues.IDX;
+        // TRAVEL 테이블에 INSERT -> newTravelIdx 가져옴
+        newTravelIdx = (
+            await Travel.create(
+                {
+                    USER_IDX: userIdx,
+                    TRAVEL_START_DATE: travelInformation.travelStartDate,
+                    TRAVEL_END_DATE: travelInformation.travelEndDate,
+                    TRAVEL_MOVE_METHOD: getTravelTrans(travelInformation.moveMethod),
+                    TRAVEL_TITLE: travelInformation.travelTitle,
+                    TRAVEL_HASHTAG: travelInformation.travelHashtag ?? null,
+                    TRAVEL_INTRO: travelInformation.travelIntroduce ?? null
+                },
+                { transaction }
+            )
+        ).dataValues.IDX;
 
         // TRAVEL 썸네일 이미지 INSERT
-        // await Promise.all(
-        //     travelThumImages.map(async img => {
-        //         await TravelThumImage.create(
-        //             {
-        //                 TRAVEL_IDX: newTravelIdx,
-        //                 TRAVEL_IMAGE_URL: img
-        //             },
-        //             { transaction }
-        //         );
-        //     })
-        // );
+        await Promise.all(
+            travelThumImages.map(async img => {
+                await TravelThumImage.create(
+                    {
+                        TRAVEL_IDX: newTravelIdx,
+                        TRAVEL_IMAGE_URL: img
+                    },
+                    { transaction }
+                );
+            })
+        );
 
-        // TRAVEL_DAY에 날짜 정보들 INSERT
+        await Promise.all(
+            Object.keys(day).map(async date => {
+                // TRAVEL_DAY INSERT
+                const newTravelDayIdx = (
+                    await TravelDay.create(
+                        {
+                            TRAVEL_IDX: newTravelIdx,
+                            TRAVEL_DAY_DATE: date
+                        },
+                        { transaction }
+                    )
+                ).dataValues.IDX;
+
+                day[date].newTravelDayIdx = newTravelDayIdx;
+                const dayDateArea = day[date].area;
+
+                if (dayDateArea) {
+                    await Promise.all(
+                        dayDateArea.map(async area => {
+                            // TRAVEL_DAY_AREA INSERT
+                            const newTravelDayAreaIdx = (
+                                await TravelDayArea.create(
+                                    {
+                                        TRAVEL_DAY_IDX: day[date].newTravelDayIdx,
+                                        AREA_NAME: area.name ?? null,
+                                        AREA_ADDRESS: area.address,
+                                        AREA_CATEGORY: area.category ?? null,
+                                        AREA_LATITUDE: area.latitude,
+                                        AREA_LONGITUDE: area.longitude,
+                                        AREA_REVIEW: area.review.comment ?? null
+                                    },
+                                    { transaction }
+                                )
+                            ).dataValues.IDX;
+
+                            await Promise.all(
+                                // TRAVEL_DAY_AREA_IMAGE INSERT
+                                area.review.images.map(async img => {
+                                    await TravelDayAreaImage.create(
+                                        {
+                                            TRAVEL_DAY_AREA_IDX: newTravelDayAreaIdx,
+                                            TRAVEL_DAY_AREA_IMAGE_URL: img
+                                        },
+                                        { transaction }
+                                    );
+                                })
+                            );
+                        })
+                    );
+                }
+            })
+        );
 
         // COMMIT
         await transaction.commit();
+
+        return {
+            newTravelIdx
+        };
     } catch (err) {
         if (transaction) await transaction.rollback();
         throw new Error(err);

@@ -9,7 +9,10 @@ const generateAccessToken = userIdx => {
         userIdx
     };
 
-    return jwt.sign(payload, JWT.ACCESS_SECRET_KEY, { algorithm: 'HS256', expiresIn: '1h' });
+    return jwt.sign(payload, JWT.ACCESS_SECRET_KEY, {
+        algorithm: 'HS256',
+        expiresIn: JWT.ACCESS_TOKEN_EXPIRE_TIME
+    });
 };
 
 // JWT Refresh Token 발급 -> payload 없음

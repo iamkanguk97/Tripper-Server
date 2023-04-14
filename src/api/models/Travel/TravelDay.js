@@ -18,7 +18,7 @@ module.exports = class TravelDay extends Sequelize.Model {
                 },
                 TRAVEL_DAY_NUMBER: {
                     type: Sequelize.INTEGER,
-                    allowNull: false,
+                    allowNull: true,
                     comment: '여행 게시물 날짜정보 순서'
                 },
                 TRAVEL_DAY_DATE: {

@@ -1,12 +1,44 @@
 const { param, body } = require('express-validator');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 const { checkMyTravelExist, checkTravelStatusAble } = require('../../utils/validation-util');
+const { REGEX_DATE } = require('../../utils/regex');
 
 /**
  * 게시물 생성 API Validator
- * -
+ * - travelInformation 객체가 있는지 확인
+ *  -- startDate와 endDate 유무확인 및 정규식 일치 확인
  */
-const createTravelValidation = [];
+const createTravelValidation = [
+    body('travelInformation')
+        .notEmpty()
+        .withMessage(responseMessage.CREATE_TRAVEL_INFORMATION_EMPTY)
+        .bail(),
+    body('travelInformation.travelStartDate')
+        .notEmpty()
+        .withMessage(responseMessage.CREATE_TRAVEL_STARTDATE_EMPTY)
+        .bail()
+        .matches(REGEX_DATE)
+        .withMessage(responseMessage.CREATE_TRAVEL_DATE_ERROR_TYPE)
+        .bail(),
+    // .custom(),
+    body('travelInformation.travelEndDate')
+        .notEmpty()
+        .withMessage(responseMessage.CREATE_TRAVEL_ENDDATE_EMPTY)
+        .bail()
+        .matches(REGEX_DATE)
+        .withMessage(responseMessage.CREATE_TRAVEL_DATE_ERROR_TYPE)
+        .bail(),
+    // .custom()
+    body('travelInformation.moveMethod')
+        .notEmpty()
+        .withMessage()
+        .bail()
+        .isIn(['', '', '', ''])
+        .withMessage()
+        .bail(),
+    body('travelInformation.travelTitle').notEmpty().withMessage().bail(),
+    body()
+];
 
 /**
  * 게시물 삭제 API Validator

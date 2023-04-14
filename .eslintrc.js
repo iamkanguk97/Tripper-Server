@@ -29,6 +29,7 @@ module.exports = {
         'prefer-destructuring': 'off',
         'prettier/prettier': 'off',
         'no-restricted-syntax': 'off',
+        'no-param-reassign': 'off',
         radix: 'off'
     }
 };

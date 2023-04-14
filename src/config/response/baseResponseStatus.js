@@ -37,6 +37,12 @@ module.exports = {
     SOCIAL_LOGIN_PROVIDER_EMPTY: { "isSuccess": false, "code": 2036, "message": "소셜로그인 유형을 입력해주세요." },
     SOCIAL_LOGIN_PROVIDER_ERROR_TYPE: { "isSuccess": false, "code": 2037, "message": "소셜로그인 유형이 잘못되었습니다." },
     SOCIAL_LOGIN_ACCESS_TOKEN_ERROR: { "isSuccess": false, "code": 2038, "message": "소셜로그인 Access-Token 에러가 발생했습니다." },
+    
+    CREATE_TRAVEL_INFORMATION_EMPTY: { "isSuccess": false, "code": 2039, "message": "게시물 생성시 필요한 정보들이 없습니다." },
+    CREATE_TRAVEL_STARTDATE_EMPTY: { "isSuccess": false, "code": 2040, "message": "여행 시작 날짜를 입력해주세요." },
+    CREATE_TRAVEL_ENDDATE_EMPTY: { "isSuccess": false, "code": 2041, "message": "여행 종료 날짜를 입력해주세요." },
+    CREATE_TRAVEL_DATE_ERROR_TYPE: { "isSuccess": false, "code": 2042, "message": "여행 시작/종료 날짜는 YYYY-MM-DD 형식으로 입력해주세요." },
+
 
     NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3010, "message": "중복된 닉네임입니다." },
     USER_NOT_EXIST: { "isSuccess": false, "code": 3011, "message": "존재하지 않는 유저입니다." },

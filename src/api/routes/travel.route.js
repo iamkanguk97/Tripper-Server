@@ -17,8 +17,8 @@ const router = express.Router();
 router.post(
     '/',
     jwtMiddleware,
-    // createTravelValidation,
-    // validationMiddleware,
+    createTravelValidation,
+    validationMiddleware,
     wrapAsync(TravelController.createTravel)
 );
 
