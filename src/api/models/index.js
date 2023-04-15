@@ -7,6 +7,9 @@ const TravelScore = require('./Travel/TravelScore');
 const TravelDay = require('./Travel/TravelDay');
 const TravelDayArea = require('./Travel/TravelDayArea');
 const TravelDayAreaImage = require('./Travel/TravelDayAreaImage');
+const TravelComment = require('./Travel/TravelComment');
+const TravelCommentLike = require('./Travel/TravelCommentLike');
+const TravelCommentMention = require('./Travel/TravelCommentMention');
 const User = require('./User/User');
 const UserFollow = require('./User/UserFollow');
 
@@ -27,6 +30,9 @@ db.TravelScore = TravelScore;
 db.TravelDay = TravelDay;
 db.TravelDayArea = TravelDayArea;
 db.TravelDayAreaImage = TravelDayAreaImage;
+db.TravelComment = TravelComment;
+db.TravelCommentLike = TravelCommentLike;
+db.TravelCommentMention = TravelCommentMention;
 
 db.User = User;
 db.UserFollow = UserFollow;
@@ -38,6 +44,9 @@ TravelScore.init(sequelize);
 TravelDay.init(sequelize);
 TravelDayArea.init(sequelize);
 TravelDayAreaImage.init(sequelize);
+TravelComment.init(sequelize);
+TravelCommentLike.init(sequelize);
+TravelCommentMention.init(sequelize);
 
 User.init(sequelize);
 UserFollow.init(sequelize);
