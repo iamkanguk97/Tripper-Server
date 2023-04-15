@@ -42,7 +42,10 @@ module.exports = {
     CREATE_TRAVEL_STARTDATE_EMPTY: { "isSuccess": false, "code": 2040, "message": "여행 시작 날짜를 입력해주세요." },
     CREATE_TRAVEL_ENDDATE_EMPTY: { "isSuccess": false, "code": 2041, "message": "여행 종료 날짜를 입력해주세요." },
     CREATE_TRAVEL_DATE_ERROR_TYPE: { "isSuccess": false, "code": 2042, "message": "여행 시작/종료 날짜는 YYYY-MM-DD 형식으로 입력해주세요." },
-
+    CREATE_TRAVEL_MOVEMETHOD_EMPTY: { "isSuccess": false, "code": 2043, "message": "여행 이동수단을 입력해주세요." },
+    CREATE_TRAVEL_MOVEMETHOD_ERROR_TYPE: { "isSuccess": false, "code": 2044, "message": "여행 이동수단 입력이 잘못되었습니다. 형식에 맞게 입력해주세요." },
+    CREATE_TRAVEL_THUMNAIL_IMAGE_LENGTH_ERROR: { "isSuccess": false, "code": 2045, "message": "여행 게시물 썸네일 이미지는 최대 5장까지 업로드 가능합니다." },
+    CREATE_TRAVEL_TITLE_EMPTY: { "isSuccess": false, "code": 2046, "message": "여행 게시물 제목을 입력해주세요." },
 
     NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3010, "message": "중복된 닉네임입니다." },
     USER_NOT_EXIST: { "isSuccess": false, "code": 3011, "message": "존재하지 않는 유저입니다." },

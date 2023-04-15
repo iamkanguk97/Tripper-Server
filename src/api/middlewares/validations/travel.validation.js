@@ -1,6 +1,10 @@
 const { param, body } = require('express-validator');
 const responseMessage = require('../../../config/response/baseResponseStatus');
-const { checkMyTravelExist, checkTravelStatusAble } = require('../../utils/validation-util');
+const {
+    checkMyTravelExist,
+    checkTravelStatusAble,
+    checkTravelDateIsOver
+} = require('../../utils/validation-util');
 const { REGEX_DATE } = require('../../utils/regex');
 
 /**
@@ -20,7 +24,6 @@ const createTravelValidation = [
         .matches(REGEX_DATE)
         .withMessage(responseMessage.CREATE_TRAVEL_DATE_ERROR_TYPE)
         .bail(),
-    // .custom(),
     body('travelInformation.travelEndDate')
         .notEmpty()
         .withMessage(responseMessage.CREATE_TRAVEL_ENDDATE_EMPTY)
@@ -28,16 +31,25 @@ const createTravelValidation = [
         .matches(REGEX_DATE)
         .withMessage(responseMessage.CREATE_TRAVEL_DATE_ERROR_TYPE)
         .bail(),
-    // .custom()
+    body(['travelInformation.travelStartDate', 'travelInformation.travelEndDate'])
+        .custom(checkTravelDateIsOver)
+        .bail(),
     body('travelInformation.moveMethod')
         .notEmpty()
-        .withMessage()
+        .withMessage(responseMessage.CREATE_TRAVEL_MOVEMETHOD_EMPTY)
         .bail()
-        .isIn(['', '', '', ''])
-        .withMessage()
+        .isIn(['자차로 여행', '대중교통 여행', '자전거 여행', '도보 여행'])
+        .withMessage(responseMessage.CREATE_TRAVEL_MOVEMETHOD_ERROR_TYPE)
         .bail(),
-    body('travelInformation.travelTitle').notEmpty().withMessage().bail(),
-    body()
+    body('travelInformation.travelTitle')
+        .notEmpty()
+        .withMessage(responseMessage.CREATE_TRAVEL_TITLE_EMPTY)
+        .bail(),
+    body('travelInformation.travelThumnailImages')
+        .optional()
+        .isArray({ max: 5 })
+        .withMessage(responseMessage.CREATE_TRAVEL_THUMNAIL_IMAGE_LENGTH_ERROR)
+        .bail()
 ];
 
 /**

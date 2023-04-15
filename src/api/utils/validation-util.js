@@ -162,6 +162,19 @@ const checkTravelStatusAble = async (value, { req }) => {
     }
 };
 
+const checkTravelDateIsOver = async date => {
+    try {
+        console.log(date);
+        // 오늘 날짜가 지난 날짜인지 확인
+        //
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(validationErrorResponse(true, err));
+    }
+};
+
+const checkTravelDay = async day => {};
+
 module.exports = {
     checkUserStatusFunc,
     checkNickDuplicate,
@@ -170,5 +183,7 @@ module.exports = {
     checkAccessTokenEmpty,
     checkUserFollowMe,
     checkMyTravelExist,
-    checkTravelStatusAble
+    checkTravelStatusAble,
+    checkTravelDateIsOver,
+    checkTravelDay
 };
