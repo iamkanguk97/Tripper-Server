@@ -5,14 +5,14 @@ module.exports = class TravelThumImage extends Sequelize.Model {
         return super.init(
             {
                 IDX: {
-                    type: Sequelize.INTEGER,
+                    type: Sequelize.BIGINT,
                     autoIncrement: true,
                     primaryKey: true,
                     allowNull: false,
                     comment: '여행 게시물 썸네일 이미지 고유값'
                 },
                 TRAVEL_IDX: {
-                    type: Sequelize.INTEGER,
+                    type: Sequelize.BIGINT,
                     allowNull: false,
                     comment: '여행 게시물 고유값'
                 },

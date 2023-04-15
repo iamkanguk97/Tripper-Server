@@ -41,19 +41,19 @@ module.exports = class Follow extends Sequelize.Model {
         return super.init(
             {
                 IDX: {
-                    type: Sequelize.INTEGER,
+                    type: Sequelize.BIGINT,
                     autoIncrement: true,
                     primaryKey: true,
                     allowNull: false,
                     comment: '사용자 팔로우 고유값'
                 },
                 USER_IDX: {
-                    type: Sequelize.INTEGER,
+                    type: Sequelize.BIGINT,
                     allowNull: false,
                     comment: '사용자 고유값'
                 },
                 FOLLOW_TARGET_IDX: {
-                    type: Sequelize.INTEGER,
+                    type: Sequelize.BIGINT,
                     allowNull: false,
                     comment: '팔로우를 당하는 사용자 고유값'
                 },
