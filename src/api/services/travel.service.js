@@ -1,12 +1,10 @@
 const { Op } = require('sequelize');
-const e = require('express');
 const Travel = require('../models/Travel/Travel');
 const TravelScore = require('../models/Travel/TravelScore');
 const TravelLike = require('../models/Travel/TravelLike');
 const { sequelize, TravelDayArea } = require('../models');
 const { getTravelTrans } = require('../utils/util');
 const TravelThumImage = require('../models/Travel/TravelThumImage');
-const { CustomServerError } = require('../errors');
 const TravelDay = require('../models/Travel/TravelDay');
 const TravelDayAreaImage = require('../models/Travel/TravelDayAreaImage');
 
@@ -194,9 +192,32 @@ const createTravel = async (userIdx, travelInformation, day) => {
     }
 };
 
+const deleteTravel = async (userIdx, travelIdx) => {
+    const deleteTravelResult = (
+        await Travel.update(
+            {
+                TRAVEL_STATUS: 'C' // 삭제 처리
+            },
+            {
+                where: {
+                    IDX: travelIdx,
+                    USER_IDX: userIdx
+                }
+            }
+        )
+    )[0];
+
+    if (!deleteTravelResult)
+        // 변경사항 없거나 잘못된 문법 사용?
+        throw new Error('[Travel->deleteTravel] 변경사항이 없거나 잘못된 문법 사용');
+
+    return travelIdx;
+};
+
 module.exports = {
     updateTravelStatus,
     createTravelReviewScore,
     createTravelLike,
-    createTravel
+    createTravel,
+    deleteTravel
 };

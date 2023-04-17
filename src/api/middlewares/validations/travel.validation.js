@@ -3,7 +3,9 @@ const responseMessage = require('../../../config/response/baseResponseStatus');
 const {
     checkMyTravelExist,
     checkTravelStatusAble,
-    checkTravelDateIsOver
+    checkTravelDateIsOver,
+    checkTravelStatus,
+    checkMyTravel
 } = require('../../utils/validation-util');
 const { REGEX_DATE } = require('../../utils/regex');
 
@@ -54,8 +56,19 @@ const createTravelValidation = [
 
 /**
  * 게시물 삭제 API Validator
+ * - travelIdx 누락 확인 + 이미 삭제된 게시물인지 확인
+ * - 본인 게시물을 삭제하려는게 맞는지 확인
  */
-const deleteTravelValidation = [];
+const deleteTravelValidation = [
+    body('travelIdx')
+        .notEmpty()
+        .withMessage(responseMessage.TRAVEL_IDX_EMPTY)
+        .bail()
+        .custom(checkTravelStatus)
+        .bail()
+        .custom(checkMyTravel)
+        .bail()
+];
 
 /**
  * 게시물 공개 범위 수정 API Validator

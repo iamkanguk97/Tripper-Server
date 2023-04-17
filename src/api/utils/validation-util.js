@@ -175,6 +175,41 @@ const checkTravelDateIsOver = async date => {
 
 const checkTravelDay = async day => {};
 
+const checkTravelStatus = async travelIdx => {
+    try {
+        // 해당 여행 게시물이 DB에 있는지
+        const checkTravelExist = await Travel.findOne({
+            where: {
+                IDX: travelIdx
+            }
+        });
+        if (!checkTravelExist) return Promise.reject(responseMessage.TRAVEL_NOT_EXIST);
+
+        // 있으면 그 게시물이 삭제된 게시물인지 확인
+        if (checkTravelExist.dataValues.TRAVEL_STATUS === 'C')
+            return Promise.reject(responseMessage.TRAVEL_DELETED);
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(validationErrorResponse(true, err));
+    }
+};
+
+const checkMyTravel = async (value, { req }) => {
+    try {
+        const checkMyTravelResult = await Travel.findOne({
+            where: {
+                IDX: value,
+                USER_IDX: req.verifiedToken.userIdx
+            }
+        });
+
+        if (!checkMyTravelResult) return Promise.reject(responseMessage.TRAVEL_NOT_MINE);
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(validationErrorResponse(true, err));
+    }
+};
+
 module.exports = {
     checkUserStatusFunc,
     checkNickDuplicate,
@@ -185,5 +220,7 @@ module.exports = {
     checkMyTravelExist,
     checkTravelStatusAble,
     checkTravelDateIsOver,
-    checkTravelDay
+    checkTravelDay,
+    checkTravelStatus,
+    checkMyTravel
 };

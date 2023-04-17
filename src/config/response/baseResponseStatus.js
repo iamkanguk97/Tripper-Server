@@ -54,4 +54,6 @@ module.exports = {
     TRAVEL_NOT_EXIST: { "isSuccess": false, "code": 3014, "message": "존재하지 않는 여행 게시물입니다." },
     KAKAO_SEARCH_EMPTY_RESULT: { "isSuccess": false, "code": 3015, "message": "조회 결과가 없습니다. 조금 더 정확하게 키워드를 입력해주세요." },
     TRAVEL_CANT_SET_REVIEW_SCORE: { "isSuccess": false, "code": 3016, "message": "접근할 수 없는 여행 게시물입니다." },
+    TRAVEL_DELETED: { "isSuccess": false, "code": 3017, "message": "삭제된 여행 게시물입니다." },
+    TRAVEL_NOT_MINE: { "isSuccess": false, "code": 3018, "message": "본인의 게시물이 아닙니다." },
 };

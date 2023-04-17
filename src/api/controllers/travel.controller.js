@@ -13,7 +13,15 @@ const createTravel = async (req, res) => {
         .json(response(responseMessage.CREATE_SUCCESS, createTravelResult));
 };
 
-const deleteTravel = async (req, res) => {};
+const deleteTravel = async (req, res) => {
+    const userIdx = req.verifiedToken.userIdx;
+    const travelIdx = req.body.travelIdx;
+
+    const deleteTravelResult = await TravelService.deleteTravel(userIdx, travelIdx);
+    return res
+        .status(httpStatus.OK)
+        .json(response(responseMessage.SUCCESS, { deletedTravelIdx: deleteTravelResult }));
+};
 
 const updateTravelStatus = async (req, res) => {
     const { userIdx } = req.verifiedToken;
@@ -54,10 +62,16 @@ const createTravelLike = async (req, res) => {
         .json(response(responseMessage.SUCCESS, { message: createTravelLikeResult }));
 };
 
+const createTravelComment = async (req, res) => {};
+
+const getTravelComments = async (req, res) => {};
+
 module.exports = {
     createTravel,
     deleteTravel,
     updateTravelStatus,
     createTravelReviewScore,
-    createTravelLike
+    createTravelLike,
+    createTravelComment,
+    getTravelComments
 };
