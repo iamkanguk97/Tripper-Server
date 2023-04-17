@@ -17,7 +17,11 @@ jobs:
         steps:
             - name: Checkout Source Code.
               uses: action/checkout@v2
+
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v2
               with:
                   node-version: ${{ matrix.node-version }}
+
+            - name: Check NPM Version
+              uses: npm -v
