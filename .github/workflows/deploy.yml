@@ -25,3 +25,7 @@ jobs:
 
             - name: Check NPM Version
               uses: npm -v
+
+            - run: npm ci
+
+            - run: npm run build --if-present
