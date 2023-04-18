@@ -1,17 +1,25 @@
 const { body, query, header } = require('express-validator');
-const { checkUserStatusFunc, checkUserFollowMe } = require('../../utils/validation-util');
+const {
+    checkUserStatusFunc,
+    checkUserFollowMe,
+    checkUserStatus,
+    checkBodyIdxEqualMyIdx
+} = require('../../utils/validation-util');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 
 /**
  * 팔로우 기능 API Validator
  * - 팔로우 상대 IDX 유무 확인 + 실제 존재하는 유저인지 확인 (탈퇴 유무까지)
+ * - followUserIdx와 jwt의 userIdx가 같으면 안됨
  */
 const followValidation = [
     body('followUserIdx')
         .notEmpty()
         .withMessage(responseMessage.FOLLOW_TARGET_IDX_EMPTY)
         .bail()
-        .custom(checkUserStatusFunc)
+        .custom(checkUserStatus)
+        .bail()
+        .custom(checkBodyIdxEqualMyIdx)
         .bail()
 ];
 

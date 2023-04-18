@@ -12,6 +12,37 @@ const Logger = require('../../config/logger');
 const { checkBadWord } = require('./util');
 const { validationErrorResponse } = require('../../config/response/response-template');
 
+// 회원 존재 및 탈퇴 확인하는 Validation
+const checkUserStatus = async value => {
+    try {
+        const checkUserResult = await User.findOne({
+            where: {
+                IDX: value
+            }
+        });
+
+        // DB에 해당 유저의 아이디가 등록X
+        if (!checkUserResult) return Promise.reject(responseMessage.USER_NOT_EXIST);
+        if (checkUserResult.dataValues.USER_STATUS === 'D')
+            return Promise.reject(responseMessage.USER_WITHDRAWAL);
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(validationErrorResponse(true, err));
+    }
+};
+
+// Body 매개변수로 온 idx랑 JWT의 idx가 같은지 확인
+const checkBodyIdxEqualMyIdx = async (value, { req }) => {
+    try {
+        const userIdx = req.verifiedToken.userIdx;
+        if (parseInt(userIdx) === parseInt(value))
+            return Promise.reject(responseMessage.CANT_FOLLOW_OWN);
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(validationErrorResponse(true, err));
+    }
+};
+
 // 회원 탈퇴 및 존재 유무 확인하는 Validation Function
 const checkUserStatusFunc = async value => {
     if (!value)
@@ -222,5 +253,7 @@ module.exports = {
     checkTravelDateIsOver,
     checkTravelDay,
     checkTravelStatus,
-    checkMyTravel
+    checkMyTravel,
+    checkUserStatus,
+    checkBodyIdxEqualMyIdx
 };

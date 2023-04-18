@@ -47,6 +47,8 @@ module.exports = {
     CREATE_TRAVEL_THUMNAIL_IMAGE_LENGTH_ERROR: { "isSuccess": false, "code": 2045, "message": "여행 게시물 썸네일 이미지는 최대 5장까지 업로드 가능합니다." },
     CREATE_TRAVEL_TITLE_EMPTY: { "isSuccess": false, "code": 2046, "message": "여행 게시물 제목을 입력해주세요." },
 
+    CANT_FOLLOW_OWN: { "isSuccess": false, "code": 2047, "message": "본인이 본인을 팔로우할 수는 없습니다." },
+
     NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3010, "message": "중복된 닉네임입니다." },
     USER_NOT_EXIST: { "isSuccess": false, "code": 3011, "message": "존재하지 않는 유저입니다." },
     DELETE_FOLLOWER_NOT_FOLLOW: { "isSuccess": false, "code": 3012, "message": "삭제할 팔로워가 회원님을 팔로우하고 있지 않습니다." },
@@ -56,4 +58,5 @@ module.exports = {
     TRAVEL_CANT_SET_REVIEW_SCORE: { "isSuccess": false, "code": 3016, "message": "접근할 수 없는 여행 게시물입니다." },
     TRAVEL_DELETED: { "isSuccess": false, "code": 3017, "message": "삭제된 여행 게시물입니다." },
     TRAVEL_NOT_MINE: { "isSuccess": false, "code": 3018, "message": "본인의 게시물이 아닙니다." },
+    USER_WITHDRAWAL: { "isSuccess": false, "code": 3019, "message": "탈퇴한 유저입니다." },
 };
