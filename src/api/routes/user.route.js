@@ -30,7 +30,7 @@ router.get(
     wrapAsync(UserController.followList)
 );
 
-// 본인 팔로워 삭제 API (OK)
+// 본인 팔로워 삭제 API
 router.delete(
     '/follower',
     jwtMiddleware,

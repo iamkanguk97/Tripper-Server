@@ -28,7 +28,7 @@ const deleteFollower = async (req, res) => {
     const deleteFollowerIdx = await UserService.deleteFollower(myIdx, deleteUserIdx);
     return res
         .status(httpStatus.OK)
-        .json(response(responseMessage.SUCCESS, { deleteUserIdx: deleteFollowerIdx }));
+        .json(response(responseMessage.SUCCESS, { deletedUserIdx: deleteFollowerIdx }));
 };
 
 const getProfile = async (req, res) => {};

@@ -3,7 +3,7 @@ const {
     checkUserStatusFunc,
     checkUserFollowMe,
     checkUserStatus,
-    checkBodyIdxEqualMyIdx
+    checkParameterIdxEqualMyIdx
 } = require('../../utils/validation-util');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 
@@ -19,7 +19,7 @@ const followValidation = [
         .bail()
         .custom(checkUserStatus)
         .bail()
-        .custom(checkBodyIdxEqualMyIdx)
+        .custom(checkParameterIdxEqualMyIdx)
         .bail()
 ];
 
@@ -49,7 +49,9 @@ const deleteFollowerValidation = [
         .notEmpty()
         .withMessage(responseMessage.DELETE_FOLLOWER_IDX_EMPTY)
         .bail()
-        .custom(checkUserStatusFunc)
+        .custom(checkUserStatus)
+        .bail()
+        .custom(checkParameterIdxEqualMyIdx)
         .bail()
         .custom(checkUserFollowMe)
         .bail()

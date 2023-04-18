@@ -32,11 +32,11 @@ const checkUserStatus = async value => {
 };
 
 // Body 매개변수로 온 idx랑 JWT의 idx가 같은지 확인
-const checkBodyIdxEqualMyIdx = async (value, { req }) => {
+const checkParameterIdxEqualMyIdx = async (value, { req }) => {
     try {
         const userIdx = req.verifiedToken.userIdx;
         if (parseInt(userIdx) === parseInt(value))
-            return Promise.reject(responseMessage.CANT_FOLLOW_OWN);
+            return Promise.reject(responseMessage.PARAMETER_IDX_EQUALS_MY_IDX);
     } catch (err) {
         Logger.error(err);
         return Promise.reject(validationErrorResponse(true, err));
@@ -255,5 +255,5 @@ module.exports = {
     checkTravelStatus,
     checkMyTravel,
     checkUserStatus,
-    checkBodyIdxEqualMyIdx
+    checkParameterIdxEqualMyIdx
 };

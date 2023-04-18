@@ -47,7 +47,7 @@ module.exports = {
     CREATE_TRAVEL_THUMNAIL_IMAGE_LENGTH_ERROR: { "isSuccess": false, "code": 2045, "message": "여행 게시물 썸네일 이미지는 최대 5장까지 업로드 가능합니다." },
     CREATE_TRAVEL_TITLE_EMPTY: { "isSuccess": false, "code": 2046, "message": "여행 게시물 제목을 입력해주세요." },
 
-    CANT_FOLLOW_OWN: { "isSuccess": false, "code": 2047, "message": "본인이 본인을 팔로우할 수는 없습니다." },
+    PARAMETER_IDX_EQUALS_MY_IDX: { "isSuccess": false, "code": 2047, "message": "매개변수로 들어온 사용자 고유값이랑 나의 고유값이랑 동일합니다." },
 
     NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3010, "message": "중복된 닉네임입니다." },
     USER_NOT_EXIST: { "isSuccess": false, "code": 3011, "message": "존재하지 않는 유저입니다." },
