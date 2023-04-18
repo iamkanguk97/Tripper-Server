@@ -24,9 +24,9 @@ const deleteTravel = async (req, res) => {
 };
 
 const updateTravelStatus = async (req, res) => {
-    const { userIdx } = req.verifiedToken;
-    const travelIdx = parseInt(req.params.travelIdx);
-    const { travelStatus } = req;
+    const userIdx = req.verifiedToken.userIdx;
+    const travelIdx = parseInt(req.body.travelIdx);
+    const travelStatus = req.travelStatus;
 
     const updateTravelStatusResult = await TravelService.updateTravelStatus(
         userIdx,

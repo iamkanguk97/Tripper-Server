@@ -235,6 +235,9 @@ const checkMyTravel = async (value, { req }) => {
         });
 
         if (!checkMyTravelResult) return Promise.reject(responseMessage.TRAVEL_NOT_MINE);
+
+        // SERVICE 단에서 또 호출하지 않게 req 변수에 담음
+        req.travelStatus = checkMyTravelResult.dataValues.TRAVEL_STATUS;
     } catch (err) {
         Logger.error(err);
         return Promise.reject(validationErrorResponse(true, err));

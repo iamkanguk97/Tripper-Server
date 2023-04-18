@@ -75,11 +75,13 @@ const deleteTravelValidation = [
  * - 게시물 고유값 유무 + 본인 게시물이 맞는지 확인
  */
 const updateTravelStatusValidation = [
-    param('travelIdx')
+    body('travelIdx')
         .notEmpty()
         .withMessage(responseMessage.TRAVEL_IDX_EMPTY)
         .bail()
-        .custom(checkMyTravelExist) // 본인 게시물이 맞는지 확인
+        .custom(checkTravelStatus) // 게시물 상태 확인
+        .bail()
+        .custom(checkMyTravel) // 본인 게시물 맞는지 확인
         .bail()
 ];
 

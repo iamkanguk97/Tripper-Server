@@ -33,16 +33,16 @@ router.patch(
     wrapAsync(TravelController.deleteTravel)
 );
 
-// 게시물 공개 범위 수정 API (OK)
+// 게시물 공개 범위 수정 API
 router.patch(
-    '/:travelIdx/status',
+    '/status',
     jwtMiddleware,
     updateTravelStatusValidation,
     validationMiddleware,
     wrapAsync(TravelController.updateTravelStatus)
 );
 
-// 게시물 평점등록 API -> 등록한 평점은 삭제할수는 없음. (OK)
+// 게시물 평점등록 API -> 등록한 평점은 삭제할수는 없음.
 router.post(
     '/review-score',
     jwtMiddleware,
