@@ -7,6 +7,7 @@ const { Op } = require('sequelize');
 const User = require('../models/User/User');
 const UserFollow = require('../models/User/UserFollow');
 const Travel = require('../models/Travel/Travel');
+const TravelScore = require('../models/Travel/TravelScore');
 const responseMessage = require('../../config/response/baseResponseStatus');
 const Logger = require('../../config/logger');
 const { checkBadWord } = require('./util');
@@ -244,6 +245,29 @@ const checkMyTravel = async (value, { req }) => {
     }
 };
 
+const checkBeforeReviewScore = async (value, { req }) => {
+    try {
+        const travelIdx = parseInt(req.body.travelIdx);
+        const checkUserScore = await TravelScore.findOne({
+            attributes: ['TRAVEL_SCORE'],
+            where: {
+                TRAVEL_IDX: travelIdx,
+                USER_IDX: req.verifiedToken.userIdx
+            }
+        });
+        const checkUserScoreExist = !checkUserScore ? 'N' : 'Y';
+
+        if (checkUserScoreExist === 'Y' && value === checkUserScore.dataValues.TRAVEL_SCORE) {
+            return Promise.reject(responseMessage.TRAVEL_SCORE_SAME_WITH_BEFORE);
+        }
+
+        req.checkUserScoreExist = checkUserScoreExist;
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(validationErrorResponse(true, err));
+    }
+};
+
 module.exports = {
     checkUserStatusFunc,
     checkNickDuplicate,
@@ -258,5 +282,6 @@ module.exports = {
     checkTravelStatus,
     checkMyTravel,
     checkUserStatus,
-    checkParameterIdxEqualMyIdx
+    checkParameterIdxEqualMyIdx,
+    checkBeforeReviewScore
 };

@@ -59,4 +59,5 @@ module.exports = {
     TRAVEL_DELETED: { "isSuccess": false, "code": 3017, "message": "삭제된 여행 게시물입니다." },
     TRAVEL_NOT_MINE: { "isSuccess": false, "code": 3018, "message": "본인의 게시물이 아닙니다." },
     USER_WITHDRAWAL: { "isSuccess": false, "code": 3019, "message": "탈퇴한 유저입니다." },
+    TRAVEL_SCORE_SAME_WITH_BEFORE: { "isSuccess": false, "code": 3020, "message": "이전에 부여한 게시물 평점과 동일합니다." },
 };

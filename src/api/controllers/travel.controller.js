@@ -40,16 +40,19 @@ const updateTravelStatus = async (req, res) => {
 
 const createTravelReviewScore = async (req, res) => {
     const userIdx = req.verifiedToken.userIdx;
-    const { travelIdx, reviewScore } = req.body;
+    const travelIdx = parseInt(req.body.travelIdx);
+    const reviewScore = parseInt(req.body.reviewScore);
+    const checkUserScoreExist = req.checkUserScoreExist;
 
     const createTravelReviewScoreResult = await TravelService.createTravelReviewScore(
         userIdx,
         travelIdx,
-        reviewScore
+        reviewScore,
+        checkUserScoreExist
     );
     return res
-        .status(httpStatus.OK)
-        .json(response(responseMessage.SUCCESS, { message: createTravelReviewScoreResult }));
+        .status(httpStatus.CREATED)
+        .json(response(responseMessage.CREATE_SUCCESS, { message: createTravelReviewScoreResult }));
 };
 
 const createTravelLike = async (req, res) => {

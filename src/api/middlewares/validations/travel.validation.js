@@ -5,7 +5,8 @@ const {
     checkTravelStatusAble,
     checkTravelDateIsOver,
     checkTravelStatus,
-    checkMyTravel
+    checkMyTravel,
+    checkBeforeReviewScore
 } = require('../../utils/validation-util');
 const { REGEX_DATE } = require('../../utils/regex');
 
@@ -95,7 +96,9 @@ const createTravelReviewScoreValidation = [
         .notEmpty() // 게시물 고유값 유무 확인
         .withMessage(responseMessage.TRAVEL_IDX_EMPTY)
         .bail()
-        .custom(checkTravelStatusAble) // 게시물 유효성 확인 + 본인 게시물인지까지 확인
+        .custom(checkTravelStatus)
+        .bail()
+        .custom(checkMyTravel)
         .bail(),
     body('reviewScore')
         .notEmpty() // 점수 유무 확인
@@ -103,6 +106,8 @@ const createTravelReviewScoreValidation = [
         .bail()
         .isInt({ min: 1, max: 5 }) // 1점에서 5점 사이인지 확인
         .withMessage(responseMessage.TRAVEL_REVIEW_SCORE_ERROR_TYPE)
+        .bail()
+        .custom(checkBeforeReviewScore) // 이전 게시물 점수랑 동일한지 확인
         .bail()
 ];
 

@@ -36,7 +36,7 @@ const updateTravelStatus = async (userIdx, travelIdx, travelStatus) => {
         };
 };
 
-const createTravelReviewScore = async (userIdx, travelIdx, reviewScore) => {
+const createTravelReviewScore = async (userIdx, travelIdx, reviewScore, checkUserScoreExist) => {
     /** <Logic>
      * 유저가 전에 점수를 부여한적이 있음 -> update
      * 점수를 부여한적이 없음 -> create
@@ -45,8 +45,6 @@ const createTravelReviewScore = async (userIdx, travelIdx, reviewScore) => {
         TRAVEL_IDX: travelIdx,
         USER_IDX: userIdx
     };
-
-    const checkUserScoreExist = !(await TravelScore.findOne({ where: whereOption })) ? 'N' : 'Y'; // DB에서 찾아서 null이면 N 아니면 Y
 
     if (checkUserScoreExist === 'N') {
         // 점수를 한번도 부여한적 없음
@@ -57,7 +55,12 @@ const createTravelReviewScore = async (userIdx, travelIdx, reviewScore) => {
         });
     } else {
         // 점수를 이전에 부여했음
-        await TravelScore.update({ TRAVEL_SCORE: reviewScore }, { where: whereOption });
+        const updateTravelScoreResult = (
+            await TravelScore.update({ TRAVEL_SCORE: reviewScore }, { where: whereOption })
+        )[0];
+
+        if (!updateTravelScoreResult)
+            throw new Error('[Travel->updateTravelScore] 변경사항이 없거나 잘못된 문법 사용');
     }
 
     return `게시물 점수 ${reviewScore}점 부여 성공!`;
