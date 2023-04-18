@@ -31,7 +31,7 @@ const updateTravelStatus = async (userIdx, travelIdx, travelStatus) => {
         throw new Error('[Travel->updateTravelStatus] 변경사항이 없거나 잘못된 문법 사용');
     else
         return {
-            travelIdx,
+            updatedTravelIdx: travelIdx,
             newTravelStatus: _newTravelStatus
         };
 };
