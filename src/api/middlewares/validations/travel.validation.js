@@ -1,4 +1,4 @@
-const { param, body } = require('express-validator');
+const { body } = require('express-validator');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 const {
     checkMyTravelExist,
@@ -58,6 +58,7 @@ const createTravelValidation = [
 /**
  * 게시물 삭제 API Validator
  * - travelIdx 누락 확인 + 이미 삭제된 게시물인지 확인
+ * - 이미 삭제된 게시물인지 확인
  * - 본인 게시물을 삭제하려는게 맞는지 확인
  */
 const deleteTravelValidation = [

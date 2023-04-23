@@ -65,7 +65,27 @@ const createTravelLike = async (req, res) => {
         .json(response(responseMessage.SUCCESS, { message: createTravelLikeResult }));
 };
 
-const createTravelComment = async (req, res) => {};
+const createTravelComment = async (req, res) => {
+    const userIdx = req.verifiedToken.userIdx;
+    const { travelIdx, comment } = req.body;
+    const mentionUsers = req.body.mentionUsers || null;
+    const commentIdx = req.body.commentIdx || null;
+
+    console.log(userIdx);
+    console.log(travelIdx);
+    console.log(comment);
+    console.log(mentionUsers);
+    console.log(commentIdx);
+
+    const createTravelCommentResult = await TravelService.createTravelComment(
+        userIdx,
+        travelIdx,
+        commentIdx,
+        comment,
+        mentionUsers
+    );
+    console.log(createTravelCommentResult);
+};
 
 const getTravelComments = async (req, res) => {};
 

@@ -32,7 +32,7 @@ const checkUserStatus = async value => {
     }
 };
 
-// Body 매개변수로 온 idx랑 JWT의 idx가 같은지 확인
+// 매개변수로 들어온 idx랑 JWT의 idx가 같은지 확인
 const checkParameterIdxEqualMyIdx = async (value, { req }) => {
     try {
         const userIdx = req.verifiedToken.userIdx;
@@ -45,25 +45,25 @@ const checkParameterIdxEqualMyIdx = async (value, { req }) => {
 };
 
 // 회원 탈퇴 및 존재 유무 확인하는 Validation Function
-const checkUserStatusFunc = async value => {
-    if (!value)
-        // value가 없으면 넘겨보냄
-        return Promise.resolve();
+// const checkUserStatusFunc = async value => {
+//     if (!value)
+//         // value가 없으면 넘겨보냄
+//         return Promise.resolve();
 
-    try {
-        const checkUserResult = await User.findOne({
-            where: {
-                IDX: value,
-                USER_STATUS: 'A'
-            }
-        });
+//     try {
+//         const checkUserResult = await User.findOne({
+//             where: {
+//                 IDX: value,
+//                 USER_STATUS: 'A'
+//             }
+//         });
 
-        if (!checkUserResult) return Promise.reject(responseMessage.USER_NOT_EXIST);
-    } catch (err) {
-        Logger.error(err);
-        return Promise.reject(validationErrorResponse(true, err));
-    }
-};
+//         if (!checkUserResult) return Promise.reject(responseMessage.USER_NOT_EXIST);
+//     } catch (err) {
+//         Logger.error(err);
+//         return Promise.reject(validationErrorResponse(true, err));
+//     }
+// };
 
 // 회원 닉네임 중복 검사
 const checkNickDuplicate = async value => {
@@ -207,7 +207,7 @@ const checkTravelDateIsOver = async date => {
 
 const checkTravelDay = async day => {};
 
-const checkTravelStatus = async travelIdx => {
+const checkTravelStatusExceptPrivate = async travelIdx => {
     try {
         // 해당 여행 게시물이 DB에 있는지
         const checkTravelExist = await Travel.findOne({
@@ -220,6 +220,8 @@ const checkTravelStatus = async travelIdx => {
         // 있으면 그 게시물이 삭제된 게시물인지 확인
         if (checkTravelExist.dataValues.TRAVEL_STATUS === 'C')
             return Promise.reject(responseMessage.TRAVEL_DELETED);
+        if (checkTravelExist.dataValues.TRAVEL_STATUS === 'B')
+            return Promise.reject(responseMessage.TRAVEL_PRIVATE);
     } catch (err) {
         Logger.error(err);
         return Promise.reject(validationErrorResponse(true, err));
@@ -269,7 +271,7 @@ const checkBeforeReviewScore = async (value, { req }) => {
 };
 
 module.exports = {
-    checkUserStatusFunc,
+    // checkUserStatusFunc,
     checkNickDuplicate,
     checkBadWordInclude,
     checkSnsIdDuplicate,
@@ -279,7 +281,7 @@ module.exports = {
     checkTravelStatusAble,
     checkTravelDateIsOver,
     checkTravelDay,
-    checkTravelStatus,
+    checkTravelStatusExceptPrivate,
     checkMyTravel,
     checkUserStatus,
     checkParameterIdxEqualMyIdx,

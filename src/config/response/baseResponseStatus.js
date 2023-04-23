@@ -37,7 +37,6 @@ module.exports = {
     SOCIAL_LOGIN_PROVIDER_EMPTY: { "isSuccess": false, "code": 2036, "message": "소셜로그인 유형을 입력해주세요." },
     SOCIAL_LOGIN_PROVIDER_ERROR_TYPE: { "isSuccess": false, "code": 2037, "message": "소셜로그인 유형이 잘못되었습니다." },
     SOCIAL_LOGIN_ACCESS_TOKEN_ERROR: { "isSuccess": false, "code": 2038, "message": "소셜로그인 Access-Token 에러가 발생했습니다." },
-    
     CREATE_TRAVEL_INFORMATION_EMPTY: { "isSuccess": false, "code": 2039, "message": "게시물 생성시 필요한 정보들이 없습니다." },
     CREATE_TRAVEL_STARTDATE_EMPTY: { "isSuccess": false, "code": 2040, "message": "여행 시작 날짜를 입력해주세요." },
     CREATE_TRAVEL_ENDDATE_EMPTY: { "isSuccess": false, "code": 2041, "message": "여행 종료 날짜를 입력해주세요." },
@@ -46,7 +45,6 @@ module.exports = {
     CREATE_TRAVEL_MOVEMETHOD_ERROR_TYPE: { "isSuccess": false, "code": 2044, "message": "여행 이동수단 입력이 잘못되었습니다. 형식에 맞게 입력해주세요." },
     CREATE_TRAVEL_THUMNAIL_IMAGE_LENGTH_ERROR: { "isSuccess": false, "code": 2045, "message": "여행 게시물 썸네일 이미지는 최대 5장까지 업로드 가능합니다." },
     CREATE_TRAVEL_TITLE_EMPTY: { "isSuccess": false, "code": 2046, "message": "여행 게시물 제목을 입력해주세요." },
-
     PARAMETER_IDX_EQUALS_MY_IDX: { "isSuccess": false, "code": 2047, "message": "매개변수로 들어온 사용자 고유값이랑 나의 고유값이랑 동일합니다." },
 
     NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3010, "message": "중복된 닉네임입니다." },
@@ -60,4 +58,5 @@ module.exports = {
     TRAVEL_NOT_MINE: { "isSuccess": false, "code": 3018, "message": "본인의 게시물이 아닙니다." },
     USER_WITHDRAWAL: { "isSuccess": false, "code": 3019, "message": "탈퇴한 유저입니다." },
     TRAVEL_SCORE_SAME_WITH_BEFORE: { "isSuccess": false, "code": 3020, "message": "이전에 부여한 게시물 평점과 동일합니다." },
+    TRAVEL_PRIVATE: { "isSuccess": false, "code": 3021, "message": "비공개 여행 게시물입니다." },
 };
