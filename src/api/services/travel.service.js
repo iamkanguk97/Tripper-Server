@@ -217,10 +217,13 @@ const deleteTravel = async (userIdx, travelIdx) => {
     return travelIdx;
 };
 
+// const createTravelComment = async (userIdx, travelIdx, commentIdx, comment, mentionUsers) => {};
+
 module.exports = {
     updateTravelStatus,
     createTravelReviewScore,
     createTravelLike,
     createTravel,
     deleteTravel
+    // createTravelComment
 };

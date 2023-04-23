@@ -61,10 +61,10 @@ router.post(
 );
 
 // 게시물 댓글 조회 API
-router.get('/:travelIdx/comments', jwtMiddleware, wrapAsync(TravelController.getTravelComments));
+// router.get('/:travelIdx/comments', jwtMiddleware, wrapAsync(TravelController.getTravelComments));
 
 // 게시물 댓글 생성 API
-router.post('/comments', jwtMiddleware, wrapAsync(TravelController.createTravelComment));
+// router.post('/comments', jwtMiddleware, wrapAsync(TravelController.createTravelComment));
 
 // 게시물 댓글 수정 API
 // 게시물 댓글 삭제 API
