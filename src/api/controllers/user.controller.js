@@ -35,7 +35,11 @@ const getProfile = async (req, res) => {};
 
 const getMyPage = async (req, res) => {
     const userIdx = req.verifiedToken.userIdx;
-    const getMyPageResult = await UserService.getMyPage(userIdx);
+    const option = req.query.option ?? 'mytrip';
+    const page = parseInt(req.query.page) || 1; // 페이지 번호
+    const contentSize = parseInt(req.query.contentSize) || 15; // 페이지에서 보여줄 컨텐츠 수.
+
+    const getMyPageResult = await UserService.getMyPage(userIdx, option, page, contentSize);
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, getMyPageResult));
 };
 

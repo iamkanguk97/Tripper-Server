@@ -62,9 +62,28 @@ const deleteFollowerValidation = [
  */
 const getProfileValidation = [];
 
+/**
+ * 마이페이지 조회 API Validator
+ * - [query] option이 mytrip과 like 둘다 아닌 경우
+ * - [query] contentSize는 최대 15개로
+ * - [query] page는 0이상
+ */
+const getMyPageValidation = [
+    query('option')
+        .optional()
+        .isIn(['mytrip', 'like'])
+        .withMessage(responseMessage.SELECT_MYPAGE_OPTION_ERROR_TYPE),
+    query('contentSize')
+        .optional()
+        .isInt({ min: 1, max: 15 })
+        .withMessage(responseMessage.SELECT_CONTENT_SIZE_ERROR_TYPE),
+    query('page').optional().isInt({ min: 0 }).withMessage(responseMessage.SELECT_PAGE_ERROR_TYPE)
+];
+
 module.exports = {
     followValidation,
     followListValidation,
     deleteFollowerValidation,
-    getProfileValidation
+    getProfileValidation,
+    getMyPageValidation
 };

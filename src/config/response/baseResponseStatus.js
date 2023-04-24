@@ -46,6 +46,10 @@ module.exports = {
     CREATE_TRAVEL_THUMNAIL_IMAGE_LENGTH_ERROR: { "isSuccess": false, "code": 2045, "message": "여행 게시물 썸네일 이미지는 최대 5장까지 업로드 가능합니다." },
     CREATE_TRAVEL_TITLE_EMPTY: { "isSuccess": false, "code": 2046, "message": "여행 게시물 제목을 입력해주세요." },
     PARAMETER_IDX_EQUALS_MY_IDX: { "isSuccess": false, "code": 2047, "message": "매개변수로 들어온 사용자 고유값이랑 나의 고유값이랑 동일합니다." },
+    
+    SELECT_MYPAGE_OPTION_ERROR_TYPE: { "isSuccess": false, "code": 2048, "message": "마이페이지 조회 옵션이 잘못되었습니다." },
+    SELECT_CONTENT_SIZE_ERROR_TYPE: { "isSuccess": false, "code": 2049, "message": "페이징 내용 사이즈는 1이상 15이하로 입력해주세요." },
+    SELECT_PAGE_ERROR_TYPE: { "isSuccess": false, "code": 2050, "message": "페이지 번호는 0이상으로 입력해주세요." },
 
     NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3010, "message": "중복된 닉네임입니다." },
     USER_NOT_EXIST: { "isSuccess": false, "code": 3011, "message": "존재하지 않는 유저입니다." },

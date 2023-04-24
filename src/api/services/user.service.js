@@ -1,11 +1,15 @@
-const { Op, QueryTypes, Sequelize } = require('sequelize');
+const { Op, QueryTypes } = require('sequelize');
 const UserFollow = require('../models/User/UserFollow');
+const Travel = require('../models/Travel/Travel');
 const { sequelize } = require('../models/index');
 const {
     myFollowingQuery,
     myFollowerQuery,
     otherFollowingQuery,
-    otherFollowerQuery
+    otherFollowerQuery,
+    userInfoInMyPageQuery,
+    myTripInMyPageQuery,
+    getTravelCountInLikeQuery
 } = require('../queries/user.query');
 
 const follow = async (myIdx, followUserIdx) => {
@@ -86,8 +90,74 @@ const deleteFollower = async (myIdx, userIdx) => {
     else return userIdx;
 };
 
-const getMyPage = async userIdx => {
-    // 프로필사진, 닉네임, 팔로잉 및 팔로워 수, 내 게시물, 내가 좋아요 누른 게시물
+const getMyPage = async (userIdx, option, page, contentSize) => {
+    let transaction;
+    let travelCount;
+
+    // mytrip일 때와 like일 때와 totalCount 분리
+    if (option === 'mytrip') {
+        travelCount = await Travel.count({
+            where: {
+                USER_IDX: userIdx,
+                [Op.not]: { TRAVEL_STATUS: 'C' }
+            }
+        });
+    } else {
+        travelCount = (
+            await sequelize.query(getTravelCountInLikeQuery, {
+                type: QueryTypes.SELECT,
+                replacements: {
+                    userIdx
+                }
+            })
+        )[0].travelLikeCount;
+    }
+
+    const skipSize = (page - 1) * contentSize; // 다음 페이지 갈 때 건너뛸 리스트 개수.
+    const pnTotal = Math.ceil(travelCount / contentSize); // 페이지네이션의 전체 카운트
+
+    try {
+        // BEGIN TRANSACTION
+        transaction = await sequelize.transaction();
+
+        // 프로필사진, 닉네임, 팔로잉 및 팔로워 수 조회
+        const selectUserInfo = await sequelize.query(
+            userInfoInMyPageQuery,
+            {
+                type: QueryTypes.SELECT,
+                replacements: {
+                    userIdx
+                }
+            },
+            { transaction }
+        );
+
+        // 내 게시물 또는 내가 좋아요 누른 게시물
+        const selectUserTravels = await sequelize.query(
+            option === 'mytrip' ? myTripInMyPageQuery : userInfoInMyPageQuery,
+            {
+                type: QueryTypes.SELECT,
+                replacements: {
+                    userIdx,
+                    offset: skipSize,
+                    contentSize
+                }
+            },
+            { transaction }
+        );
+
+        await transaction.commit();
+
+        return {
+            currentPage: page,
+            totalPage: pnTotal,
+            userInfo: selectUserInfo[0],
+            userTravels: selectUserTravels
+        };
+    } catch (err) {
+        if (transaction) await transaction.rollback();
+        throw new Error(err);
+    }
 };
 
 module.exports = {

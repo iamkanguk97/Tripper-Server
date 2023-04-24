@@ -81,9 +81,101 @@ const otherFollowerQuery = `
         ) AS T2 ON T.USER_IDX = T2.FOLLOW_TARGET_IDX;
 `;
 
+const userInfoInMyPageQuery = `
+    SELECT IDX,
+            USER_PROFILE_IMAGE,
+            USER_NICKNAME,
+            (SELECT COUNT(FOLLOW_TARGET_IDX)
+                FROM USER_FOLLOW AS UF
+                    INNER JOIN USER AS U ON UF.FOLLOW_TARGET_IDX = U.IDX
+                WHERE USER_IDX = :userIdx
+                    AND U.USER_STATUS = 'A') AS followingCount,
+                (SELECT COUNT(USER_IDX)
+                FROM USER_FOLLOW AS UF
+                    INNER JOIN USER AS U ON UF.USER_IDX = U.IDX
+                WHERE FOLLOW_TARGET_IDX = :userIdx
+                    AND U.USER_STATUS = 'A') AS followerCount
+        FROM USER AS U
+        WHERE U.IDX = :userIdx AND U.USER_STATUS = 'A';
+`;
+
+const myTripInMyPageQuery = `
+    SELECT T.IDX AS travelIdx,
+            T.USER_IDX AS travelWriterIdx,
+            TRAVEL_TITLE AS travelTitle,
+            TRAVEL_INTRO AS travelIntro,
+            TRAVEL_HASHTAG AS travelHashtag,
+            TTL.TRAVEL_IMAGE_URL AS travelRepImage,
+            CASE WHEN TRAVEL_STATUS = 'A' THEN '공개' ELSE '비공개' END AS travelStatus,
+            (
+                SELECT
+                    CASE
+                        WHEN TRUNCATE(AVG(TRAVEL_SCORE), 0) = 5 THEN '최고의 여행!'
+                        WHEN TRUNCATE(AVG(TRAVEL_SCORE), 0) = 4 THEN '도움되었어요!'
+                        WHEN TRUNCATE(AVG(TRAVEL_SCORE), 0) = 3 THEN '그저 그래요'
+                        WHEN TRUNCATE(AVG(TRAVEL_SCORE), 0) = 2 THEN '도움되지 않았어요'
+                        WHEN TRUNCATE(AVG(TRAVEL_SCORE), 0) = 1 THEN '별로에요'
+                        ELSE '점수 없음'
+                    END AS travelScore
+                FROM TRAVEL_SCORE
+                WHERE TRAVEL_IDX = T.IDX
+            ) AS travelScore,
+            T.CREATED_AT AS travelCreatedAt
+        FROM TRAVEL AS T
+            LEFT JOIN (
+                SELECT IDX, TRAVEL_IDX, TRAVEL_IMAGE_URL
+                FROM TRAVEL_THUMNAIL_IMAGE
+                GROUP BY TRAVEL_IDX HAVING MIN(IDX)
+            ) AS TTL ON T.IDX = TTL.TRAVEL_IDX
+        WHERE T.USER_IDX = :userIdx AND T.TRAVEL_STATUS != 'C'
+        ORDER BY T.CREATED_AT DESC
+        LIMIT :offset, :contentSize;
+`;
+
+const travelLikeInMyPageQuery = `
+    SELECT TL.TRAVEL_IDX AS travelIdx,
+            T.USER_IDX AS travelWriterIdx,
+            TRAVEL_TITLE AS travelTitle,
+            TRAVEL_INTRO AS travelIntro,
+            TRAVEL_HASHTAG AS travelHashtag,
+            TTL.TRAVEL_IMAGE_URL AS travelRepImage,
+            'Y' AS travelLikeStatus,
+            (
+                SELECT
+                    CASE
+                        WHEN TRUNCATE(AVG(TRAVEL_SCORE), 0) = 5 THEN '최고의 여행!'
+                        WHEN TRUNCATE(AVG(TRAVEL_SCORE), 0) = 4 THEN '도움되었어요!'
+                        WHEN TRUNCATE(AVG(TRAVEL_SCORE), 0) = 3 THEN '그저 그래요'
+                        WHEN TRUNCATE(AVG(TRAVEL_SCORE), 0) = 2 THEN '도움되지 않았어요'
+                        WHEN TRUNCATE(AVG(TRAVEL_SCORE), 0) = 1 THEN '별로에요'
+                        ELSE '점수 없음'
+                    END AS travelScore
+                FROM TRAVEL_SCORE
+                WHERE TRAVEL_IDX = T.IDX
+            ) AS travelScore,
+            T.CREATED_AT AS travelCreatedAt
+        FROM TRAVEL_LIKE AS TL
+            INNER JOIN TRAVEL AS T ON TL.TRAVEL_IDX = T.IDX
+            INNER JOIN USER AS U ON T.USER_IDX = U.IDX
+            LEFT JOIN (
+                SELECT IDX, TRAVEL_IDX, TRAVEL_IMAGE_URL
+                FROM TRAVEL_THUMNAIL_IMAGE
+                GROUP BY TRAVEL_IDX HAVING MIN(IDX)
+            ) AS TTL ON TL.TRAVEL_IDX = TTL.TRAVEL_IDX
+        WHERE TL.USER_IDX = :userIdx
+            AND U.USER_STATUS = 'A'
+            AND T.USER_IDX != :userIdx
+            AND T.TRAVEL_STATUS = 'A'
+        ORDER BY TL.CREATED_AT DESC
+        LIMIT :offset, :contentSize;
+`;
+
 module.exports = {
     myFollowingQuery,
     myFollowerQuery,
     otherFollowingQuery,
-    otherFollowerQuery
+    otherFollowerQuery,
+    userInfoInMyPageQuery,
+    myTripInMyPageQuery,
+    travelLikeInMyPageQuery
 };

@@ -6,7 +6,8 @@ const {
     followValidation,
     followListValidation,
     deleteFollowerValidation,
-    getProfileValidation
+    getProfileValidation,
+    getMyPageValidation
 } = require('../middlewares/validations/user.validation');
 const { wrapAsync } = require('../utils/util');
 
@@ -40,7 +41,13 @@ router.delete(
 );
 
 // 마이페이지 조회 API
-router.get('/my-page', jwtMiddleware, wrapAsync(UserController.getMyPage));
+router.get(
+    '/my-page',
+    jwtMiddleware,
+    getMyPageValidation,
+    validationMiddleware,
+    wrapAsync(UserController.getMyPage)
+);
 
 // 마이페이지 수정 API
 router.put('/my-page', jwtMiddleware, validationMiddleware, wrapAsync(UserController.updateMyPage));
