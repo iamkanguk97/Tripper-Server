@@ -9,6 +9,7 @@ const {
     otherFollowerQuery,
     userInfoInMyPageQuery,
     myTripInMyPageQuery,
+    travelLikeInMyPageQuery,
     getTravelCountInLikeQuery
 } = require('../queries/user.query');
 
@@ -134,7 +135,7 @@ const getMyPage = async (userIdx, option, page, contentSize) => {
 
         // 내 게시물 또는 내가 좋아요 누른 게시물
         const selectUserTravels = await sequelize.query(
-            option === 'mytrip' ? myTripInMyPageQuery : userInfoInMyPageQuery,
+            option === 'mytrip' ? myTripInMyPageQuery : travelLikeInMyPageQuery,
             {
                 type: QueryTypes.SELECT,
                 replacements: {

@@ -81,10 +81,21 @@ const otherFollowerQuery = `
         ) AS T2 ON T.USER_IDX = T2.FOLLOW_TARGET_IDX;
 `;
 
+const getTravelCountInLikeQuery = `
+    SELECT COUNT(TL.IDX) AS travelLikeCount
+    FROM TRAVEL_LIKE AS TL
+        INNER JOIN TRAVEL AS T ON TL.TRAVEL_IDX = T.IDX
+        INNER JOIN USER AS U ON T.USER_IDX = U.IDX
+    WHERE TL.USER_IDX = :userIdx
+        AND U.USER_STATUS = 'A'
+        AND T.TRAVEL_STATUS = 'A'
+        AND T.USER_IDX != :userIdx;
+`;
+
 const userInfoInMyPageQuery = `
-    SELECT IDX,
-            USER_PROFILE_IMAGE,
-            USER_NICKNAME,
+    SELECT IDX AS userIdx,
+            USER_PROFILE_IMAGE AS userProfileImage,
+            USER_NICKNAME AS userNickname,
             (SELECT COUNT(FOLLOW_TARGET_IDX)
                 FROM USER_FOLLOW AS UF
                     INNER JOIN USER AS U ON UF.FOLLOW_TARGET_IDX = U.IDX
@@ -177,5 +188,6 @@ module.exports = {
     otherFollowerQuery,
     userInfoInMyPageQuery,
     myTripInMyPageQuery,
-    travelLikeInMyPageQuery
+    travelLikeInMyPageQuery,
+    getTravelCountInLikeQuery
 };
