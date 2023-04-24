@@ -117,7 +117,7 @@ const myTripInMyPageQuery = `
             TRAVEL_INTRO AS travelIntro,
             TRAVEL_HASHTAG AS travelHashtag,
             TTL.TRAVEL_IMAGE_URL AS travelRepImage,
-            CASE WHEN TRAVEL_STATUS = 'A' THEN '공개' ELSE '비공개' END AS travelStatus,
+            CASE WHEN TRAVEL_STATUS = 'A' THEN 'PUBLIC' ELSE 'PRIVATE' END AS travelStatus,
             (
                 SELECT
                     CASE
@@ -164,6 +164,7 @@ const travelLikeInMyPageQuery = `
                 FROM TRAVEL_SCORE
                 WHERE TRAVEL_IDX = T.IDX
             ) AS travelScore,
+            'PUBLIC' AS travelStatus,
             T.CREATED_AT AS travelCreatedAt
         FROM TRAVEL_LIKE AS TL
             INNER JOIN TRAVEL AS T ON TL.TRAVEL_IDX = T.IDX
