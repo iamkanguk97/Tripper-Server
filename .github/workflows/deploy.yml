@@ -2,9 +2,9 @@ name: Tripper CI
 
 on:
     push:
-        branches: [develop]
+        branches: [local, develop]
     pull_request:
-        branches: [develop]
+        branches: [local, develop]
 
 jobs:
     build:
@@ -23,6 +23,9 @@ jobs:
               with:
                   node-version: ${{ matrix.node-version }}
 
+            - name: pwd
+              run: pwd
+
             - name: Check NPM Version
               run: npm -v
 
@@ -31,8 +34,6 @@ jobs:
             - name: Create ENV File
               working-directory: src/config/envs
               run: |
-                  pwd
-                  echo pwd
                   touch .env.development
                   echo NODE_ENV=${{ secrets.NODE_ENV }} >> .env.development
                   echo PORT=${{ secrets.PORT }} >> .env.development
