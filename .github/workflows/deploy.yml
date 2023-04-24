@@ -32,6 +32,7 @@ jobs:
               working-directory: src/config/envs
               run: |
                   pwd
+                  echo pwd
                   touch .env.development
                   echo NODE_ENV=${{ secrets.NODE_ENV }} >> .env.development
                   echo PORT=${{ secrets.PORT }} >> .env.development
