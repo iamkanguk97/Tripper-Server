@@ -1,6 +1,5 @@
 const { body, query, header } = require('express-validator');
 const {
-    checkUserStatusFunc,
     checkUserFollowMe,
     checkUserStatus,
     checkParameterIdxEqualMyIdx
@@ -29,7 +28,7 @@ const followValidation = [
  * - option 유무 확인 + following 또는 follower인지 확인
  */
 const followListValidation = [
-    query('userIdx').custom(checkUserStatusFunc).withMessage(responseMessage.USER_NOT_EXIST).bail(),
+    query('userIdx').optional().custom(checkUserStatus).bail(),
     query('option')
         .notEmpty()
         .withMessage(responseMessage.FOLLOW_LIST_OPTION_EMPTY)

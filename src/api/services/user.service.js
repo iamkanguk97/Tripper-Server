@@ -68,10 +68,8 @@ const followList = async (myIdx, userIdx, option) => {
     listResult = await sequelize.query(query, {
         type: QueryTypes.SELECT,
         replacements: {
-            myIdx: 11,
-            userIdx: 16
-            // myIdx: myIdx
-            // userIdx: userIdx
+            myIdx,
+            userIdx
         }
     });
 
