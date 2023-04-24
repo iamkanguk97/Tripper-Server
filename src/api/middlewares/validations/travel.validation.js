@@ -1,7 +1,6 @@
 const { body } = require('express-validator');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 const {
-    checkMyTravelExist,
     checkTravelStatusAble,
     checkTravelDateIsOver,
     checkTravelStatus,

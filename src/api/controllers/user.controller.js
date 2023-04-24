@@ -31,7 +31,7 @@ const deleteFollower = async (req, res) => {
         .json(response(responseMessage.SUCCESS, { deletedUserIdx: deleteFollowerIdx }));
 };
 
-const getProfile = async (req, res) => {};
+// const getProfile = async (req, res) => {};
 
 const getMyPage = async (req, res) => {
     const userIdx = req.verifiedToken.userIdx;
@@ -43,13 +43,13 @@ const getMyPage = async (req, res) => {
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, getMyPageResult));
 };
 
-const updateMyPage = async (req, res) => {};
+// const updateMyPage = async (req, res) => {};
 
 module.exports = {
     follow,
     followList,
     deleteFollower,
-    getProfile,
-    getMyPage,
-    updateMyPage
+    // getProfile,
+    getMyPage
+    // updateMyPage
 };

@@ -194,18 +194,19 @@ const checkTravelStatusAble = async (value, { req }) => {
     }
 };
 
-const checkTravelDateIsOver = async date => {
-    try {
-        console.log(date);
-        // 오늘 날짜가 지난 날짜인지 확인
-        //
-    } catch (err) {
-        Logger.error(err);
-        return Promise.reject(validationErrorResponse(true, err));
-    }
-};
+// const checkTravelDateIsOver = async date => {
+//     try {
+//         // console.log(date);
+//         // 오늘 날짜가 지난 날짜인지 확인
+//         //
+//         return date;
+//     } catch (err) {
+//         Logger.error(err);
+//         return Promise.reject(validationErrorResponse(true, err));
+//     }
+// };
 
-const checkTravelDay = async day => {};
+// const checkTravelDay = async day => {};
 
 const checkTravelStatusExceptPrivate = async travelIdx => {
     try {
@@ -279,8 +280,8 @@ module.exports = {
     checkUserFollowMe,
     checkMyTravelExist,
     checkTravelStatusAble,
-    checkTravelDateIsOver,
-    checkTravelDay,
+    // checkTravelDateIsOver,
+    // checkTravelDay,
     checkTravelStatusExceptPrivate,
     checkMyTravel,
     checkUserStatus,
