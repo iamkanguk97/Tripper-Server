@@ -26,6 +26,8 @@ jobs:
             - name: Check NPM Version
               run: npm -v
 
+            - run: npm ci
+
             - name: Create ENV File
               working-directory: ./src/config/envs
               run: |
@@ -58,10 +60,7 @@ jobs:
 
             - name: Build Server Files
               working-directory: ./
-              run: |
-                  npm
-                  npm run build
+              run: npm run build --if-present
 
-            - run: npm ci
-
-            - run: npm run build --if-present
+            - name: Check eslint
+              run: npm run lint
