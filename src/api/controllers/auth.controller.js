@@ -99,6 +99,22 @@ const tokenRefresh = async (req, res) => {
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, tokenRefreshResult));
 };
 
+const postEmailVerify = async (req, res) => {
+    const email = req.body.email;
+    await AuthService.postEmailVerify(email);
+    return res.status(httpStatus.CREATED).json(response(responseMessage.CREATE_SUCCESS));
+};
+
+const getEmailVerify = async (req, res) => {
+    const email = req.query.email;
+    const verifyNumber = req.query.verifyNumber;
+    const getEmailVerifyResult = await AuthService.getEmailVerify(email, verifyNumber);
+
+    if (getEmailVerifyResult)
+        return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS));
+    return res.status(httpStatus.BAD_REQUEST).json(errResponse(responseMessage.EMAIL_VERIFY_FAIL));
+};
+
 module.exports = {
     kakaoLoginCallback,
     naverLoginCallback,
@@ -106,5 +122,7 @@ module.exports = {
     signUp,
     autoLogin,
     tokenRefresh,
-    socialLogin
+    socialLogin,
+    getEmailVerify,
+    postEmailVerify
 };

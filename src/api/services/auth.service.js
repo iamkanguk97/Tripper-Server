@@ -6,11 +6,14 @@ const {
     getFirstLetter,
     uploadProfileImage,
     checkUserExistWithSnsId,
-    ageGroupToString
+    ageGroupToString,
+    genRandomNumber
 } = require('../utils/util');
 const { generateAccessToken, generateRefreshToken } = require('../utils/jwt-util');
 const { JWTError, BadRequestError } = require('../errors/index');
 const responseMessage = require('../../config/response/baseResponseStatus');
+const { sendVerifyEmail } = require('../../config/email');
+const { NODEMAILER } = require('../../config/vars');
 
 const kakaoLoginCallback = async (kakaoId, email, ageGroup, gender) => {
     // 소셜로그인 고유값으로 유저 존재하는지 확인
@@ -312,10 +315,44 @@ const tokenRefresh = async (accessToken, refreshToken) => {
     return rm;
 };
 
+const getEmailVerify = async (email, verifyNumber) => {
+    const redisClient = new RedisClient();
+    await redisClient.connect(); // Redis 연결
+
+    // Redis에 저장되어있는 인증번호 가져오기
+    const storedVerifyNumber = await redisClient.hGet('emailVerify', `E_${email}`);
+    const verifyResult = !(!storedVerifyNumber || storedVerifyNumber !== verifyNumber);
+
+    // 인증 성공하면 해당 데이터 삭제
+    if (verifyResult) {
+        await redisClient.hDel('emailVerify', `E_${email}`);
+    }
+
+    await redisClient.quit();
+    return verifyResult;
+};
+
+const postEmailVerify = async email => {
+    const redisClient = new RedisClient();
+    await redisClient.connect(); // Redis 연결
+
+    // 랜덤 난수 생성
+    const verifyNumber = genRandomNumber(6);
+
+    await Promise.all([
+        await sendVerifyEmail(email, verifyNumber),
+        await redisClient.hSet('emailVerify', `E_${email}`, verifyNumber, NODEMAILER.EXPIRE_TIME) // email-인증번호 저장
+    ]);
+
+    await redisClient.quit(); // Redis 연결 끊기
+};
+
 module.exports = {
     kakaoLoginCallback,
     naverLoginCallback,
     signUp,
     tokenRefresh,
-    socialLogin
+    socialLogin,
+    getEmailVerify,
+    postEmailVerify
 };

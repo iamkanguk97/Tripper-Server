@@ -21,6 +21,7 @@ const authRoutes = require('../api/routes/auth.route');
 const userRoutes = require('../api/routes/user.route');
 const travelRoutes = require('../api/routes/travel.route');
 const commonRoutes = require('../api/routes/common.route');
+const adminRoutes = require('../api/routes/admin.route');
 
 /**
  * Express instance
@@ -59,6 +60,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/travels', travelRoutes);
 app.use('/api/commons', commonRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Swagger
 // app.use(
@@ -75,13 +77,10 @@ app.use('/api/commons', commonRoutes);
 passportConfig();
 
 // 404 NOT FOUND Middleware
-// TODO: 이 부분 수정이 필요함! errMessage가 계속해서 쌓이는 에러 발생중
-app.use((req, res) => {
+app.use((req, res, next) => {
     const errMessage = responseMessage.API_NOT_FOUND;
-    errMessage.message += ` (${req.method} ${req.url})`;
-
     Logger.error(`API NOT FOUND! (${req.method} ${req.url})`);
-    res.status(httpStatus.NOT_FOUND).json(errResponse(errMessage));
+    next(res.status(httpStatus.NOT_FOUND).json(errResponse(errMessage)));
 });
 
 // Error Handler Middleware

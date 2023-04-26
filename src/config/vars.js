@@ -46,5 +46,11 @@ module.exports = {
         CLIENT_ID: process.env.NAVER_CLIENT_ID,
         CLIENT_SECRET_KEY: process.env.NAVER_CLIENT_SECRET_KEY,
         CALLBACK_URL: process.env.NAVER_CALLBACK_URL
+    },
+    NODEMAILER: {
+        USER: process.env.NODEMAILER_USER,
+        PASS: process.env.NODEMAILER_PASS,
+        PORT: process.env.NODEMAILER_PORT,
+        EXPIRE_TIME: 60 * 3
     }
 };

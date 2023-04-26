@@ -50,6 +50,7 @@ module.exports = {
     SELECT_MYPAGE_OPTION_ERROR_TYPE: { "isSuccess": false, "code": 2048, "message": "마이페이지 조회 옵션이 잘못되었습니다." },
     SELECT_CONTENT_SIZE_ERROR_TYPE: { "isSuccess": false, "code": 2049, "message": "페이징 내용 사이즈는 1이상 15이하로 입력해주세요." },
     SELECT_PAGE_ERROR_TYPE: { "isSuccess": false, "code": 2050, "message": "페이지 번호는 0이상으로 입력해주세요." },
+    EMAIL_VERIFY_EMPTY: { "isSuccess": false, "code": 2051, "message": "이메일 인증번호를 입력해주세요." },
 
     NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3010, "message": "중복된 닉네임입니다." },
     USER_NOT_EXIST: { "isSuccess": false, "code": 3011, "message": "존재하지 않는 유저입니다." },
@@ -63,4 +64,5 @@ module.exports = {
     USER_WITHDRAWAL: { "isSuccess": false, "code": 3019, "message": "탈퇴한 유저입니다." },
     TRAVEL_SCORE_SAME_WITH_BEFORE: { "isSuccess": false, "code": 3020, "message": "이전에 부여한 게시물 평점과 동일합니다." },
     TRAVEL_PRIVATE: { "isSuccess": false, "code": 3021, "message": "비공개 여행 게시물입니다." },
+    EMAIL_VERIFY_FAIL: { "isSuccess": false, "code": 3022, "message": "이메일 인증에 실패하였습니다." },
 };

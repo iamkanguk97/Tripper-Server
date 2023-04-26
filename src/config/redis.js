@@ -66,6 +66,11 @@ class RedisClient {
     async quit() {
         await this.redisClient.quit();
     }
+
+    // Redis hDel
+    async hDel(key, field) {
+        await this.redisClient.hDel(key, field);
+    }
 }
 
 module.exports = RedisClient;

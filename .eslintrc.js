@@ -30,6 +30,7 @@ module.exports = {
         'prettier/prettier': 'off',
         'no-restricted-syntax': 'off',
         'no-param-reassign': 'off',
+        'import/no-extraneous-dependencies': 'off',
         radix: 'off'
     }
 };

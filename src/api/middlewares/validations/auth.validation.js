@@ -103,9 +103,41 @@ const tokenRefreshValidation = [
     header('refreshtoken').notEmpty().withMessage(responseMessage.JWT_REFRESH_TOKEN_EMPTY).bail() // refresh_token이 없는 경우
 ];
 
+/**
+ * 이메일 인증번호 확인을 위한 API Validator
+ * - [query] 이메일 유무 확인 및 이메일 형식 확인
+ * - [query] 인증번호 입력 유무 확인
+ */
+const getEmailVerifyValidation = [
+    query('email')
+        .notEmpty()
+        .withMessage(responseMessage.EMAIL_EMPTY)
+        .bail()
+        .isEmail()
+        .withMessage(responseMessage.EMAIL_TYPE_ERROR)
+        .bail(),
+    query('verifyNumber').notEmpty().withMessage(responseMessage.EMAIL_VERIFY_EMPTY).bail()
+];
+
+/**
+ * 이메일 인증번호 발송을 위한 API Validator
+ * - [query] 이메일 유무 확인 및 이메일 형식 확인
+ */
+const postEmailVerifyValidation = [
+    body('email')
+        .notEmpty()
+        .withMessage(responseMessage.EMAIL_EMPTY)
+        .bail()
+        .isEmail()
+        .withMessage(responseMessage.EMAIL_TYPE_ERROR)
+        .bail()
+];
+
 module.exports = {
     verifyNickValidation,
     signUpValidation,
     tokenRefreshValidation,
-    socialLoginValidation
+    socialLoginValidation,
+    getEmailVerifyValidation,
+    postEmailVerifyValidation
 };

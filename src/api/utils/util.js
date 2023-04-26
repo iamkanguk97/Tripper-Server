@@ -136,6 +136,17 @@ const getTravelTrans = method => {
     }
 };
 
+/**
+ * 랜덤난수 생성함수
+ */
+const genRandomNumber = len => {
+    let str = '';
+    for (let i = 0; i < len; i += 1) {
+        str += Math.floor(Math.random() * 10);
+    }
+    return str;
+};
+
 module.exports = {
     checkBadWord,
     getFirstLetter,
@@ -145,6 +156,7 @@ module.exports = {
     uploadProfileImage,
     checkUserExistWithSnsId,
     getKeyByValue,
-    getTravelTrans
+    getTravelTrans,
     // uploadThumImage
+    genRandomNumber
 };

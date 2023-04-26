@@ -7,7 +7,9 @@ const {
     verifyNickValidation,
     signUpValidation,
     tokenRefreshValidation,
-    socialLoginValidation
+    socialLoginValidation,
+    getEmailVerifyValidation,
+    postEmailVerifyValidation
 } = require('../middlewares/validations/auth.validation');
 const { wrapAsync } = require('../utils/util');
 
@@ -57,6 +59,22 @@ router.post(
     tokenRefreshValidation,
     validationMiddleware,
     wrapAsync(AuthController.tokenRefresh)
+);
+
+// (관리자 회원가입) 이메일 인증번호 전송 API
+router.post(
+    '/email-verify',
+    postEmailVerifyValidation,
+    validationMiddleware,
+    wrapAsync(AuthController.postEmailVerify)
+);
+
+// (관리자 회원가입) 이메일 인증번호 확인 API
+router.get(
+    '/email-verify',
+    getEmailVerifyValidation,
+    validationMiddleware,
+    wrapAsync(AuthController.getEmailVerify)
 );
 
 module.exports = router;
