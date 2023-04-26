@@ -7,6 +7,7 @@ const signUp = async (email, password, nickname) => {
     const secretData = saltHashPassword(password);
     const adminHashedPassword = secretData.hashedPassword;
     const adminSalt = secretData.salt;
+    let newAdminId;
 
     let transaction;
     try {
@@ -14,7 +15,7 @@ const signUp = async (email, password, nickname) => {
         transaction = await sequelize.transaction();
 
         // Admin 테이블에 INSERT
-        const newAdminId = (
+        newAdminId = (
             await Admin.create(
                 {
                     ADMIN_EMAIL: email,
@@ -35,14 +36,16 @@ const signUp = async (email, password, nickname) => {
         );
 
         await transaction.commit();
-
-        return {
-            newAdminId
-        };
     } catch (err) {
         if (transaction) await transaction.rollback();
         throw new Error(err);
     }
+
+    return {
+        newAdminId,
+        email,
+        nickname
+    };
 };
 
 module.exports = {

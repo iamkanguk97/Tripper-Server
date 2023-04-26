@@ -12,6 +12,7 @@ const responseMessage = require('../../config/response/baseResponseStatus');
 const Logger = require('../../config/logger');
 const { checkBadWord } = require('./util');
 const { validationErrorResponse } = require('../../config/response/response-template');
+const Admin = require('../models/Admin/Admin');
 
 // 회원 존재 및 탈퇴 확인하는 Validation
 const checkUserStatus = async value => {
@@ -271,6 +272,36 @@ const checkBeforeReviewScore = async (value, { req }) => {
     }
 };
 
+const checkAdminExist = async value => {
+    try {
+        const checkAdminExistWithEmail = await Admin.findOne({
+            where: {
+                ADMIN_EMAIL: value
+            }
+        });
+
+        if (checkAdminExistWithEmail) return Promise.reject(responseMessage.ADMIN_ALREADY_EXIST);
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(validationErrorResponse(true, err));
+    }
+};
+
+const checkAdminNickExist = async value => {
+    try {
+        const checkAdminNickExistResult = await Admin.findOne({
+            where: {
+                ADMIN_NICKNAME: value
+            }
+        });
+
+        if (checkAdminNickExistResult) return Promise.reject(responseMessage.NICKNAME_DUPLICATED);
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(validationErrorResponse(true, err));
+    }
+};
+
 module.exports = {
     // checkUserStatusFunc,
     checkNickDuplicate,
@@ -286,5 +317,7 @@ module.exports = {
     checkMyTravel,
     checkUserStatus,
     checkParameterIdxEqualMyIdx,
-    checkBeforeReviewScore
+    checkBeforeReviewScore,
+    checkAdminExist,
+    checkAdminNickExist
 };
