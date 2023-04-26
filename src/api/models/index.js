@@ -62,4 +62,7 @@ AdminSalt.init(sequelize);
 User.associate(db);
 UserFollow.associate(db);
 
+Admin.associate(db);
+AdminSalt.associate(db);
+
 module.exports = db;

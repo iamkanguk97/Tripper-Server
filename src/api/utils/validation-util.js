@@ -302,6 +302,22 @@ const checkAdminNickExist = async value => {
     }
 };
 
+const checkAdminNotExist = async (value, { req }) => {
+    try {
+        const checkAdminExistWithEmail = await Admin.findOne({
+            where: {
+                ADMIN_EMAIL: value
+            }
+        });
+
+        if (!checkAdminExistWithEmail) return Promise.reject(responseMessage.ADMIN_NOT_EXIST);
+        req.adminIdx = checkAdminExistWithEmail.dataValues.IDX;
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(validationErrorResponse(true, err));
+    }
+};
+
 module.exports = {
     // checkUserStatusFunc,
     checkNickDuplicate,
@@ -319,5 +335,6 @@ module.exports = {
     checkParameterIdxEqualMyIdx,
     checkBeforeReviewScore,
     checkAdminExist,
-    checkAdminNickExist
+    checkAdminNickExist,
+    checkAdminNotExist
 };

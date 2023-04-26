@@ -1,6 +1,10 @@
 const { body } = require('express-validator');
 const responseMessage = require('../../../config/response/baseResponseStatus');
-const { checkAdminExist, checkAdminNickExist } = require('../../utils/validation-util');
+const {
+    checkAdminExist,
+    checkAdminNickExist,
+    checkAdminNotExist
+} = require('../../utils/validation-util');
 const { REGEX_ADMIN_PASSWORD, REGEX_NICKNAME } = require('../../utils/regex');
 
 /**
@@ -37,6 +41,22 @@ const adminSignUpValidation = [
         .bail()
 ];
 
+/**
+ * 관리자 로그인 Validation
+ * - [Body] 이메일 입력 유무
+ * - [Body] 비밀번호 입력 유무
+ */
+const adminLoginValidation = [
+    body('email')
+        .notEmpty()
+        .withMessage(responseMessage.EMAIL_EMPTY)
+        .bail()
+        .custom(checkAdminNotExist)
+        .bail(),
+    body('password').notEmpty().withMessage(responseMessage.ADMIN_PASSWORD_EMPTY).bail()
+];
+
 module.exports = {
-    adminSignUpValidation
+    adminSignUpValidation,
+    adminLoginValidation
 };

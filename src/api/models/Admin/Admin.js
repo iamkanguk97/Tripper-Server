@@ -52,5 +52,11 @@ module.exports = class Admin extends Sequelize.Model {
         );
     }
 
-    // static associate(db) {}
+    static associate(db) {
+        db.Admin.hasOne(db.AdminSalt, {
+            foreignKey: 'ADMIN_IDX',
+            sourceKey: 'IDX',
+            constraints: false
+        });
+    }
 };

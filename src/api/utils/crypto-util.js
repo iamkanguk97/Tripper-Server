@@ -24,8 +24,14 @@ const saltHashPassword = password => {
     return sha512(password, genSalt(16));
 };
 
+const validatePassword = (userPassword, userSalt, userHashedPassword) => {
+    const passwordData = sha512(userPassword, userSalt);
+    return passwordData.hashedPassword === userHashedPassword;
+};
+
 module.exports = {
     genSalt,
     saltHashPassword,
-    sha512
+    sha512,
+    validatePassword
 };

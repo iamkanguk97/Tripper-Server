@@ -53,6 +53,7 @@ module.exports = {
     EMAIL_VERIFY_EMPTY: { "isSuccess": false, "code": 2051, "message": "이메일 인증번호를 입력해주세요." },
     ADMIN_PASSWORD_EMPTY: { "isSuccess": false, "code": 2052, "message": "관리자 비밀번호를 입력해주세요." },
     ADMIN_PASSWORD_WRONG_TYPE: { "isSuccess": false, "code": 2053, "message": "관리자 비밀번호는 영문,숫자 및 특수기호 조합 8자리 이상으로 입력해주세요." },
+    ADMIN_PASSWORD_WRONG: { "isSuccess": false, "code": 2054, "message": "잘못된 비밀번호입니다." },
 
     NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3010, "message": "중복된 닉네임입니다." },
     USER_NOT_EXIST: { "isSuccess": false, "code": 3011, "message": "존재하지 않는 유저입니다." },
@@ -69,4 +70,5 @@ module.exports = {
     EMAIL_VERIFY_FAIL: { "isSuccess": false, "code": 3022, "message": "이메일 인증에 실패하였습니다." },
 
     ADMIN_ALREADY_EXIST: { "isSuccess": false, "code": 3500, "message": "이미 가입되어 있는 관리자 이메일입니다." },
+    ADMIN_NOT_EXIST: { "isSuccess": false, "code": 3501, "message": "존재하지 않는 관리자 이메일입니다." },
 };

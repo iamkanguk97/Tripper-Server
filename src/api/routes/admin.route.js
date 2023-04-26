@@ -2,7 +2,10 @@ const express = require('express');
 const AdminController = require('../controllers/admin.controller');
 const validationMiddleware = require('../middlewares/validationMiddleware');
 const { wrapAsync } = require('../utils/util');
-const { adminSignUpValidation } = require('../middlewares/validations/admin.validation');
+const {
+    adminSignUpValidation,
+    adminLoginValidation
+} = require('../middlewares/validations/admin.validation');
 
 const router = express.Router();
 
@@ -15,6 +18,6 @@ router.post(
 );
 
 // 관리자 로그인 API
-router.post('/login', AdminController.login);
+router.post('/login', adminLoginValidation, validationMiddleware, wrapAsync(AdminController.login));
 
 module.exports = router;
