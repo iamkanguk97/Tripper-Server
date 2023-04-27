@@ -2,9 +2,12 @@ const { body, query, header } = require('express-validator');
 const {
     checkUserFollowMe,
     checkUserStatus,
-    checkParameterIdxEqualMyIdx
+    checkParameterIdxEqualMyIdx,
+    checkBadWordInclude,
+    checkNickDuplicate
 } = require('../../utils/validation-util');
 const responseMessage = require('../../../config/response/baseResponseStatus');
+const { REGEX_NICKNAME } = require('../../utils/regex');
 
 /**
  * 팔로우 기능 API Validator
@@ -79,10 +82,25 @@ const getMyPageValidation = [
     query('page').optional().isInt({ min: 0 }).withMessage(responseMessage.SELECT_PAGE_ERROR_TYPE)
 ];
 
+const updateMyPageValidation = [
+    body('nickname')
+        .notEmpty()
+        .withMessage(responseMessage.NICKNAME_EMPTY) // 닉네임 유무 확인
+        .bail()
+        .matches(REGEX_NICKNAME)
+        .withMessage(responseMessage.NICKNAME_ERROR_TYPE) // 닉네임 형식 확인
+        .bail()
+        .custom(checkBadWordInclude) // 닉네임에 부적절한 단어 포함 유무 확인
+        .bail()
+        .custom(checkNickDuplicate) // 중복 닉네임 확인
+        .bail()
+];
+
 module.exports = {
     followValidation,
     followListValidation,
     deleteFollowerValidation,
     getProfileValidation,
-    getMyPageValidation
+    getMyPageValidation,
+    updateMyPageValidation
 };

@@ -7,7 +7,8 @@ const {
     followListValidation,
     deleteFollowerValidation,
     getProfileValidation,
-    getMyPageValidation
+    getMyPageValidation,
+    updateMyPageValidation
 } = require('../middlewares/validations/user.validation');
 const { wrapAsync } = require('../utils/util');
 
@@ -50,7 +51,13 @@ router.get(
 );
 
 // 마이페이지 수정 API
-router.put('/my-page', jwtMiddleware, validationMiddleware, wrapAsync(UserController.updateMyPage));
+router.put(
+    '/my-page',
+    jwtMiddleware,
+    updateMyPageValidation,
+    validationMiddleware,
+    wrapAsync(UserController.updateMyPage)
+);
 
 // 상대방 프로필 조회 API
 router.get(

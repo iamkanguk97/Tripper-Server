@@ -12,6 +12,7 @@ const {
     travelLikeInMyPageQuery,
     getTravelCountInLikeQuery
 } = require('../queries/user.query');
+const User = require('../models/User/User');
 
 const follow = async (myIdx, followUserIdx) => {
     // ORM CRUD에 적용되는 옵션이 다 동일하기 때문에 하나의 변수로 빼놓음.
@@ -159,9 +160,29 @@ const getMyPage = async (userIdx, option, page, contentSize) => {
     }
 };
 
+const updageMyPage = async (userIdx, profileImgUrl, nickname) => {
+    const updateMyPageResult = (
+        await User.update(
+            {
+                USER_NICKNAME: nickname,
+                USER_PROFILE_IMAGE: profileImgUrl
+            },
+            {
+                where: {
+                    IDX: userIdx
+                }
+            }
+        )
+    )[0];
+
+    if (!updateMyPageResult)
+        throw new Error('[User->updateMyPage] 변경사항이 없거나 잘못된 문법 사용');
+};
+
 module.exports = {
     follow,
     followList,
     deleteFollower,
-    getMyPage
+    getMyPage,
+    updageMyPage
 };
