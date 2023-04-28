@@ -124,10 +124,19 @@ const createTravelLikeValidation = [
         .bail()
 ];
 
+/**
+ * 게시물 댓글 생성 API Validator
+ * - [Body - travelIdx] 게시물 고유값 유무, 게시물 유효성 확인 및 본인 비공개 게시물에도 가능하게!
+ * - [Body - comment] 게시물 댓글 유무, 글자수?
+ * - []
+ */
+const createTravelCommentValidation = [body('travelIdx').notEmpty().withMessage().bail()];
+
 module.exports = {
     createTravelValidation,
     deleteTravelValidation,
     updateTravelStatusValidation,
     createTravelReviewScoreValidation,
-    createTravelLikeValidation
+    createTravelLikeValidation,
+    createTravelCommentValidation
 };

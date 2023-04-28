@@ -65,21 +65,21 @@ const createTravelLike = async (req, res) => {
         .json(response(responseMessage.SUCCESS, { message: createTravelLikeResult }));
 };
 
-// const createTravelComment = async (req, res) => {
-//     const userIdx = req.verifiedToken.userIdx;
-//     const { travelIdx, comment } = req.body;
-//     const mentionUsers = req.body.mentionUsers || null;
-//     const commentIdx = req.body.commentIdx || null;
+const createTravelComment = async (req, res) => {
+    const userIdx = req.verifiedToken.userIdx;
+    const { travelIdx, comment } = req.body;
+    const mentionUsers = req.body.mentionUsers || null;
+    const commentIdx = req.body.commentIdx || null;
 
-//     const createTravelCommentResult = await TravelService.createTravelComment(
-//         userIdx,
-//         travelIdx,
-//         commentIdx,
-//         comment,
-//         mentionUsers
-//     );
-//     console.log(createTravelCommentResult);
-// };
+    const createTravelCommentResult = await TravelService.createTravelComment(
+        userIdx,
+        travelIdx,
+        commentIdx,
+        comment,
+        mentionUsers
+    );
+    console.log(createTravelCommentResult);
+};
 
 // const getTravelComments = async (req, res) => {};
 
@@ -88,7 +88,7 @@ module.exports = {
     deleteTravel,
     updateTravelStatus,
     createTravelReviewScore,
-    createTravelLike
-    // createTravelComment,
+    createTravelLike,
+    createTravelComment
     // getTravelComments
 };

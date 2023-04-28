@@ -10,3 +10,6 @@ src/config/envs
 
 # DS_Store
 .DS_Store
+
+# FCM-Config
+src/config/firebase/fcm-config.json

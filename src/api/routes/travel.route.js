@@ -8,7 +8,8 @@ const {
     createTravelValidation,
     deleteTravelValidation,
     createTravelReviewScoreValidation,
-    createTravelLikeValidation
+    createTravelLikeValidation,
+    createTravelCommentValidation
 } = require('../middlewares/validations/travel.validation');
 
 const router = express.Router();
@@ -64,7 +65,13 @@ router.post(
 // router.get('/:travelIdx/comments', jwtMiddleware, wrapAsync(TravelController.getTravelComments));
 
 // 게시물 댓글 생성 API
-// router.post('/comments', jwtMiddleware, wrapAsync(TravelController.createTravelComment));
+router.post(
+    '/comments',
+    createTravelCommentValidation,
+    validationMiddleware,
+    jwtMiddleware,
+    wrapAsync(TravelController.createTravelComment)
+);
 
 // 게시물 댓글 수정 API
 // 게시물 댓글 삭제 API
