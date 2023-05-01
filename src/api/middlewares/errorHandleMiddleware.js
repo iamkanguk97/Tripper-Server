@@ -36,8 +36,7 @@ const errorHandleMiddleware = (error, req, res, next) => {
         };
     }
 
-    next(res.status(statusCode).json(message));
-    // return res.status(statusCode).json(message);
+    return res.status(statusCode).json(message);
 };
 
 module.exports = errorHandleMiddleware;

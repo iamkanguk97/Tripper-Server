@@ -21,7 +21,7 @@ const validationMiddleware = (req, res, next) => {
         }
     }
 
-    return next();
+    next();
 };
 
 module.exports = validationMiddleware;

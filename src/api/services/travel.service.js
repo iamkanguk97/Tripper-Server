@@ -7,6 +7,8 @@ const { getTravelTrans } = require('../utils/util');
 const TravelThumImage = require('../models/Travel/TravelThumImage');
 const TravelDay = require('../models/Travel/TravelDay');
 const TravelDayAreaImage = require('../models/Travel/TravelDayAreaImage');
+const TravelComment = require('../models/Travel/TravelComment');
+const TravelCommentMention = require('../models/Travel/TravelCommentMention');
 
 const updateTravelStatus = async (userIdx, travelIdx, travelStatus) => {
     const _newTravelStatus = travelStatus === 'A' ? 'B' : 'A';
@@ -217,13 +219,56 @@ const deleteTravel = async (userIdx, travelIdx) => {
     return travelIdx;
 };
 
-// const createTravelComment = async (userIdx, travelIdx, commentIdx, comment, mentionUsers) => {};
+const createTravelComment = async (userIdx, travelIdx, commentIdx, comment, mentionUsers) => {
+    let transaction;
+    let newCommentIdx;
+
+    try {
+        // BEGIN TRANSACTION
+        transaction = await sequelize.transaction();
+
+        // (1) TRAVEL_COMMENT 테이블에 INSERT
+        newCommentIdx = (
+            await TravelComment.create(
+                {
+                    USER_IDX: userIdx,
+                    TRAVEL_IDX: travelIdx,
+                    SUPER_COMMENT_IDX: commentIdx,
+                    COMMENT_TEXT: comment
+                },
+                { transaction }
+            )
+        ).dataValues.IDX;
+
+        // (2) TRAVEL_COMMENT_MENTION 테이블에 INSERT
+        if (mentionUsers.length) {
+            await Promise.all(
+                mentionUsers.map(async mu => {
+                    await TravelCommentMention.create(
+                        {
+                            TRAVEL_COMMENT_IDX: newCommentIdx,
+                            MENTION_USER_IDX: mu
+                        },
+                        { transaction }
+                    );
+                })
+            );
+        }
+
+        // COMMIT
+        await transaction.commit();
+        return newCommentIdx;
+    } catch (err) {
+        if (transaction) await transaction.rollback();
+        throw new Error(err);
+    }
+};
 
 module.exports = {
     updateTravelStatus,
     createTravelReviewScore,
     createTravelLike,
     createTravel,
-    deleteTravel
-    // createTravelComment
+    deleteTravel,
+    createTravelComment
 };

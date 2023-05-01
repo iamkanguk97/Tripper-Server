@@ -68,18 +68,24 @@ const createTravelLike = async (req, res) => {
 const createTravelComment = async (req, res) => {
     const userIdx = req.verifiedToken.userIdx;
     const { travelIdx, comment } = req.body;
-    const mentionUsers = req.body.mentionUsers || null;
     const commentIdx = req.body.commentIdx || null;
+    const mentionUserIdRows = req.mentionUserIdRows;
 
     const createTravelCommentResult = await TravelService.createTravelComment(
         userIdx,
         travelIdx,
         commentIdx,
         comment,
-        mentionUsers
+        mentionUserIdRows
     );
-    console.log(createTravelCommentResult);
+    return res
+        .status(httpStatus.CREATED)
+        .json(
+            response(responseMessage.CREATE_SUCCESS, { newCommentIdx: createTravelCommentResult })
+        );
 };
+
+const updateTravelComment = async (req, res) => {};
 
 // const getTravelComments = async (req, res) => {};
 
@@ -89,6 +95,7 @@ module.exports = {
     updateTravelStatus,
     createTravelReviewScore,
     createTravelLike,
-    createTravelComment
+    createTravelComment,
+    updateTravelComment
     // getTravelComments
 };

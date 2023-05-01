@@ -13,6 +13,7 @@ const Logger = require('../../config/logger');
 const { checkBadWord } = require('./util');
 const { validationErrorResponse } = require('../../config/response/response-template');
 const Admin = require('../models/Admin/Admin');
+const TravelComment = require('../models/Travel/TravelComment');
 
 // 회원 존재 및 탈퇴 확인하는 Validation
 const checkUserStatus = async value => {
@@ -188,7 +189,7 @@ const checkTravelStatusAble = async (value, { req }) => {
          */
         if (!isTravelWriterIsMe && travelStatus !== 'A')
             // 본인게시물이 아니고 A가 아닐 경우 -> 에러 발생
-            return Promise.reject(responseMessage.TRAVEL_CANT_SET_REVIEW_SCORE);
+            return Promise.reject(responseMessage.TRAVEL_CANT_ACCESS);
     } catch (err) {
         Logger.error(err);
         return Promise.reject(validationErrorResponse(true, err));
@@ -318,6 +319,50 @@ const checkAdminNotExist = async (value, { req }) => {
     }
 };
 
+const checkMentionUserStatus = async (value, { req }) => {
+    try {
+        const mentionUserIdRows = await Promise.all(
+            value.map(async nickname => {
+                const checkMentionUser = await User.findOne({
+                    where: {
+                        USER_NICKNAME: nickname,
+                        USER_STATUS: 'A'
+                    }
+                });
+
+                if (!checkMentionUser)
+                    return Promise.reject(responseMessage.MENTION_USER_NOT_EXIST);
+                return checkMentionUser.dataValues.IDX;
+            })
+        );
+
+        req.mentionUserIdRows = mentionUserIdRows;
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(validationErrorResponse(true, err));
+    }
+};
+
+const checkParentCommentAble = async value => {
+    try {
+        if (value !== null) {
+            const checkCommentExist = await TravelComment.findOne({
+                where: {
+                    IDX: value,
+                    STATUS: {
+                        [Op.ne]: 'D'
+                    }
+                }
+            });
+
+            if (!checkCommentExist) return Promise.reject(responseMessage.PARENT_COMMENT_NOT_EXIST);
+        }
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(validationErrorResponse(true, err));
+    }
+};
+
 module.exports = {
     // checkUserStatusFunc,
     checkNickDuplicate,
@@ -336,5 +381,7 @@ module.exports = {
     checkBeforeReviewScore,
     checkAdminExist,
     checkAdminNickExist,
-    checkAdminNotExist
+    checkAdminNotExist,
+    checkMentionUserStatus,
+    checkParentCommentAble
 };

@@ -31,11 +31,6 @@ module.exports = class TravelComment extends Sequelize.Model {
                     allowNull: true,
                     comment: '여행 게시물 댓글 내용'
                 },
-                COMMENT_IMAGE: {
-                    type: Sequelize.TEXT,
-                    allowNull: true,
-                    comment: '여행 게시물 댓글 이미지'
-                },
                 STATUS: {
                     type: Sequelize.CHAR(1),
                     allowNull: false,

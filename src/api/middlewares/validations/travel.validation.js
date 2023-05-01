@@ -5,7 +5,9 @@ const {
     checkTravelDateIsOver,
     checkTravelStatus,
     checkMyTravel,
-    checkBeforeReviewScore
+    checkBeforeReviewScore,
+    checkMentionUserStatus,
+    checkParentCommentAble
 } = require('../../utils/validation-util');
 const { REGEX_DATE } = require('../../utils/regex');
 
@@ -127,10 +129,26 @@ const createTravelLikeValidation = [
 /**
  * 게시물 댓글 생성 API Validator
  * - [Body - travelIdx] 게시물 고유값 유무, 게시물 유효성 확인 및 본인 비공개 게시물에도 가능하게!
- * - [Body - comment] 게시물 댓글 유무, 글자수?
- * - []
+ * - [Body - commentIdx] commentIdx가 null이 아닌 경우 -> 해당 commentIdx(부모댓글)가 있는지 확인
+ * - [Body - comment] 글자수 확인
+ * - [Body - mentionUsers] 해당 닉네임을 가진 유저들이 전부 활성화 상태인지 확인
  */
-const createTravelCommentValidation = [body('travelIdx').notEmpty().withMessage().bail()];
+const createTravelCommentValidation = [
+    body('travelIdx')
+        .notEmpty()
+        .withMessage(responseMessage.TRAVEL_IDX_EMPTY)
+        .bail()
+        .custom(checkTravelStatusAble)
+        .bail(),
+    body('commentIdx').optional().custom(checkParentCommentAble).bail(),
+    body('comment')
+        .isLength({ max: 200 })
+        .withMessage(responseMessage.TRAVEL_COMMENT_LENGTH_ERROR)
+        .bail(),
+    body('mentionUsers').optional().custom(checkMentionUserStatus).bail()
+];
+
+const updateTravelCommentValidation = [];
 
 module.exports = {
     createTravelValidation,
@@ -138,5 +156,6 @@ module.exports = {
     updateTravelStatusValidation,
     createTravelReviewScoreValidation,
     createTravelLikeValidation,
-    createTravelCommentValidation
+    createTravelCommentValidation,
+    updateTravelCommentValidation
 };
