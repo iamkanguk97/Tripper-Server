@@ -363,6 +363,27 @@ const checkParentCommentAble = async value => {
     }
 };
 
+const checkIsMyComment = async (value, { req }) => {
+    try {
+        const userIdx = req.verifiedToken.userIdx;
+
+        const checkCommentExist = await TravelComment.findOne({
+            where: {
+                IDX: value
+            }
+        });
+
+        if (!checkCommentExist) return Promise.reject(responseMessage.COMMENT_NOT_EXIST);
+        if (checkCommentExist.dataValues.STATUS === 'D')
+            return Promise.reject(responseMessage.COMMENT_ALREADY_DELETED);
+        if (checkCommentExist.dataValues.USER_IDX !== userIdx)
+            return Promise.reject(responseMessage.COMMENT_WRITER_NOT_MATCH);
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(validationErrorResponse(true, err));
+    }
+};
+
 module.exports = {
     // checkUserStatusFunc,
     checkNickDuplicate,
@@ -383,5 +404,6 @@ module.exports = {
     checkAdminNickExist,
     checkAdminNotExist,
     checkMentionUserStatus,
-    checkParentCommentAble
+    checkParentCommentAble,
+    checkIsMyComment
 };

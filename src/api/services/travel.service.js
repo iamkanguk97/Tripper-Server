@@ -1,4 +1,4 @@
-const { Op } = require('sequelize');
+const { Op, NOW, Sequelize } = require('sequelize');
 const Travel = require('../models/Travel/Travel');
 const TravelScore = require('../models/Travel/TravelScore');
 const TravelLike = require('../models/Travel/TravelLike');
@@ -264,11 +264,97 @@ const createTravelComment = async (userIdx, travelIdx, commentIdx, comment, ment
     }
 };
 
+const deleteTravelComment = async (userIdx, commentIdx) => {
+    let transaction;
+
+    // 해당 댓글이 부모댓글이면 아래 자식댓글도 전부 삭제해야함.
+    const checkIsParentComment = await TravelComment.findOne({
+        attributes: ['IDX', 'USER_IDX', 'SUPER_COMMENT_IDX'],
+        where: {
+            IDX: commentIdx,
+            USER_IDX: userIdx,
+            STATUS: {
+                [Op.ne]: 'D'
+            }
+        }
+    });
+
+    try {
+        // BEGIN TRANSACTION
+        transaction = await sequelize.transaction();
+
+        // 해당 댓글이 부모댓글 -> 자식들 댓글 조회해서 DELETE 처리
+        if (checkIsParentComment && !checkIsParentComment.dataValues.SUPER_COMMENT_IDX) {
+            const childCommentRows = await TravelComment.findAll(
+                {
+                    where: {
+                        SUPER_COMMENT_IDX: commentIdx,
+                        STATUS: {
+                            [Op.ne]: 'D'
+                        }
+                    }
+                },
+                { transaction }
+            );
+            if (childCommentRows.length) {
+                await Promise.all(
+                    childCommentRows.map(async comment => {
+                        const updateChildCommentResult = (
+                            await TravelComment.update(
+                                {
+                                    STATUS: 'D',
+                                    UPDATED_AT: Sequelize.fn('NOW')
+                                },
+                                {
+                                    where: {
+                                        IDX: comment.dataValues.IDX
+                                    }
+                                },
+                                { transaction }
+                            )
+                        )[0];
+
+                        if (!updateChildCommentResult)
+                            throw new Error(
+                                '[Travel->updateChildComment] 변경사항이 없거나 잘못된 문법 사용'
+                            );
+                    })
+                );
+            }
+        }
+
+        const deleteTravelCommentResult = (
+            await TravelComment.update(
+                {
+                    STATUS: 'D',
+                    UPDATED_AT: Sequelize.fn('NOW')
+                },
+                {
+                    where: {
+                        IDX: commentIdx,
+                        USER_IDX: userIdx
+                    }
+                }
+            )
+        )[0];
+
+        if (!deleteTravelCommentResult)
+            throw new Error('[Travel->deleteTravelComment] 변경사항이 없거나 잘못된 문법 사용');
+
+        // COMMIT
+        await transaction.commit();
+    } catch (err) {
+        if (transaction) await transaction.rollback();
+        throw new Error(err);
+    }
+};
+
 module.exports = {
     updateTravelStatus,
     createTravelReviewScore,
     createTravelLike,
     createTravel,
     deleteTravel,
-    createTravelComment
+    createTravelComment,
+    deleteTravelComment
 };

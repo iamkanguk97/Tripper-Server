@@ -7,7 +7,8 @@ const {
     checkMyTravel,
     checkBeforeReviewScore,
     checkMentionUserStatus,
-    checkParentCommentAble
+    checkParentCommentAble,
+    checkIsMyComment
 } = require('../../utils/validation-util');
 const { REGEX_DATE } = require('../../utils/regex');
 
@@ -150,6 +151,19 @@ const createTravelCommentValidation = [
 
 const updateTravelCommentValidation = [];
 
+/**
+ * 게시물 댓글 삭제 API Validator
+ * - [Body - commentIdx] 입력 유무 + 해당 댓글 존재 유무 + 본인의 댓글만 삭제할 수 있음
+ */
+const deleteTravelCommentValidation = [
+    body('commentIdx')
+        .notEmpty()
+        .withMessage(responseMessage.COMMENT_IDX_EMPTY)
+        .bail()
+        .custom(checkIsMyComment)
+        .bail()
+];
+
 module.exports = {
     createTravelValidation,
     deleteTravelValidation,
@@ -157,5 +171,6 @@ module.exports = {
     createTravelReviewScoreValidation,
     createTravelLikeValidation,
     createTravelCommentValidation,
-    updateTravelCommentValidation
+    updateTravelCommentValidation,
+    deleteTravelCommentValidation
 };

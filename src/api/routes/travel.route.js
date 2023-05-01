@@ -10,7 +10,8 @@ const {
     createTravelReviewScoreValidation,
     createTravelLikeValidation,
     createTravelCommentValidation,
-    updateTravelCommentValidation
+    updateTravelCommentValidation,
+    deleteTravelCommentValidation
 } = require('../middlewares/validations/travel.validation');
 
 const router = express.Router();
@@ -75,14 +76,21 @@ router.post(
 );
 
 // 게시물 댓글 수정 API
-router.patch(
-    '/comments',
-    jwtMiddleware,
-    updateTravelCommentValidation,
-    validationMiddleware,
-    wrapAsync(TravelController.updateTravelComment)
-);
+// router.patch(
+//     '/update-comment',
+//     jwtMiddleware,
+//     updateTravelCommentValidation,
+//     validationMiddleware,
+//     wrapAsync(TravelController.updateTravelComment)
+// );
 
 // 게시물 댓글 삭제 API
+router.patch(
+    '/delete-comment',
+    jwtMiddleware,
+    deleteTravelCommentValidation,
+    validationMiddleware,
+    wrapAsync(TravelController.deleteTravelComment)
+);
 
 module.exports = router;

@@ -85,7 +85,15 @@ const createTravelComment = async (req, res) => {
         );
 };
 
-const updateTravelComment = async (req, res) => {};
+// const updateTravelComment = async (req, res) => {};
+
+const deleteTravelComment = async (req, res) => {
+    const userIdx = req.verifiedToken.userIdx;
+    const commentIdx = req.body.commentIdx;
+
+    await TravelService.deleteTravelComment(userIdx, commentIdx);
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS));
+};
 
 // const getTravelComments = async (req, res) => {};
 
@@ -96,6 +104,7 @@ module.exports = {
     createTravelReviewScore,
     createTravelLike,
     createTravelComment,
-    updateTravelComment
+    deleteTravelComment
+    // updateTravelComment
     // getTravelComments
 };

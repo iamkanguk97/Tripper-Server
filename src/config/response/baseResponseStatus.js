@@ -56,6 +56,7 @@ module.exports = {
     ADMIN_PASSWORD_WRONG: { "isSuccess": false, "code": 2054, "message": "잘못된 비밀번호입니다." },
 
     TRAVEL_COMMENT_LENGTH_ERROR: { "isSuccess": false, "code": 2055, "message": "게시물 댓글은 최대 200자로 입력 가능합니다." },
+    COMMENT_IDX_EMPTY: { "isSuccess": false, "code": 2056, "message": "게시물 댓글 고유값을 입력해주세요." },
 
     NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3010, "message": "중복된 닉네임입니다." },
     USER_NOT_EXIST: { "isSuccess": false, "code": 3011, "message": "존재하지 않는 유저입니다." },
@@ -72,6 +73,9 @@ module.exports = {
     EMAIL_VERIFY_FAIL: { "isSuccess": false, "code": 3022, "message": "이메일 인증에 실패하였습니다." },
     MENTION_USER_NOT_EXIST: { "isSuccess": false, "code": 3023, "message": "언급한 사용자가 존재하지 않는 사용자입니다." },
     PARENT_COMMENT_NOT_EXIST: { "isSuccess": false, "code": 3024, "message": "해당 부모댓글이 존재하지 않습니다." },
+    COMMENT_NOT_EXIST: { "isSuccess": false, "code": 3025, "message": "존재하지 않는 댓글 고유값입니다." },
+    COMMENT_ALREADY_DELETED: { "isSuccess": false, "code": 3026, "message": "삭제된 댓글입니다." },
+    COMMENT_WRITER_NOT_MATCH: { "isSuccess": false, "code": 3027, "message": "해당 댓글의 작성자가 아닙니다." },
 
     ADMIN_ALREADY_EXIST: { "isSuccess": false, "code": 3500, "message": "이미 가입되어 있는 관리자 이메일입니다." },
     ADMIN_NOT_EXIST: { "isSuccess": false, "code": 3501, "message": "존재하지 않는 관리자 이메일입니다." },
