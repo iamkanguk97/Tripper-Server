@@ -100,6 +100,7 @@ const getTravelComments = async (req, res) => {
     const travelIdx = req.query.travelIdx;
 
     const getTravelCommentsResult = await TravelService.getTravelComments(userIdx, travelIdx);
+    return res.send(response(responseMessage.SUCCESS, getTravelCommentsResult));
 };
 
 module.exports = {

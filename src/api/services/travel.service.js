@@ -10,7 +10,10 @@ const TravelDayArea = require('../models/Travel/TravelDayArea');
 const TravelDayAreaImage = require('../models/Travel/TravelDayAreaImage');
 const TravelComment = require('../models/Travel/TravelComment');
 const TravelCommentMention = require('../models/Travel/TravelCommentMention');
-const selectParentCommentListQuery = require('../queries/travel.query');
+const {
+    selectParentCommentListQuery,
+    selectChildCommentListQuery
+} = require('../queries/travel.query');
 
 const updateTravelStatus = async (userIdx, travelIdx, travelStatus) => {
     const _newTravelStatus = travelStatus === 'A' ? 'B' : 'A';
@@ -372,21 +375,37 @@ const getTravelComments = async (userIdx, travelIdx) => {
         );
 
         // (2) 부모 댓글 리스트 가져오기
-        const parentCommentList = await sequelize.query(selectParentCommentListQuery, {
-            type: QueryTypes.SELECT,
-            replacements: {
-                travelIdx
-            }
-        });
+        const parentCommentList = await sequelize.query(
+            selectParentCommentListQuery,
+            {
+                type: QueryTypes.SELECT,
+                replacements: {
+                    travelIdx
+                }
+            },
+            { transaction }
+        );
 
-        console.log(parentCommentList);
-        // 자식 댓글 리스트 가져오기
+        // (3) (2)에서 받아온 부모 댓글 리스트에서 각 부모댓글에 해당하는 자식 댓글 리스트 가져오기
+        await Promise.all(
+            parentCommentList.map(async parentComment => {
+                const childCommentList = await sequelize.query(selectChildCommentListQuery, {
+                    type: QueryTypes.SELECT,
+                    replacements: {
+                        travelIdx,
+                        superCommentIdx: parentComment.parentCommentIdx
+                    }
+                });
+                parentComment.childComments = childCommentList;
+            })
+        );
 
         // COMMIT
         await transaction.commit();
 
         return {
-            totalCommentCount
+            totalCommentCount,
+            parentCommentList
         };
     } catch (err) {
         if (transaction) await transaction.rollback();
