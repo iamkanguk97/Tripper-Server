@@ -1,14 +1,16 @@
-const { Op, NOW, Sequelize } = require('sequelize');
+const { Op, Sequelize, QueryTypes } = require('sequelize');
 const Travel = require('../models/Travel/Travel');
 const TravelScore = require('../models/Travel/TravelScore');
 const TravelLike = require('../models/Travel/TravelLike');
-const { sequelize, TravelDayArea } = require('../models');
+const { sequelize } = require('../models/index');
 const { getTravelTrans } = require('../utils/util');
 const TravelThumImage = require('../models/Travel/TravelThumImage');
 const TravelDay = require('../models/Travel/TravelDay');
+const TravelDayArea = require('../models/Travel/TravelDayArea');
 const TravelDayAreaImage = require('../models/Travel/TravelDayAreaImage');
 const TravelComment = require('../models/Travel/TravelComment');
 const TravelCommentMention = require('../models/Travel/TravelCommentMention');
+const selectParentCommentListQuery = require('../queries/travel.query');
 
 const updateTravelStatus = async (userIdx, travelIdx, travelStatus) => {
     const _newTravelStatus = travelStatus === 'A' ? 'B' : 'A';
@@ -349,6 +351,49 @@ const deleteTravelComment = async (userIdx, commentIdx) => {
     }
 };
 
+const getTravelComments = async (userIdx, travelIdx) => {
+    let transaction;
+
+    try {
+        // BEGIN TRANSACTION
+        transaction = await sequelize.transaction();
+
+        // (1) 게시물 전체 댓글 수를 가져옴
+        const totalCommentCount = await TravelComment.count(
+            {
+                where: {
+                    TRAVEL_IDX: travelIdx,
+                    STATUS: {
+                        [Op.ne]: 'D'
+                    }
+                }
+            },
+            { transaction }
+        );
+
+        // (2) 부모 댓글 리스트 가져오기
+        const parentCommentList = await sequelize.query(selectParentCommentListQuery, {
+            type: QueryTypes.SELECT,
+            replacements: {
+                travelIdx
+            }
+        });
+
+        console.log(parentCommentList);
+        // 자식 댓글 리스트 가져오기
+
+        // COMMIT
+        await transaction.commit();
+
+        return {
+            totalCommentCount
+        };
+    } catch (err) {
+        if (transaction) await transaction.rollback();
+        throw new Error(err);
+    }
+};
+
 module.exports = {
     updateTravelStatus,
     createTravelReviewScore,
@@ -356,5 +401,6 @@ module.exports = {
     createTravel,
     deleteTravel,
     createTravelComment,
-    deleteTravelComment
+    deleteTravelComment,
+    getTravelComments
 };

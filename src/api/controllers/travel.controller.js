@@ -95,7 +95,12 @@ const deleteTravelComment = async (req, res) => {
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS));
 };
 
-// const getTravelComments = async (req, res) => {};
+const getTravelComments = async (req, res) => {
+    const userIdx = req.verifiedToken.userIdx;
+    const travelIdx = req.query.travelIdx;
+
+    const getTravelCommentsResult = await TravelService.getTravelComments(userIdx, travelIdx);
+};
 
 module.exports = {
     createTravel,
@@ -104,7 +109,7 @@ module.exports = {
     createTravelReviewScore,
     createTravelLike,
     createTravelComment,
-    deleteTravelComment
+    deleteTravelComment,
     // updateTravelComment
-    // getTravelComments
+    getTravelComments
 };
