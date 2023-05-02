@@ -1,4 +1,4 @@
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 const {
     checkTravelStatusAble,
@@ -164,6 +164,19 @@ const deleteTravelCommentValidation = [
         .bail()
 ];
 
+/**
+ * 게시물 댓글 조회 API Validator
+ * - [Query - travelIdx] 입력 유무 + 게시물 유효성 확인 및 본인 비공개 게시물에는 조회 가능하게!
+ */
+const selectTravelCommentValidation = [
+    query('travelIdx')
+        .notEmpty()
+        .withMessage(responseMessage.TRAVEL_IDX_EMPTY)
+        .bail()
+        .custom(checkTravelStatusAble)
+        .bail()
+];
+
 module.exports = {
     createTravelValidation,
     deleteTravelValidation,
@@ -172,5 +185,6 @@ module.exports = {
     createTravelLikeValidation,
     createTravelCommentValidation,
     updateTravelCommentValidation,
-    deleteTravelCommentValidation
+    deleteTravelCommentValidation,
+    selectTravelCommentValidation
 };
