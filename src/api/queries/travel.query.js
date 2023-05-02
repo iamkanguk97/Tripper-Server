@@ -1,6 +1,8 @@
 const selectParentCommentListQuery = `
     SELECT TC.IDX AS parentCommentIdx,
             TC.USER_IDX AS userIdx,
+            U.USER_NICKNAME AS userNickname,
+            U.USER_PROFILE_IMAGE AS userProfileImage,
             TC.COMMENT_TEXT AS comment,
             IF(TC.STATUS = 'M', 'Y', 'N') AS isModified,
             (SELECT COUNT(IDX) FROM TRAVEL_COMMENT WHERE TRAVEL_IDX = 10 AND SUPER_COMMENT_IDX = TC.IDX AND STATUS != 'D') AS childCommentCount,
@@ -12,15 +14,18 @@ const selectParentCommentListQuery = `
                 ELSE DATE_FORMAT(TC.CREATED_AT, '%y년 %m월 %d일')
             END AS createdAt
     FROM TRAVEL_COMMENT AS TC
+        INNER JOIN USER AS U ON U.IDX = TC.USER_IDX
     WHERE TC.TRAVEL_IDX = :travelIdx
         AND TC.STATUS != 'D'
-        AND SUPER_COMMENT_IDX IS NULL
+        AND TC.SUPER_COMMENT_IDX IS NULL
     ORDER BY TC.CREATED_AT DESC;
 `;
 
 const selectChildCommentListQuery = `
     SELECT TC.IDX AS childCommentIdx,
             TC.USER_IDX AS userIdx,
+            U.USER_NICKNAME AS userNickname,
+            U.USER_PROFILE_IMAGE AS userProfileImage,
             TC.COMMENT_TEXT AS comment,
             IF(TC.STATUS = 'M', 'Y', 'N') AS isModified,
             CASE
@@ -31,6 +36,7 @@ const selectChildCommentListQuery = `
                 ELSE DATE_FORMAT(TC.CREATED_AT, '%y년 %m월 %d일')
             END AS createdAt
     FROM TRAVEL_COMMENT AS TC
+        INNER JOIN USER AS U ON U.IDX = TC.USER_IDX
     WHERE TC.TRAVEL_IDX = :travelIdx
         AND TC.SUPER_COMMENT_IDX = :superCommentIdx
         AND TC.STATUS != 'D'

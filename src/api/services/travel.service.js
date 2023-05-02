@@ -375,7 +375,7 @@ const getTravelComments = async (userIdx, travelIdx) => {
         );
 
         // (2) 부모 댓글 리스트 가져오기
-        const parentCommentList = await sequelize.query(
+        const commentList = await sequelize.query(
             selectParentCommentListQuery,
             {
                 type: QueryTypes.SELECT,
@@ -388,7 +388,7 @@ const getTravelComments = async (userIdx, travelIdx) => {
 
         // (3) (2)에서 받아온 부모 댓글 리스트에서 각 부모댓글에 해당하는 자식 댓글 리스트 가져오기
         await Promise.all(
-            parentCommentList.map(async parentComment => {
+            commentList.map(async parentComment => {
                 const childCommentList = await sequelize.query(selectChildCommentListQuery, {
                     type: QueryTypes.SELECT,
                     replacements: {
@@ -405,7 +405,7 @@ const getTravelComments = async (userIdx, travelIdx) => {
 
         return {
             totalCommentCount,
-            parentCommentList
+            commentList
         };
     } catch (err) {
         if (transaction) await transaction.rollback();
