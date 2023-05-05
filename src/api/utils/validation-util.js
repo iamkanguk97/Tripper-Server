@@ -386,8 +386,9 @@ const checkIsMyComment = async (value, { req }) => {
 
 const checkUserIdxIsOther = async (value, { req }) => {
     try {
-        if (value === req.verifiedToken.userIdx)
+        if (parseInt(value) === parseInt(req.verifiedToken.userIdx)) {
             return Promise.reject(responseMessage.PROFILE_USER_IDX_SAME_WITH_ME);
+        }
     } catch (err) {
         Logger.error(err);
         return Promise.reject(validationErrorResponse(true, err));
