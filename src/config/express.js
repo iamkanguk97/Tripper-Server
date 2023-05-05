@@ -22,6 +22,7 @@ const userRoutes = require('../api/routes/user.route');
 const travelRoutes = require('../api/routes/travel.route');
 const commonRoutes = require('../api/routes/common.route');
 const adminRoutes = require('../api/routes/admin.route');
+const reportRoutes = require('../api/routes/report.route');
 
 /**
  * Express instance
@@ -61,6 +62,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/travels', travelRoutes);
 app.use('/api/commons', commonRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/reports', reportRoutes);
 
 // Swagger
 // app.use(
