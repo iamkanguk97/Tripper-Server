@@ -10,7 +10,9 @@ const {
     userInfoInMyPageQuery,
     myTripInMyPageQuery,
     travelLikeInMyPageQuery,
-    getTravelCountInLikeQuery
+    getTravelCountInLikeQuery,
+    userInfoInProfileQuery,
+    userTravelInfoInProfileQuery
 } = require('../queries/user.query');
 const User = require('../models/User/User');
 
@@ -179,7 +181,47 @@ const updageMyPage = async (userIdx, profileImgUrl, nickname) => {
         throw new Error('[User->updateMyPage] 변경사항이 없거나 잘못된 문법 사용');
 };
 
-const getProfile = async (myIdx, userIdx) => {};
+const getProfile = async (myIdx, userIdx) => {
+    let transaction;
+    let userInfo = {};
+    let userTravelInfo = [];
+
+    try {
+        // BEGIN TRANSACTION
+        transaction = await sequelize.transaction();
+
+        // (1) 상대방 프로필 상단 조회 (기본 정보)
+        userInfo = (
+            await sequelize.query(userInfoInProfileQuery, {
+                type: QueryTypes.SELECT,
+                replacements: {
+                    userIdx: myIdx,
+                    targetIdx: userIdx
+                }
+            })
+        )[0];
+
+        // (2) 상대방 프로필 하단 조회 (게시물 정보)
+        userTravelInfo = await sequelize.query(userTravelInfoInProfileQuery, {
+            type: QueryTypes.SELECT,
+            replacements: {
+                userIdx: myIdx,
+                targetIdx: userIdx
+            }
+        });
+
+        // COMMIT
+        await transaction.commit();
+
+        return {
+            userInfo,
+            userTravelInfo
+        };
+    } catch (err) {
+        if (transaction) await transaction.rollback();
+        throw new Error(err);
+    }
+};
 
 module.exports = {
     follow,

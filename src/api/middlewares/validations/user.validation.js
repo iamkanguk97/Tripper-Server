@@ -4,7 +4,8 @@ const {
     checkUserStatus,
     checkParameterIdxEqualMyIdx,
     checkBadWordInclude,
-    checkNickDuplicate
+    checkNickDuplicate,
+    checkUserIdxIsOther
 } = require('../../utils/validation-util');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 const { REGEX_NICKNAME } = require('../../utils/regex');
@@ -61,9 +62,18 @@ const deleteFollowerValidation = [
 
 /**
  * 상대방 프로필 조회 API Validator
- * - [query - userIdx] 프로필 조회할 유저의 고유값 입력 유무 + 다른 사람의 고유값이어야함.
+ * - [query - userIdx] 프로필 조회할 유저의 고유값 입력 유무 + 다른 사람의 고유값이어야함 + 탈퇴한 유저인지 확인
  */
-const getProfileValidation = [query('userIdx').notEmpty().withMessage().bail().custom().bail()];
+const getProfileValidation = [
+    query('userIdx')
+        .notEmpty()
+        .withMessage(responseMessage.PROFILE_USER_IDX_EMPTY)
+        .bail()
+        .custom(checkUserStatus)
+        .bail()
+        .custom(checkUserIdxIsOther)
+        .bail()
+];
 
 /**
  * 마이페이지 조회 API Validator

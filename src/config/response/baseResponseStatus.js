@@ -57,6 +57,8 @@ module.exports = {
 
     TRAVEL_COMMENT_LENGTH_ERROR: { "isSuccess": false, "code": 2055, "message": "게시물 댓글은 최대 200자로 입력 가능합니다." },
     COMMENT_IDX_EMPTY: { "isSuccess": false, "code": 2056, "message": "게시물 댓글 고유값을 입력해주세요." },
+    PROFILE_USER_IDX_EMPTY: { "isSuccess": false, "code": 2057, "message": "프로필 조회할 사용자의 고유값을 입력해주세요." },
+    PROFILE_USER_IDX_SAME_WITH_ME: { "isSuccess": false, "code": 2058, "message": "프로필 조회할 사용자의 고유값은 다른 유저의 고유값으로 입력해주세요." },
 
     NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3010, "message": "중복된 닉네임입니다." },
     USER_NOT_EXIST: { "isSuccess": false, "code": 3011, "message": "존재하지 않는 유저입니다." },

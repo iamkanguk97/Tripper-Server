@@ -36,6 +36,7 @@ const getProfile = async (req, res) => {
     const userIdx = req.query.userIdx;
 
     const getProfileResult = await UserService.getProfile(myIdx, userIdx);
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, getProfileResult));
 };
 
 const getMyPage = async (req, res) => {

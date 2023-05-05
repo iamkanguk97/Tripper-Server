@@ -182,6 +182,61 @@ const travelLikeInMyPageQuery = `
         LIMIT :offset, :contentSize;
 `;
 
+const userInfoInProfileQuery = `
+    SELECT U.IDX AS userIdx,
+            U.USER_NICKNAME AS userNickname,
+            U.USER_PROFILE_IMAGE AS userProfileImage,
+            (SELECT COUNT(FOLLOW_TARGET_IDX)
+                FROM USER_FOLLOW AS UF
+                    INNER JOIN USER AS U ON UF.FOLLOW_TARGET_IDX = U.IDX
+                WHERE UF.USER_IDX = :targetIdx
+                    AND U.USER_STATUS = 'A'
+                ) AS followingCount,
+                (
+                    SELECT COUNT(USER_IDX)
+                    FROM USER_FOLLOW AS UF
+                        INNER JOIN USER AS U ON UF.USER_IDX = U.IDX
+                    WHERE FOLLOW_TARGET_IDX = :targetIdx
+                        AND U.USER_STATUS = 'A'
+                ) AS followerCount,
+                (SELECT IF(EXISTS(SELECT IDX FROM USER_FOLLOW WHERE USER_IDX = :userIdx AND FOLLOW_TARGET_IDX = :targetIdx) = 1, 'Y', 'N')) AS isFollowing
+    FROM USER AS U
+    WHERE U.IDX = :targetIdx AND U.USER_STATUS = 'A';
+`;
+
+const userTravelInfoInProfileQuery = `
+    SELECT T.IDX AS travelIdx,
+            T.TRAVEL_TITLE AS travelTitle,
+            T.TRAVEL_INTRO AS travelIntro,
+            T.TRAVEL_HASHTAG AS travelHashtag,
+            IF((SELECT EXISTS(SELECT IDX FROM TRAVEL_LIKE WHERE TRAVEL_IDX = T.IDX AND USER_IDX = :userIdx)) = 1, 'Y', 'N') AS isLike,
+            TTL.TRAVEL_IMAGE_URL AS travelRepImage,
+            (
+                SELECT
+                    CASE
+                        WHEN TRUNCATE(AVG(TRAVEL_SCORE), 0) = 5 THEN '최고의 여행!'
+                        WHEN TRUNCATE(AVG(TRAVEL_SCORE), 0) = 4 THEN '도움되었어요!'
+                        WHEN TRUNCATE(AVG(TRAVEL_SCORE), 0) = 3 THEN '그저 그래요'
+                        WHEN TRUNCATE(AVG(TRAVEL_SCORE), 0) = 2 THEN '도움되지 않았어요'
+                        WHEN TRUNCATE(AVG(TRAVEL_SCORE), 0) = 1 THEN '별로에요'
+                        ELSE '점수 없음'
+                    END AS travelScore
+                FROM TRAVEL_SCORE
+                WHERE TRAVEL_IDX = T.IDX
+            ) AS travelScore,
+            DATE_FORMAT(T.CREATED_AT, '%Y년 %m월 %d일') AS travelCreatedAt
+    FROM TRAVEL AS T
+        LEFT JOIN (
+            SELECT IDX, TRAVEL_IDX, TRAVEL_IMAGE_URL
+            FROM TRAVEL_THUMNAIL_IMAGE
+            GROUP BY TRAVEL_IDX
+            HAVING MIN(IDX)
+        ) AS TTL ON T.IDX = TTL.TRAVEL_IDX
+    WHERE T.USER_IDX = :targetIdx
+        AND T.TRAVEL_STATUS = 'A'
+    ORDER BY T.CREATED_AT DESC;
+`;
+
 module.exports = {
     myFollowingQuery,
     myFollowerQuery,
@@ -190,5 +245,7 @@ module.exports = {
     userInfoInMyPageQuery,
     myTripInMyPageQuery,
     travelLikeInMyPageQuery,
-    getTravelCountInLikeQuery
+    getTravelCountInLikeQuery,
+    userInfoInProfileQuery,
+    userTravelInfoInProfileQuery
 };
