@@ -14,6 +14,8 @@ const User = require('./User/User');
 const UserFollow = require('./User/UserFollow');
 const Admin = require('./Admin/Admin');
 const AdminSalt = require('./Admin/AdminSalt');
+const Report = require('./Report/Report');
+const ReportImage = require('./Report/ReportImage');
 
 const env = process.env.NODE_ENV;
 const dbConfig = require('../../config/database')[env];
@@ -42,6 +44,9 @@ db.UserFollow = UserFollow;
 db.Admin = Admin;
 db.AdminSalt = AdminSalt;
 
+db.Report = Report;
+db.ReportImage = ReportImage;
+
 Travel.init(sequelize);
 TravelThumImage.init(sequelize);
 TravelLike.init(sequelize);
@@ -58,6 +63,9 @@ UserFollow.init(sequelize);
 
 Admin.init(sequelize);
 AdminSalt.init(sequelize);
+
+Report.init(sequelize);
+ReportImage.init(sequelize);
 
 User.associate(db);
 UserFollow.associate(db);
