@@ -61,7 +61,7 @@ router.put(
 
 // 상대방 프로필 조회 API
 router.get(
-    '/:userIdx/profile',
+    '/profile',
     jwtMiddleware,
     getProfileValidation,
     validationMiddleware,

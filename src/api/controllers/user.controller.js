@@ -31,7 +31,12 @@ const deleteFollower = async (req, res) => {
         .json(response(responseMessage.SUCCESS, { deletedUserIdx: deleteFollowerIdx }));
 };
 
-// const getProfile = async (req, res) => {};
+const getProfile = async (req, res) => {
+    const myIdx = req.verifiedToken.userIdx;
+    const userIdx = req.query.userIdx;
+
+    const getProfileResult = await UserService.getProfile(myIdx, userIdx);
+};
 
 const getMyPage = async (req, res) => {
     const userIdx = req.verifiedToken.userIdx;
@@ -56,7 +61,7 @@ module.exports = {
     follow,
     followList,
     deleteFollower,
-    // getProfile,
+    getProfile,
     getMyPage,
     updateMyPage
 };

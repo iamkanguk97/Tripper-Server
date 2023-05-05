@@ -61,8 +61,9 @@ const deleteFollowerValidation = [
 
 /**
  * 상대방 프로필 조회 API Validator
+ * - [query - userIdx] 프로필 조회할 유저의 고유값 입력 유무 + 다른 사람의 고유값이어야함.
  */
-const getProfileValidation = [];
+const getProfileValidation = [query('userIdx').notEmpty().withMessage().bail().custom().bail()];
 
 /**
  * 마이페이지 조회 API Validator

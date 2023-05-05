@@ -179,10 +179,13 @@ const updageMyPage = async (userIdx, profileImgUrl, nickname) => {
         throw new Error('[User->updateMyPage] 변경사항이 없거나 잘못된 문법 사용');
 };
 
+const getProfile = async (myIdx, userIdx) => {};
+
 module.exports = {
     follow,
     followList,
     deleteFollower,
     getMyPage,
-    updageMyPage
+    updageMyPage,
+    getProfile
 };
