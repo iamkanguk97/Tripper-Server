@@ -56,7 +56,14 @@ const adminLoginValidation = [
     body('password').notEmpty().withMessage(responseMessage.ADMIN_PASSWORD_EMPTY).bail()
 ];
 
+/**
+ * 특정 신고 조회 API Validation
+ * - reportIdx 유무 확인 및 존재하는 신고 확인
+ */
+const getReportDetailValidation = [];
+
 module.exports = {
     adminSignUpValidation,
-    adminLoginValidation
+    adminLoginValidation,
+    getReportDetailValidation
 };

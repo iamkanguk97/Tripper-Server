@@ -24,7 +24,20 @@ const login = async (req, res) => {
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, loginResult));
 };
 
+const getReports = async (req, res) => {
+    const getReportsResult = await AdminService.getReports();
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, getReportsResult));
+};
+
+const getReportDetail = async (req, res) => {
+    const reportIdx = req.param.reportIdx;
+    const getReportDetailResult = await AdminService.getReportDetail(reportIdx);
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, getReportDetailResult));
+};
+
 module.exports = {
     signUp,
-    login
+    login,
+    getReports,
+    getReportDetail
 };

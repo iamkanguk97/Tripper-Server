@@ -4,7 +4,8 @@ const validationMiddleware = require('../middlewares/validationMiddleware');
 const { wrapAsync } = require('../utils/util');
 const {
     adminSignUpValidation,
-    adminLoginValidation
+    adminLoginValidation,
+    getReportDetailValidation
 } = require('../middlewares/validations/admin.validation');
 
 const router = express.Router();
@@ -19,5 +20,16 @@ router.post(
 
 // 관리자 로그인 API
 router.post('/login', adminLoginValidation, validationMiddleware, wrapAsync(AdminController.login));
+
+// 신고 조회 API
+router.get('/reports', wrapAsync(AdminController.getReports));
+
+// 신고 상세조회 API
+router.get(
+    '/reports/:reportIdx',
+    getReportDetailValidation,
+    validationMiddleware,
+    wrapAsync(AdminController.getReportDetail)
+);
 
 module.exports = router;

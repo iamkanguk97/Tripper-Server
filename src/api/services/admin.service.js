@@ -1,6 +1,8 @@
+const { QueryTypes } = require('sequelize');
 const { saltHashPassword, validatePassword } = require('../utils/crypto-util');
-const { sequelize } = require('../models');
+const { sequelize } = require('../models/index');
 const { generateAccessToken } = require('../utils/jwt-util');
+const { getReportsQuery } = require('../queries/admin.query');
 const Admin = require('../models/Admin/Admin');
 const AdminSalt = require('../models/Admin/AdminSalt');
 
@@ -80,7 +82,19 @@ const login = async (adminIdx, password) => {
     return { adminIdx, token };
 };
 
+const getReports = async () => {
+    const getReportsResult = await sequelize.query(getReportsQuery, {
+        type: QueryTypes.SELECT
+    });
+
+    return getReportsResult;
+};
+
+const getReportDetail = async reportIdx => {};
+
 module.exports = {
     signUp,
-    login
+    login,
+    getReports,
+    getReportDetail
 };
