@@ -8,7 +8,8 @@ const {
     deleteFollowerValidation,
     getProfileValidation,
     getMyPageValidation,
-    updateMyPageValidation
+    updateMyPageValidation,
+    createReportValidation
 } = require('../middlewares/validations/user.validation');
 const { wrapAsync } = require('../utils/util');
 
@@ -67,5 +68,17 @@ router.get(
     validationMiddleware,
     wrapAsync(UserController.getProfile)
 );
+
+// 신고하기 API
+router.post(
+    '/report',
+    jwtMiddleware,
+    createReportValidation,
+    validationMiddleware,
+    wrapAsync(UserController.createReport)
+);
+
+// 신고 카테고리 조회 API
+router.get('/report-type', wrapAsync(UserController.getReportTypes));
 
 module.exports = router;

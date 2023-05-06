@@ -58,11 +58,39 @@ const updateMyPage = async (req, res) => {
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS));
 };
 
+const createReport = async (req, res) => {
+    const userIdx = req.verifiedToken.userIdx;
+    const travelIdx = parseInt(req.body.travelIdx);
+    const travelCommentIdx = parseInt(req.body.travelCommentIdx) ?? null;
+    const { reportType, reportSubject, reportContent } = req.body;
+    const reportImages = req.body.reportImages ?? [];
+
+    const createReportResult = await UserService.createReport(
+        userIdx,
+        travelIdx,
+        travelCommentIdx,
+        reportType,
+        reportSubject,
+        reportContent,
+        reportImages
+    );
+    return res
+        .status(httpStatus.CREATED)
+        .json(response(responseMessage.CREATE_SUCCESS, { newReportIdx: createReportResult }));
+};
+
+const getReportTypes = async (req, res) => {
+    const getReportTypesResult = await UserService.getReportTypes();
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, getReportTypesResult));
+};
+
 module.exports = {
     follow,
     followList,
     deleteFollower,
     getProfile,
     getMyPage,
-    updateMyPage
+    updateMyPage,
+    createReport,
+    getReportTypes
 };

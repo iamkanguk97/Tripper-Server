@@ -31,10 +31,10 @@ module.exports = class Report extends Sequelize.Model {
                     allowNull: true,
                     comment: '신고대상 게시물 댓글 고유값'
                 },
-                REPORT_TYPE: {
-                    type: Sequelize.STRING(10),
+                REPORT_TYPE_IDX: {
+                    type: Sequelize.BIGINT,
                     allowNull: false,
-                    comment: '신고 유형 (부적절한 용어 사용, 선정적 게시물 등)'
+                    comment: '신고 유형 고유값'
                 },
                 REPORT_SUBJECT: {
                     type: Sequelize.STRING(50),

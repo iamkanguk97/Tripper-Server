@@ -16,6 +16,7 @@ const Admin = require('./Admin/Admin');
 const AdminSalt = require('./Admin/AdminSalt');
 const Report = require('./Report/Report');
 const ReportImage = require('./Report/ReportImage');
+const ReportType = require('./Report/ReportType');
 
 const env = process.env.NODE_ENV;
 const dbConfig = require('../../config/database')[env];
@@ -46,6 +47,7 @@ db.AdminSalt = AdminSalt;
 
 db.Report = Report;
 db.ReportImage = ReportImage;
+db.ReportType = ReportType;
 
 Travel.init(sequelize);
 TravelThumImage.init(sequelize);
@@ -66,6 +68,7 @@ AdminSalt.init(sequelize);
 
 Report.init(sequelize);
 ReportImage.init(sequelize);
+ReportType.init(sequelize);
 
 User.associate(db);
 UserFollow.associate(db);

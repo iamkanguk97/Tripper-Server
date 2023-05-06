@@ -107,11 +107,18 @@ const updateMyPageValidation = [
         .bail()
 ];
 
+/**
+ * 신고하기 API Validator
+ * - 댓글 신고가 아니면 reportedCommentIdx는 null, 아니면 둘다 넣기 (travelIdx + commentIdx)
+ */
+const createReportValidation = [];
+
 module.exports = {
     followValidation,
     followListValidation,
     deleteFollowerValidation,
     getProfileValidation,
     getMyPageValidation,
-    updateMyPageValidation
+    updateMyPageValidation,
+    createReportValidation
 };

@@ -15,6 +15,9 @@ const {
     userTravelInfoInProfileQuery
 } = require('../queries/user.query');
 const User = require('../models/User/User');
+const Report = require('../models/Report/Report');
+const ReportImage = require('../models/Report/ReportImage');
+const ReportType = require('../models/Report/ReportType');
 
 const follow = async (myIdx, followUserIdx) => {
     // ORM CRUD에 적용되는 옵션이 다 동일하기 때문에 하나의 변수로 빼놓음.
@@ -223,11 +226,77 @@ const getProfile = async (myIdx, userIdx) => {
     }
 };
 
+const createReport = async (
+    userIdx,
+    travelIdx,
+    travelCommentIdx,
+    reportType,
+    reportSubject,
+    reportContent,
+    reportImages
+) => {
+    let transaction;
+    let newReportIdx;
+
+    try {
+        // START TRANSACTION
+        transaction = await sequelize.transaction();
+
+        // (1) REPORT 테이블에 INSERT
+        newReportIdx = (
+            await Report.create(
+                {
+                    USER_IDX: userIdx,
+                    REPORTED_TRAVEL_IDX: travelIdx,
+                    REPORTED_COMMENT_IDX: travelCommentIdx,
+                    REPORT_TYPE: reportType,
+                    REPORT_SUBJECT: reportSubject,
+                    REPORT_CONTENT: reportContent
+                },
+                { transaction }
+            )
+        ).dataValues.IDX;
+
+        // (2) REPORT_IMAGE 테이블에 INSERT
+        if (reportImages.length) {
+            await Promise.all(
+                reportImages.map(async img => {
+                    await ReportImage.create({
+                        REPORT_IDX: newReportIdx,
+                        REPORT_IMAGE_URL: img
+                    });
+                })
+            );
+        }
+
+        // COMMIT
+        await transaction.commit();
+        return newReportIdx;
+    } catch (err) {
+        if (transaction) await transaction.rollback();
+        throw new Error(err);
+    }
+};
+
+const getReportTypes = async () => {
+    const getReportTypesResult = await ReportType.findAll({
+        attributes: ['IDX', 'REPORT_TYPE_NAME'],
+        where: {
+            STATUS: 'A'
+        },
+        raw: true
+    });
+
+    return getReportTypesResult;
+};
+
 module.exports = {
     follow,
     followList,
     deleteFollower,
     getMyPage,
     updageMyPage,
-    getProfile
+    getProfile,
+    createReport,
+    getReportTypes
 };
