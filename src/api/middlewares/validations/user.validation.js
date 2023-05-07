@@ -111,7 +111,16 @@ const updateMyPageValidation = [
  * 신고하기 API Validator
  * - 댓글 신고가 아니면 reportedCommentIdx는 null, 아니면 둘다 넣기 (travelIdx + commentIdx)
  */
-const createReportValidation = [];
+const createReportValidation = [
+    body('travelIdx')
+        .notEmpty()
+        .withMessage(responseMessage.TRAVEL_IDX_EMPTY)
+        .bail()
+        .custom()
+        .bail(),
+    body('travelCommentIdx').optional().custom().bail(),
+    body('reportTypeIdx').notEmpty().withMessage().bail().custom().bail()
+];
 
 module.exports = {
     followValidation,

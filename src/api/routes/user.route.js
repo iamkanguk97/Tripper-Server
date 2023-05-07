@@ -82,6 +82,7 @@ router.post(
 router.get('/report-type', wrapAsync(UserController.getReportTypes));
 
 // 로그아웃 API
+router.patch('/logout', jwtMiddleware, wrapAsync(UserController.logout));
 
 // 회원탈퇴 API
 router.patch('/withdrawal', jwtMiddleware, wrapAsync(UserController.userWithdrawal));

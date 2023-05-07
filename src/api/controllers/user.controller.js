@@ -84,9 +84,17 @@ const getReportTypes = async (req, res) => {
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, getReportTypesResult));
 };
 
+const logout = async (req, res) => {
+    const userIdx = req.verifiedToken.userIdx;
+    await UserService.logout(userIdx);
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS));
+};
+
 const userWithdrawal = async (req, res) => {
     const userIdx = req.verifiedToken.userIdx;
-    const userWithdrawalResult = await UserService.userWithdraw(userIdx);
+    const socialAccessToken = req.headers.social_access;
+
+    const userWithdrawalResult = await UserService.userWithdraw(userIdx, socialAccessToken);
 };
 
 module.exports = {
@@ -98,5 +106,6 @@ module.exports = {
     updateMyPage,
     createReport,
     getReportTypes,
-    userWithdrawal
+    userWithdrawal,
+    logout
 };

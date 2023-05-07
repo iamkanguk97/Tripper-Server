@@ -1,4 +1,5 @@
 const { Op, QueryTypes } = require('sequelize');
+const axios = require('axios');
 const UserFollow = require('../models/User/UserFollow');
 const Travel = require('../models/Travel/Travel');
 const { sequelize } = require('../models/index');
@@ -291,24 +292,54 @@ const getReportTypes = async () => {
     return getReportTypesResult;
 };
 
-const userWithdraw = async userIdx => {
+const userWithdraw = async (userIdx, socialAccessToken) => {
     // (1) USER 테이블에 탈퇴처리
-    await User.update(
-        {
-            USER_STATUS: 'D'
-        },
-        {
-            where: {
-                IDX: userIdx
+    const updateUserStatus = async function () {
+        await User.update(
+            {
+                USER_STATUS: 'D'
+            },
+            {
+                where: {
+                    IDX: userIdx
+                }
             }
-        }
-    );
+        );
+    };
 
     // (2) Redis에 Refresh-Token 삭제
+    const deleteRefreshToken = async function () {
+        const redisClient = new RedisClient();
+        await redisClient.connect();
+
+        await redisClient.hDel('refreshToken', `userId_${userIdx}`);
+        await redisClient.quit();
+    };
+
+    // (3) 카카오 또는 네이버와 연결 끊기
+    const quitConnectionWithSocial = async function () {
+        const asdf = await axios({
+            method: 'POST',
+            url: 'https://kapi.kakao.com/v1/user/unlink',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Bearer ${socialAccessToken}`
+            }
+        });
+        console.log(asdf);
+    };
+
+    await Promise.all([updateUserStatus(), deleteRefreshToken(), quitConnectionWithSocial()]);
+};
+
+const logout = async userIdx => {
+    // Redis에 저장되어 있는 Refresh-Token 삭제해줌
+    // Access-Token은 클라이언트 쪽에서 저장소에서 삭제하도록함
     const redisClient = new RedisClient();
     await redisClient.connect();
 
-    // (3) 카카오와 연결 끊기
+    await redisClient.hDel('refreshToken', `userId_${userIdx}`);
+    await redisClient.quit();
 };
 
 module.exports = {
@@ -320,5 +351,6 @@ module.exports = {
     getProfile,
     createReport,
     getReportTypes,
-    userWithdraw
+    userWithdraw,
+    logout
 };
