@@ -26,7 +26,7 @@ router.get('/reports', wrapAsync(AdminController.getReports));
 
 // 신고 상세조회 API
 router.get(
-    '/reports/:reportIdx',
+    '/report-detail',
     getReportDetailValidation,
     validationMiddleware,
     wrapAsync(AdminController.getReportDetail)

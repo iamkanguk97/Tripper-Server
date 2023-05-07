@@ -18,6 +18,7 @@ const User = require('../models/User/User');
 const Report = require('../models/Report/Report');
 const ReportImage = require('../models/Report/ReportImage');
 const ReportType = require('../models/Report/ReportType');
+const RedisClient = require('../../config/redis');
 
 const follow = async (myIdx, followUserIdx) => {
     // ORM CRUD에 적용되는 옵션이 다 동일하기 때문에 하나의 변수로 빼놓음.
@@ -290,6 +291,26 @@ const getReportTypes = async () => {
     return getReportTypesResult;
 };
 
+const userWithdraw = async userIdx => {
+    // (1) USER 테이블에 탈퇴처리
+    await User.update(
+        {
+            USER_STATUS: 'D'
+        },
+        {
+            where: {
+                IDX: userIdx
+            }
+        }
+    );
+
+    // (2) Redis에 Refresh-Token 삭제
+    const redisClient = new RedisClient();
+    await redisClient.connect();
+
+    // (3) 카카오와 연결 끊기
+};
+
 module.exports = {
     follow,
     followList,
@@ -298,5 +319,6 @@ module.exports = {
     updageMyPage,
     getProfile,
     createReport,
-    getReportTypes
+    getReportTypes,
+    userWithdraw
 };

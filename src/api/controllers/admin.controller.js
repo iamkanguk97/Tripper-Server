@@ -30,7 +30,7 @@ const getReports = async (req, res) => {
 };
 
 const getReportDetail = async (req, res) => {
-    const reportIdx = req.param.reportIdx;
+    const reportIdx = req.query.reportIdx;
     const getReportDetailResult = await AdminService.getReportDetail(reportIdx);
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, getReportDetailResult));
 };

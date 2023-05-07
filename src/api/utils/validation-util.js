@@ -14,6 +14,7 @@ const { checkBadWord } = require('./util');
 const { validationErrorResponse } = require('../../config/response/response-template');
 const Admin = require('../models/Admin/Admin');
 const TravelComment = require('../models/Travel/TravelComment');
+const Report = require('../models/Report/Report');
 
 // 회원 존재 및 탈퇴 확인하는 Validation
 const checkUserStatus = async value => {
@@ -395,6 +396,21 @@ const checkUserIdxIsOther = async (value, { req }) => {
     }
 };
 
+const checkReportIsValid = async value => {
+    try {
+        const checkReportResult = await Report.findOne({
+            where: {
+                IDX: value
+            }
+        });
+
+        if (!checkReportResult) return Promise.reject(responseMessage.REPORT_NOT_EXIST);
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(validationErrorResponse(true, err));
+    }
+};
+
 module.exports = {
     // checkUserStatusFunc,
     checkNickDuplicate,
@@ -417,5 +433,6 @@ module.exports = {
     checkMentionUserStatus,
     checkParentCommentAble,
     checkIsMyComment,
-    checkUserIdxIsOther
+    checkUserIdxIsOther,
+    checkReportIsValid
 };

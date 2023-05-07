@@ -2,9 +2,10 @@ const { QueryTypes } = require('sequelize');
 const { saltHashPassword, validatePassword } = require('../utils/crypto-util');
 const { sequelize } = require('../models/index');
 const { generateAccessToken } = require('../utils/jwt-util');
-const { getReportsQuery } = require('../queries/admin.query');
+const { getReportsQuery, getReportDetailQuery } = require('../queries/admin.query');
 const Admin = require('../models/Admin/Admin');
 const AdminSalt = require('../models/Admin/AdminSalt');
+const ReportImage = require('../models/Report/ReportImage');
 
 const signUp = async (email, password, nickname) => {
     const secretData = saltHashPassword(password);
@@ -90,7 +91,51 @@ const getReports = async () => {
     return getReportsResult;
 };
 
-const getReportDetail = async reportIdx => {};
+const getReportDetail = async reportIdx => {
+    let transaction;
+
+    try {
+        // BEGIN TRANSACTION
+        transaction = await sequelize.transaction();
+
+        // (1) REPORT 테이블에서 가져오기
+        const reportResult = (
+            await sequelize.query(getReportDetailQuery, {
+                type: QueryTypes.SELECT,
+                replacements: {
+                    reportIdx
+                }
+            })
+        )[0];
+
+        // (2) REPORT_IMAGE 테이블에서 가져오기
+        const reportImageResult = await ReportImage.findAll(
+            {
+                attributes: ['REPORT_IMAGE_URL'],
+                where: {
+                    REPORT_IDX: reportIdx
+                },
+                raw: true
+            },
+            { transaction }
+        );
+        const reportImageResultArr = reportImageResult.reduce((acc, curr, idx) => {
+            acc.push(curr.REPORT_IMAGE_URL);
+            return acc;
+        }, []);
+
+        // COMMIT
+        await transaction.commit();
+
+        return {
+            report: reportResult,
+            reportImages: reportImageResultArr
+        };
+    } catch (err) {
+        if (transaction) await transaction.rollback();
+        throw new Error(err);
+    }
+};
 
 module.exports = {
     signUp,

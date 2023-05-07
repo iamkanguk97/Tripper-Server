@@ -60,6 +60,8 @@ module.exports = {
     PROFILE_USER_IDX_EMPTY: { "isSuccess": false, "code": 2057, "message": "프로필 조회할 사용자의 고유값을 입력해주세요." },
     PROFILE_USER_IDX_SAME_WITH_ME: { "isSuccess": false, "code": 2058, "message": "프로필 조회할 사용자의 고유값은 다른 유저의 고유값으로 입력해주세요." },
 
+    REPORT_IDX_EMPTY: { "isSuccess": false, "code": 2059, "message": "신고 고유값을 입력해주세요." },
+
     NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3010, "message": "중복된 닉네임입니다." },
     USER_NOT_EXIST: { "isSuccess": false, "code": 3011, "message": "존재하지 않는 유저입니다." },
     DELETE_FOLLOWER_NOT_FOLLOW: { "isSuccess": false, "code": 3012, "message": "삭제할 팔로워가 회원님을 팔로우하고 있지 않습니다." },
@@ -81,4 +83,5 @@ module.exports = {
 
     ADMIN_ALREADY_EXIST: { "isSuccess": false, "code": 3500, "message": "이미 가입되어 있는 관리자 이메일입니다." },
     ADMIN_NOT_EXIST: { "isSuccess": false, "code": 3501, "message": "존재하지 않는 관리자 이메일입니다." },
+    REPORT_NOT_EXIST: { "isSuccess": false, "code": 3502, "message": "존재하지 않는 신고 내역입니다." },
 };

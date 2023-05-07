@@ -1,9 +1,10 @@
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 const {
     checkAdminExist,
     checkAdminNickExist,
-    checkAdminNotExist
+    checkAdminNotExist,
+    checkReportIsValid
 } = require('../../utils/validation-util');
 const { REGEX_ADMIN_PASSWORD, REGEX_NICKNAME } = require('../../utils/regex');
 
@@ -60,7 +61,14 @@ const adminLoginValidation = [
  * 특정 신고 조회 API Validation
  * - reportIdx 유무 확인 및 존재하는 신고 확인
  */
-const getReportDetailValidation = [];
+const getReportDetailValidation = [
+    query('reportIdx')
+        .notEmpty()
+        .withMessage(responseMessage.REPORT_IDX_EMPTY)
+        .bail()
+        .custom(checkReportIsValid)
+        .bail()
+];
 
 module.exports = {
     adminSignUpValidation,

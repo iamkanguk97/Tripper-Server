@@ -81,4 +81,9 @@ router.post(
 // 신고 카테고리 조회 API
 router.get('/report-type', wrapAsync(UserController.getReportTypes));
 
+// 로그아웃 API
+
+// 회원탈퇴 API
+router.patch('/withdrawal', jwtMiddleware, wrapAsync(UserController.userWithdrawal));
+
 module.exports = router;

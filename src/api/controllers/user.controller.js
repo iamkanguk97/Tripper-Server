@@ -84,6 +84,11 @@ const getReportTypes = async (req, res) => {
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, getReportTypesResult));
 };
 
+const userWithdrawal = async (req, res) => {
+    const userIdx = req.verifiedToken.userIdx;
+    const userWithdrawalResult = await UserService.userWithdraw(userIdx);
+};
+
 module.exports = {
     follow,
     followList,
@@ -92,5 +97,6 @@ module.exports = {
     getMyPage,
     updateMyPage,
     createReport,
-    getReportTypes
+    getReportTypes,
+    userWithdrawal
 };
