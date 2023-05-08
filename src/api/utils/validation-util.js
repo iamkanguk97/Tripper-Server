@@ -414,6 +414,18 @@ const checkReportIsValid = async value => {
 
 const checkIsSocialTokenValid = async (value, { req }) => {
     try {
+        // 여기서 회원 상태 확인하자.. (이미 회원탈퇴가 된 유저인지)
+        const checkUserResult = await User.findOne({
+            where: {
+                IDX: req.verifiedToken.userIdx
+            }
+        });
+
+        if (!checkUserResult) return Promise.reject(responseMessage.USER_NOT_EXIST); // DB에 해당 유저의 아이디가 등록X
+        if (checkUserResult.dataValues.USER_STATUS === 'D')
+            // 이미 탈퇴된 유저
+            return Promise.reject(responseMessage.USER_WITHDRAWAL);
+
         const requestUrl =
             value === 'kakao'
                 ? 'https://kapi.kakao.com/v1/user/access_token_info'

@@ -5,7 +5,8 @@ const {
     checkBadWordInclude,
     checkSnsIdDuplicate,
     checkAccessTokenEmpty,
-    checkIsSocialTokenValid
+    checkIsSocialTokenValid,
+    checkUserStatus
 } = require('../../utils/validation-util');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 
