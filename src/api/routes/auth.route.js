@@ -77,4 +77,7 @@ router.get(
     wrapAsync(AuthController.getEmailVerify)
 );
 
+// 로그아웃 API
+// 회원탈퇴 API
+
 module.exports = router;

@@ -92,9 +92,11 @@ const logout = async (req, res) => {
 
 const userWithdrawal = async (req, res) => {
     const userIdx = req.verifiedToken.userIdx;
-    const socialAccessToken = req.headers.social_access;
+    const socialAT = req.headers.social_at;
+    const socialVendor = req.headers.social_vendor;
 
-    const userWithdrawalResult = await UserService.userWithdraw(userIdx, socialAccessToken);
+    await UserService.userWithdraw(userIdx, socialAT, socialVendor);
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS));
 };
 
 module.exports = {
