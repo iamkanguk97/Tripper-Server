@@ -4,6 +4,7 @@
  */
 
 const { Op } = require('sequelize');
+const { default: axios } = require('axios');
 const User = require('../models/User/User');
 const UserFollow = require('../models/User/UserFollow');
 const Travel = require('../models/Travel/Travel');
@@ -411,6 +412,26 @@ const checkReportIsValid = async value => {
     }
 };
 
+const checkIsSocialTokenValid = async (value, { req }) => {
+    try {
+        const requestUrl =
+            value === 'kakao'
+                ? 'https://kapi.kakao.com/v1/user/access_token_info'
+                : 'https://openapi.naver.com/v1/nid/verify';
+
+        await axios({
+            method: 'GET',
+            url: requestUrl,
+            headers: {
+                Authorization: `Bearer ${req.headers.social_at}`
+            }
+        });
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(validationErrorResponse(true, err));
+    }
+};
+
 module.exports = {
     // checkUserStatusFunc,
     checkNickDuplicate,
@@ -434,5 +455,6 @@ module.exports = {
     checkParentCommentAble,
     checkIsMyComment,
     checkUserIdxIsOther,
-    checkReportIsValid
+    checkReportIsValid,
+    checkIsSocialTokenValid
 };

@@ -4,7 +4,8 @@ const {
     checkNickDuplicate,
     checkBadWordInclude,
     checkSnsIdDuplicate,
-    checkAccessTokenEmpty
+    checkAccessTokenEmpty,
+    checkIsSocialTokenValid
 } = require('../../utils/validation-util');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 
@@ -133,11 +134,33 @@ const postEmailVerifyValidation = [
         .bail()
 ];
 
+/**
+ * @title 회원탈퇴 API Validator
+ * @param social_at (소셜 Access-Token)
+ *  - 입력 유무 확인
+ * @param social_vendor (소셜로그인 유형)
+ *  - 입력 유무 및 유형 확인
+ *  - 유효한 토큰인지 확인
+ */
+const userWithdrawValidation = [
+    header('social_at').notEmpty().withMessage(responseMessage.SOCIAL_ACCESS_TOKEN_EMPTY).bail(),
+    header('social_vendor')
+        .notEmpty()
+        .withMessage(responseMessage.SOCIAL_VENDOR_EMPTY)
+        .bail()
+        .isIn(['kakao', 'naver'])
+        .withMessage(responseMessage.SOCIAL_VENDOR_ERROR_TYPE)
+        .bail()
+        .custom(checkIsSocialTokenValid)
+        .bail()
+];
+
 module.exports = {
     verifyNickValidation,
     signUpValidation,
     tokenRefreshValidation,
     socialLoginValidation,
     getEmailVerifyValidation,
-    postEmailVerifyValidation
+    postEmailVerifyValidation,
+    userWithdrawValidation
 };

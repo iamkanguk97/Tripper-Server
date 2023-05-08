@@ -13,7 +13,7 @@ const { generateAccessToken, generateRefreshToken } = require('../utils/jwt-util
 const { JWTError, BadRequestError } = require('../errors/index');
 const responseMessage = require('../../config/response/baseResponseStatus');
 const { sendVerifyEmail } = require('../../config/email');
-const { NODEMAILER } = require('../../config/vars');
+const { NODEMAILER, NAVER } = require('../../config/vars');
 
 const kakaoLoginCallback = async (kakaoId, email, ageGroup, gender) => {
     // 소셜로그인 고유값으로 유저 존재하는지 확인
@@ -347,6 +347,66 @@ const postEmailVerify = async email => {
     await redisClient.quit(); // Redis 연결 끊기
 };
 
+const userWithdraw = async (userIdx, socialAT, socialVendor) => {
+    // (1) USER 테이블에 탈퇴처리
+    const updateUserStatus = async function (userId) {
+        await User.update(
+            {
+                USER_STATUS: 'D'
+            },
+            {
+                where: {
+                    IDX: userId
+                }
+            }
+        );
+    };
+
+    // (2) Redis에 Refresh-Token 삭제
+    const deleteRefreshToken = async function (userId) {
+        const redisClient = new RedisClient();
+        await redisClient.connect();
+
+        await redisClient.hDel('refreshToken', `userId_${userId}`);
+        await redisClient.quit();
+    };
+
+    // (3) 카카오 또는 네이버와 연결 끊기
+    const quitConnectionWithSocial = async function (sat, sv) {
+        if (sv === 'kakao') {
+            await axios({
+                method: 'POST',
+                url: 'https://kapi.kakao.com/v1/user/unlink',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    Authorization: `Bearer ${sat}`
+                }
+            });
+        } else {
+            await axios({
+                method: 'GET',
+                url: `https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id=${NAVER.CLIENT_ID}&client_secret=${NAVER.CLIENT_SECRET_KEY}&access_token=${sat}&service_provider=NAVER`
+            });
+        }
+    };
+
+    await Promise.all([
+        updateUserStatus(userIdx),
+        deleteRefreshToken(userIdx),
+        quitConnectionWithSocial(socialAT, socialVendor)
+    ]);
+};
+
+const logout = async userIdx => {
+    // Redis에 저장되어 있는 Refresh-Token 삭제해줌
+    // Access-Token은 클라이언트 쪽에서 저장소에서 삭제하도록함
+    const redisClient = new RedisClient();
+    await redisClient.connect();
+
+    await redisClient.hDel('refreshToken', `userId_${userIdx}`);
+    await redisClient.quit();
+};
+
 module.exports = {
     kakaoLoginCallback,
     naverLoginCallback,
@@ -354,5 +414,7 @@ module.exports = {
     tokenRefresh,
     socialLogin,
     getEmailVerify,
-    postEmailVerify
+    postEmailVerify,
+    logout,
+    userWithdraw
 };

@@ -84,21 +84,6 @@ const getReportTypes = async (req, res) => {
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, getReportTypesResult));
 };
 
-const logout = async (req, res) => {
-    const userIdx = req.verifiedToken.userIdx;
-    await UserService.logout(userIdx);
-    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS));
-};
-
-const userWithdrawal = async (req, res) => {
-    const userIdx = req.verifiedToken.userIdx;
-    const socialAT = req.headers.social_at;
-    const socialVendor = req.headers.social_vendor;
-
-    await UserService.userWithdraw(userIdx, socialAT, socialVendor);
-    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS));
-};
-
 module.exports = {
     follow,
     followList,
@@ -107,7 +92,5 @@ module.exports = {
     getMyPage,
     updateMyPage,
     createReport,
-    getReportTypes,
-    userWithdrawal,
-    logout
+    getReportTypes
 };

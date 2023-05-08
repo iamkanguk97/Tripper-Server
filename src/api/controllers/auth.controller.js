@@ -115,6 +115,21 @@ const getEmailVerify = async (req, res) => {
     return res.status(httpStatus.BAD_REQUEST).json(errResponse(responseMessage.EMAIL_VERIFY_FAIL));
 };
 
+const logout = async (req, res) => {
+    const userIdx = req.verifiedToken.userIdx;
+    await AuthService.logout(userIdx);
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS));
+};
+
+const userWithdrawal = async (req, res) => {
+    const userIdx = req.verifiedToken.userIdx;
+    const socialAT = req.headers.social_at;
+    const socialVendor = req.headers.social_vendor;
+
+    await AuthService.userWithdraw(userIdx, socialAT, socialVendor);
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS));
+};
+
 module.exports = {
     kakaoLoginCallback,
     naverLoginCallback,
@@ -124,5 +139,7 @@ module.exports = {
     tokenRefresh,
     socialLogin,
     getEmailVerify,
-    postEmailVerify
+    postEmailVerify,
+    logout,
+    userWithdrawal
 };

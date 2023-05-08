@@ -9,7 +9,8 @@ const {
     tokenRefreshValidation,
     socialLoginValidation,
     getEmailVerifyValidation,
-    postEmailVerifyValidation
+    postEmailVerifyValidation,
+    userWithdrawValidation
 } = require('../middlewares/validations/auth.validation');
 const { wrapAsync } = require('../utils/util');
 
@@ -78,6 +79,15 @@ router.get(
 );
 
 // 로그아웃 API
+router.patch('/logout', jwtMiddleware, wrapAsync(AuthController.logout));
+
 // 회원탈퇴 API
+router.patch(
+    '/withdrawal',
+    jwtMiddleware,
+    userWithdrawValidation,
+    validationMiddleware,
+    wrapAsync(AuthController.userWithdrawal)
+);
 
 module.exports = router;

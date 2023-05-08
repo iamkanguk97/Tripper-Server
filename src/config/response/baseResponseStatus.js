@@ -61,6 +61,9 @@ module.exports = {
     PROFILE_USER_IDX_SAME_WITH_ME: { "isSuccess": false, "code": 2058, "message": "프로필 조회할 사용자의 고유값은 다른 유저의 고유값으로 입력해주세요." },
 
     REPORT_IDX_EMPTY: { "isSuccess": false, "code": 2059, "message": "신고 고유값을 입력해주세요." },
+    SOCIAL_ACCESS_TOKEN_EMPTY: { "isSuccess": false, "code": 2060, "message": "소셜 Access-Token을 입력해주세요." },
+    SOCIAL_VENDOR_EMPTY: { "isSuccess": false, "code": 2061, "message": "소셜 로그인 타입을 입력해주세요." },
+    SOCIAL_VENDOR_ERROR_TYPE: { "isSuccess": false, "code": 2062, "message": "소셜 로그인 타입은 kakao 또는 naver로 입력해주세요." },
 
     NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3010, "message": "중복된 닉네임입니다." },
     USER_NOT_EXIST: { "isSuccess": false, "code": 3011, "message": "존재하지 않는 유저입니다." },
