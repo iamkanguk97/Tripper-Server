@@ -22,6 +22,7 @@ const userRoutes = require('../api/routes/user.route');
 const travelRoutes = require('../api/routes/travel.route');
 const commonRoutes = require('../api/routes/common.route');
 const adminRoutes = require('../api/routes/admin.route');
+const homeRoutes = require('../api/routes/home.route');
 
 /**
  * Express instance
@@ -61,6 +62,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/travels', travelRoutes);
 app.use('/api/commons', commonRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/home', homeRoutes);
 
 // Swagger
 // app.use(
@@ -80,7 +82,8 @@ passportConfig();
 app.use((req, res, next) => {
     const errMessage = responseMessage.API_NOT_FOUND;
     Logger.error(`API NOT FOUND! (${req.method} ${req.url})`);
-    next(res.status(httpStatus.NOT_FOUND).json(errResponse(errMessage)));
+    return res.status(httpStatus.NOT_FOUND).json(errResponse(errMessage));
+    // next(res.status(httpStatus.NOT_FOUND).json(errResponse(errMessage)));
 });
 
 // Error Handler Middleware
