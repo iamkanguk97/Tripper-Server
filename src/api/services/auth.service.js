@@ -109,32 +109,13 @@ const naverLoginCallback = async (naverId, email, ageGroup, gender) => {
     };
 };
 
-const socialLogin = async (provider, socialAccessToken) => {
+const socialLogin = async (vendor, socialUserProfile) => {
     let snsId;
     let email;
     let ageGroup;
     let gender;
-    let socialUserProfile;
 
-    try {
-        socialUserProfile = (
-            await axios({
-                method: 'GET',
-                url:
-                    provider === 'kakao'
-                        ? 'https://kapi.kakao.com/v2/user/me'
-                        : 'https://openapi.naver.com/v1/nid/me',
-                headers: {
-                    Authorization: `Bearer ${socialAccessToken}`,
-                    'Content-Type': 'application/json'
-                }
-            })
-        ).data;
-    } catch (err) {
-        throw new BadRequestError(JSON.stringify(responseMessage.SOCIAL_LOGIN_ACCESS_TOKEN_ERROR));
-    }
-
-    if (provider === 'kakao') {
+    if (vendor === 'kakao') {
         const kakaoAccount = socialUserProfile.kakao_account;
 
         snsId = socialUserProfile.id;
@@ -163,8 +144,8 @@ const socialLogin = async (provider, socialAccessToken) => {
     }
 
     // 소셜로그인 고유값으로 유저 등록되어있는지 확인
-    const _provider = getFirstLetter(provider);
-    const checkIsUserExist = await checkUserExistWithSnsId(_provider, snsId);
+    const _vendor = getFirstLetter(vendor);
+    const checkIsUserExist = await checkUserExistWithSnsId(_vendor, snsId);
 
     /**
      * 유저가 있다 -> token 발급해주기
@@ -191,7 +172,7 @@ const socialLogin = async (provider, socialAccessToken) => {
                 email,
                 ageGroup,
                 gender,
-                provider: _provider
+                vendor
             },
             jwt_token: {
                 accessToken: jwtAT,
@@ -205,7 +186,7 @@ const socialLogin = async (provider, socialAccessToken) => {
         email,
         ageGroup,
         gender,
-        provider: _provider
+        vendor
     };
 };
 

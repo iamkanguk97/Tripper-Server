@@ -1,26 +1,26 @@
 const { query, body, header } = require('express-validator');
 const { REGEX_NICKNAME } = require('../../utils/regex');
 const {
-    checkNickDuplicate,
-    checkBadWordInclude,
     checkSnsIdDuplicate,
     checkAccessTokenEmpty,
     checkIsSocialTokenValid,
-    checkUserStatus
+    checkSoialAtMatchProvider
 } = require('../../utils/validation-util');
+const { checkNickDuplicate, checkBadWordInclude } = require('./utils/auth.validation.func');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 
 /**
- * 닉네임 확인 API Validator
- * - 닉네임 유무 확인
- * - 닉네임 형식 확인 (정규식)
- * - 부적절한 단어 포함 유무 확인
- * - 중복 닉네임 확인
+ * @title 닉네임 확인 API Validation
+ * @query nickname
+ * - @desc 닉네임 입력 유무
+ * - @desc 닉네임 형식 확인 (정규식)
+ * - @desc 부적절한 단어 포함 유무 확인
+ * - @desc 닉네임 중복 확인
  */
 const verifyNickValidation = [
     query('nickname')
         .notEmpty()
-        .withMessage(responseMessage.NICKNAME_EMPTY) // 닉네임 유무 확인
+        .withMessage(responseMessage.NICKNAME_EMPTY) // 닉네임 입력 유무 확인
         .bail()
         .matches(REGEX_NICKNAME)
         .withMessage(responseMessage.NICKNAME_ERROR_TYPE) // 닉네임 형식 확인
@@ -32,22 +32,27 @@ const verifyNickValidation = [
 ];
 
 /**
- * 소셜로그인 API Validator
- * - 클라이언트 쪽에서 건네주는 Access-Token 유무
- * - provider 유무
- * - provider 값 확인 (naver, kakao)
+ * @title 소셜로그인 API Validation
+ * @body socialAccessToken
+ * - @desc 소셜 Access-Token 입력유무
+ * @body vendor
+ * - @desc 소셜로그인 유형 입력유무
+ * - @desc 소셜로그인 유형 (naver / kakao)
+ * - @desc socialAccessToken <-> vendor 매칭되는지 확인 + req 변수에 저장
  */
 const socialLoginValidation = [
     body('socialAccessToken')
         .notEmpty()
         .withMessage(responseMessage.SOCIAL_LOGIN_ACCESS_TOKEN_EMPY)
         .bail(),
-    body('provider')
+    body('vendor')
         .notEmpty()
         .withMessage(responseMessage.SOCIAL_LOGIN_PROVIDER_EMPTY)
         .bail()
         .isIn(['kakao', 'naver'])
         .withMessage(responseMessage.SOCIAL_LOGIN_PROVIDER_ERROR_TYPE)
+        .bail()
+        .custom(checkSoialAtMatchProvider)
         .bail()
 ];
 

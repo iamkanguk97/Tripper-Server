@@ -103,6 +103,8 @@ const getTravelComments = async (req, res) => {
     return res.send(response(responseMessage.SUCCESS, getTravelCommentsResult));
 };
 
+const getTravelDetail = async (req, res) => {};
+
 module.exports = {
     createTravel,
     deleteTravel,
@@ -112,5 +114,6 @@ module.exports = {
     createTravelComment,
     deleteTravelComment,
     // updateTravelComment
-    getTravelComments
+    getTravelComments,
+    getTravelDetail
 };

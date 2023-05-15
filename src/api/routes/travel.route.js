@@ -100,4 +100,7 @@ router.patch(
     wrapAsync(TravelController.deleteTravelComment)
 );
 
+// 특정 게시물 조회 API
+router.get('/', TravelController.getTravelDetail);
+
 module.exports = router;

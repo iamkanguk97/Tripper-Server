@@ -15,10 +15,11 @@ const wrapAsync =
     (req, res, next) => {
         fn(req, res, next).catch(next);
     };
+
 /**
- * 부적절한 단어가 포함되어 있는지 확인 (욕설, 성적 단어 등)
- * @param nickname (추후 게시글 내용에도 포함되어 있는지 확인을 위해 파라미터 수정)
- * @returns true / false
+ * @title 부적절한 단어가 포함되어 있는지 확인 (욕설, 성적 단어 등)
+ * @param nickname
+ * @returns Boolean
  */
 const checkBadWord = async nickname => {
     let badWordArray = await readFile('src/docs/fword_list.txt', 'utf-8');

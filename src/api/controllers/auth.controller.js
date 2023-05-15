@@ -36,9 +36,10 @@ const naverLoginCallback = async (req, res) => {
 };
 
 const socialLogin = async (req, res) => {
-    const { provider, socialAccessToken } = req.body;
+    const vendor = req.body.vendor;
+    const socialUserProfile = req.socialUserProfile;
 
-    const socialLoginResult = await AuthService.socialLogin(provider, socialAccessToken);
+    const socialLoginResult = await AuthService.socialLogin(vendor, socialUserProfile);
     return res
         .status(httpStatus.OK)
         .json(

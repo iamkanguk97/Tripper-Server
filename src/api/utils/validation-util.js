@@ -11,11 +11,11 @@ const Travel = require('../models/Travel/Travel');
 const TravelScore = require('../models/Travel/TravelScore');
 const responseMessage = require('../../config/response/baseResponseStatus');
 const Logger = require('../../config/logger');
-const { checkBadWord } = require('./util');
 const { validationErrorResponse } = require('../../config/response/response-template');
 const Admin = require('../models/Admin/Admin');
 const TravelComment = require('../models/Travel/TravelComment');
 const Report = require('../models/Report/Report');
+const BadRequestError = require('../errors/BadRequestError');
 
 // 회원 존재 및 탈퇴 확인하는 Validation
 const checkUserStatus = async value => {
@@ -68,32 +68,6 @@ const checkParameterIdxEqualMyIdx = async (value, { req }) => {
 //         return Promise.reject(validationErrorResponse(true, err));
 //     }
 // };
-
-// 회원 닉네임 중복 검사
-const checkNickDuplicate = async value => {
-    try {
-        const checkDupNickResult = await User.findOne({ where: { USER_NICKNAME: value } }); // 여기서 에러 발생함 -> catch문으로 이동댐!!
-        if (checkDupNickResult)
-            // 해당 닉네임을 사용하고 있는 유저가 있다!
-            return Promise.reject(responseMessage.NICKNAME_DUPLICATED);
-    } catch (err) {
-        Logger.error(err);
-        return Promise.reject(validationErrorResponse(true, err));
-    }
-};
-
-// 부적절한 단어 포함 여부 확인 (현재는 닉네임만)
-const checkBadWordInclude = async value => {
-    try {
-        const checkBadNickResult = await checkBadWord(value);
-        if (checkBadNickResult)
-            // 닉네임에 부적절한 단어 포함중
-            return Promise.reject(responseMessage.NICKNAME_BAD_WORD_INCLUDE);
-    } catch (err) {
-        Logger.error(err);
-        return Promise.reject(validationErrorResponse(true, err));
-    }
-};
 
 // snsId 중복 확인
 const checkSnsIdDuplicate = async snsId => {
@@ -444,10 +418,35 @@ const checkIsSocialTokenValid = async (value, { req }) => {
     }
 };
 
+const checkSoialAtMatchProvider = async (value, { req }) => {
+    try {
+        const vendor = value;
+        const socialAccessToken = req.body.socialAccessToken;
+
+        const socialUserProfile = (
+            await axios({
+                method: 'GET',
+                url:
+                    vendor === 'kakao'
+                        ? 'https://kapi.kakao.com/v2/user/me'
+                        : 'https://openapi.naver.com/v1/nid/me',
+                headers: {
+                    Authorization: `Bearer ${socialAccessToken}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+        ).data;
+
+        // req 변수에 저장
+        req.socialUserProfile = socialUserProfile;
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(responseMessage.SOCIAL_LOGIN_ACCESS_TOKEN_ERROR);
+    }
+};
+
 module.exports = {
     // checkUserStatusFunc,
-    checkNickDuplicate,
-    checkBadWordInclude,
     checkSnsIdDuplicate,
     checkAccessTokenEmpty,
     checkUserFollowMe,
@@ -468,5 +467,6 @@ module.exports = {
     checkIsMyComment,
     checkUserIdxIsOther,
     checkReportIsValid,
-    checkIsSocialTokenValid
+    checkIsSocialTokenValid,
+    checkSoialAtMatchProvider
 };
