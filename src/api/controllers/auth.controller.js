@@ -55,7 +55,7 @@ const socialLogin = async (req, res) => {
 const verifyNickname = (req, res) =>
     // 이전 Middleware 부분에서 Validation 체크를 함
     // 해당 Controller까지 들어오면 바로 성공 메세지를 return
-    res.status(httpStatus.OK).json(response(responseMessage.SUCCESS));
+    res.status(httpStatus.NO_CONTENT).json(response(responseMessage.SUCCESS));
 
 const signUp = async (req, res) => {
     const { nickname, snsId, provider } = req.body;
