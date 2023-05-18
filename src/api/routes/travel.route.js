@@ -10,7 +10,6 @@ const {
     createTravelReviewScoreValidation,
     createTravelLikeValidation,
     createTravelCommentValidation,
-    updateTravelCommentValidation,
     deleteTravelCommentValidation,
     selectTravelCommentValidation
 } = require('../middlewares/validations/travel.validation');
