@@ -1,12 +1,19 @@
 const { QueryTypes } = require('sequelize');
 const { saltHashPassword, validatePassword } = require('../utils/crypto-util');
 const { sequelize } = require('../models/index');
-const { generateAccessToken } = require('../utils/jwt-util');
+const {
+    generateAdminAccessToken,
+    generateRefreshToken,
+    saveAdminRefreshToken
+} = require('../utils/jwt-util');
 const { getReportsQuery, getReportDetailQuery } = require('../queries/admin.query');
+const { pageResponse } = require('../../config/response/response-template');
+
 const Admin = require('../models/Admin/Admin');
 const AdminSalt = require('../models/Admin/AdminSalt');
 const ReportImage = require('../models/Report/ReportImage');
 const Report = require('../models/Report/Report');
+const RedisClient = require('../../config/redis');
 
 const signUp = async (email, password, nickname) => {
     const secretData = saltHashPassword(password);
@@ -80,28 +87,43 @@ const login = async (adminIdx, password) => {
         return false;
     }
 
-    const token = generateAccessToken(adminIdx);
-    return { adminIdx, token };
+    const jwtAT = generateAdminAccessToken(adminIdx);
+    const jwtRT = generateRefreshToken();
+
+    const redisClient = new RedisClient();
+    await redisClient.connect();
+    await saveAdminRefreshToken(redisClient, adminIdx, jwtRT);
+    await redisClient.quit();
+
+    return {
+        adminIdx,
+        token: {
+            access_token: jwtAT,
+            refresh_token: jwtRT
+        }
+    };
 };
 
-const getReports = async (page, size) => {
-    const skipSize = (page - 1) * size; // 다음 페이지로 갈때 건너뛸 리스트 개수
-    const totalCount = await Report.count(); // 신고 총 개수
-    const pnTotal = Math.ceil(totalCount / size); // 페이지 전체 카운트
-    // const currentPage = Math.ceil(totalCount % )
+const getReports = async (pageNumber, contentSize) => {
+    const totalReportCount = await Report.count(); // 신고 총 개수
+    const totalPages = Math.ceil(totalReportCount / contentSize); // 페이지 전체 카운트
 
-    // console.log(page, size);
-    // console.log(skipSize, totalCount, pnTotal);
+    if (pageNumber > totalPages) pageNumber = totalPages;
+
+    const skipSize = (pageNumber - 1) * contentSize; // 다음 페이지로 갈때 건너뛸 리스트 개수
 
     const getReportsResult = await sequelize.query(getReportsQuery, {
         type: QueryTypes.SELECT,
         replacements: {
             skipSize,
-            contentSize: size
+            contentSize
         }
     });
 
-    return getReportsResult;
+    return {
+        pagination: pageResponse(pageNumber, totalPages),
+        reports: getReportsResult
+    };
 };
 
 const getReportDetail = async reportIdx => {
@@ -113,12 +135,16 @@ const getReportDetail = async reportIdx => {
 
         // (1) REPORT 테이블에서 가져오기
         const reportResult = (
-            await sequelize.query(getReportDetailQuery, {
-                type: QueryTypes.SELECT,
-                replacements: {
-                    reportIdx
-                }
-            })
+            await sequelize.query(
+                getReportDetailQuery,
+                {
+                    type: QueryTypes.SELECT,
+                    replacements: {
+                        reportIdx
+                    }
+                },
+                { transaction }
+            )
         )[0];
 
         // (2) REPORT_IMAGE 테이블에서 가져오기
@@ -132,10 +158,10 @@ const getReportDetail = async reportIdx => {
             },
             { transaction }
         );
-        const reportImageResultArr = reportImageResult.reduce((acc, curr, idx) => {
-            acc.push(curr.REPORT_IMAGE_URL);
-            return acc;
-        }, []);
+
+        const reportImageResultArr = reportImageResult.map(img => {
+            return img.REPORT_IMAGE_URL;
+        });
 
         // COMMIT
         await transaction.commit();

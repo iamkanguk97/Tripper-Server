@@ -22,10 +22,10 @@ const login = async (req, res) => {
 };
 
 const getReports = async (req, res) => {
-    const page = Number(req.query.page) || 1;
-    const size = Number(req.query.size) || 10; // limit
+    const pageNumber = Number(req.query.page) || 1;
+    const contentSize = Number(req.query.size) || 10; // limit
 
-    const getReportsResult = await AdminService.getReports(page, size);
+    const getReportsResult = await AdminService.getReports(pageNumber, contentSize);
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, getReportsResult));
 };
 

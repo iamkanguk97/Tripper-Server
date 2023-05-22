@@ -16,8 +16,15 @@ const validationErrorResponse = (isServerError, error) => ({
     error
 });
 
+const pageResponse = (currentPage, totalPage) => ({
+    is_end: currentPage >= totalPage,
+    currentPage,
+    totalPage
+});
+
 module.exports = {
     response,
     errResponse,
-    validationErrorResponse
+    validationErrorResponse,
+    pageResponse
 };

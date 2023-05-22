@@ -15,6 +15,19 @@ const generateAccessToken = userIdx => {
     });
 };
 
+// Admin JWT Access Token 발급
+const generateAdminAccessToken = adminIdx => {
+    const payload = {
+        role: 'admin',
+        adminIdx
+    };
+
+    return jwt.sign(payload, JWT.ACCESS_SECRET_KEY, {
+        algorithm: 'HS256',
+        expiresIn: JWT.ACCESS_TOKEN_EXPIRE_TIME
+    });
+};
+
 // JWT Refresh Token 발급 -> payload 없음
 const generateRefreshToken = () => {
     return jwt.sign({}, JWT.REFRESH_SECRET_KEY, { algorithm: 'HS256', expiresIn: '14d' });
@@ -25,6 +38,16 @@ const saveRefreshToken = async (redisClient, userIdx, refreshToken) => {
     await redisClient.hSet(
         'refreshToken',
         `userId_${userIdx}`,
+        refreshToken,
+        JWT.REFRESH_TOKEN_EXPIRE_TIME
+    );
+};
+
+// JWT Refresh Token 저장
+const saveAdminRefreshToken = async (redisClient, adminIdx, refreshToken) => {
+    await redisClient.hSet(
+        'refreshToken',
+        `adminId_${adminIdx}`,
         refreshToken,
         JWT.REFRESH_TOKEN_EXPIRE_TIME
     );
@@ -57,6 +80,8 @@ module.exports = {
     generateAccessToken,
     generateRefreshToken,
     saveRefreshToken,
+    saveAdminRefreshToken,
     verify,
-    refreshVerify
+    refreshVerify,
+    generateAdminAccessToken
 };
