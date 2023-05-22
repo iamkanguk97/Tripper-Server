@@ -26,6 +26,12 @@ module.exports = class Admin extends Sequelize.Model {
                     allowNull: false,
                     comment: '관리자 암호화된 비밀번호'
                 },
+                ADMIN_STATUS: {
+                    type: Sequelize.STRING(10),
+                    allowNull: false,
+                    defaultValue: 'ACTIVE',
+                    comment: '관리자 상태값 (ACTIVE, WITHDRAW)'
+                },
                 CREATED_AT: {
                     type: 'TIMESTAMP',
                     allowNull: false,

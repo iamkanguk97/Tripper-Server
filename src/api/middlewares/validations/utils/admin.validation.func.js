@@ -14,7 +14,8 @@ exports.checkAdminExist = async value => {
     try {
         const checkAdminExistWithEmail = await Admin.findOne({
             where: {
-                ADMIN_EMAIL: value
+                ADMIN_EMAIL: value,
+                ADMIN_STATUS: 'ACTIVE'
             }
         });
 
@@ -34,7 +35,8 @@ exports.checkAdminNickExist = async value => {
     try {
         const checkAdminNickExistResult = await Admin.findOne({
             where: {
-                ADMIN_NICKNAME: value
+                ADMIN_NICKNAME: value,
+                ADMIN_STATUS: 'ACTIVE'
             }
         });
 

@@ -31,7 +31,7 @@ const signUp = async (email, password, nickname) => {
             )
         ).dataValues.IDX;
 
-        // // AdminSalt 테이블에 INSERT
+        // AdminSalt 테이블에 INSERT
         await AdminSalt.create(
             {
                 ADMIN_IDX: newAdminId,

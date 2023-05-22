@@ -8,7 +8,7 @@ module.exports = {
         ACCESS_SECRET_KEY: process.env.JWT_ACCESS_SECRET_KEY,
         ACCESS_TOKEN_EXPIRE_TIME: process.env.NODE_ENV === 'local' ? '365d' : '1h',
         REFRESH_SECRET_KEY: process.env.JWT_REFRESH_SECRET_KEY,
-        REFRESH_TOKEN_EXPIRE_TIME: (60 * 60 * 24 * 14)
+        REFRESH_TOKEN_EXPIRE_TIME: 60 * 60 * 24 * 14
     },
     RDS: {
         END_POINT: process.env.RDS_ENDPOINT,
