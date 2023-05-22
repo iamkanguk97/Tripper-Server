@@ -10,7 +10,7 @@ const createTravel = async (req, res) => {
     const createTravelResult = await TravelService.createTravel(userIdx, travelInformation, day);
     return res
         .status(httpStatus.CREATED)
-        .json(response(responseMessage.CREATE_SUCCESS, createTravelResult));
+        .json(response(responseMessage.SUCCESS, createTravelResult));
 };
 
 const deleteTravel = async (req, res) => {
@@ -52,7 +52,7 @@ const createTravelReviewScore = async (req, res) => {
     );
     return res
         .status(httpStatus.CREATED)
-        .json(response(responseMessage.CREATE_SUCCESS, { message: createTravelReviewScoreResult }));
+        .json(response(responseMessage.SUCCESS, { message: createTravelReviewScoreResult }));
 };
 
 const createTravelLike = async (req, res) => {
@@ -80,9 +80,7 @@ const createTravelComment = async (req, res) => {
     );
     return res
         .status(httpStatus.CREATED)
-        .json(
-            response(responseMessage.CREATE_SUCCESS, { newCommentIdx: createTravelCommentResult })
-        );
+        .json(response(responseMessage.SUCCESS, { newCommentIdx: createTravelCommentResult }));
 };
 
 // const updateTravelComment = async (req, res) => {};

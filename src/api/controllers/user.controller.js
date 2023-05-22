@@ -76,7 +76,7 @@ const createReport = async (req, res) => {
     );
     return res
         .status(httpStatus.CREATED)
-        .json(response(responseMessage.CREATE_SUCCESS, { newReportIdx: createReportResult }));
+        .json(response(responseMessage.SUCCESS, { newReportIdx: createReportResult }));
 };
 
 const getReportTypes = async (req, res) => {

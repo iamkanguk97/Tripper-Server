@@ -6,16 +6,13 @@ const { response, errResponse } = require('../../config/response/response-templa
 const signUp = async (req, res) => {
     const { email, password, nickname } = req.body;
     const signUpResult = await AdminService.signUp(email, password, nickname);
-    return res
-        .status(httpStatus.CREATED)
-        .json(response(responseMessage.CREATE_SUCCESS, signUpResult));
+    return res.status(httpStatus.CREATED).json(response(responseMessage.SUCCESS, signUpResult));
 };
 
 const login = async (req, res) => {
-    const { password } = req.body;
+    const password = req.body.password;
     const adminIdx = req.adminIdx;
-    // 이메일은 이미 Middleware단에서 확인완료
-    const loginResult = await AdminService.login(adminIdx, password);
+    const loginResult = await AdminService.login(adminIdx, password); // 이메일은 이미 Middleware단에서 확인완료
 
     if (!loginResult)
         return res

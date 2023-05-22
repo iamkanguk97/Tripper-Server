@@ -3,7 +3,6 @@ module.exports = {
     DATABASE_ERROR: { isSuccess: false, code: 5000, message: '데이터베이스 에러 발생.' },
     INTERNAL_SERVER_ERROR: { isSuccess: false, code: 5000, message: '서버 내부 에러 발생.' },
 
-    CREATE_SUCCESS: { isSuccess: true, code: 201, message: '요청 성공.' },
     REQUIRE_SIGN_UP: {
         isSuccess: true,
         code: 200,

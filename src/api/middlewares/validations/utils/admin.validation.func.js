@@ -67,3 +67,25 @@ exports.checkReportExist = async value => {
         return Promise.reject(validationErrorResponse(true, err));
     }
 };
+
+/**
+ * @title 관리자 존재확인 Validation Function
+ * @parameter value, request
+ * - @body email
+ */
+exports.checkAdminNotExist = async (value, { req }) => {
+    try {
+        const checkAdminExistWithEmail = await Admin.findOne({
+            where: {
+                ADMIN_EMAIL: value,
+                ADMIN_STATUS: 'ACTIVE'
+            }
+        });
+
+        if (!checkAdminExistWithEmail) return Promise.reject(responseMessage.ADMIN_NOT_EXIST);
+        req.adminIdx = checkAdminExistWithEmail.dataValues.IDX;
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(validationErrorResponse(true, err));
+    }
+};

@@ -1,10 +1,10 @@
 const { body, query } = require('express-validator');
 const responseMessage = require('../../../config/response/baseResponseStatus');
-const { checkAdminNotExist } = require('../../utils/validation-util');
 const {
     checkAdminExist,
     checkAdminNickExist,
-    checkReportExist
+    checkReportExist,
+    checkAdminNotExist
 } = require('./utils/admin.validation.func');
 const { REGEX_ADMIN_PASSWORD, REGEX_NICKNAME } = require('../../utils/regex');
 
@@ -51,9 +51,12 @@ const adminSignUpValidation = [
 ];
 
 /**
- * 관리자 로그인 Validation
- * - [Body] 이메일 입력 유무
- * - [Body] 비밀번호 입력 유무
+ * @title 관리자 로그인 API Validation
+ * @body email
+ * - @desc 이메일 입력 유무
+ * - @desc 이메일로 회원 존재확인
+ * @body password
+ * - @desc 비밀번호 입력유무
  */
 const adminLoginValidation = [
     body('email')

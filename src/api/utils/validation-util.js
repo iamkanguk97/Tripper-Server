@@ -247,22 +247,6 @@ const checkBeforeReviewScore = async (value, { req }) => {
     }
 };
 
-const checkAdminNotExist = async (value, { req }) => {
-    try {
-        const checkAdminExistWithEmail = await Admin.findOne({
-            where: {
-                ADMIN_EMAIL: value
-            }
-        });
-
-        if (!checkAdminExistWithEmail) return Promise.reject(responseMessage.ADMIN_NOT_EXIST);
-        req.adminIdx = checkAdminExistWithEmail.dataValues.IDX;
-    } catch (err) {
-        Logger.error(err);
-        return Promise.reject(validationErrorResponse(true, err));
-    }
-};
-
 const checkMentionUserStatus = async (value, { req }) => {
     try {
         const mentionUserIdRows = await Promise.all(
@@ -412,7 +396,6 @@ module.exports = {
     checkUserStatus,
     checkParameterIdxEqualMyIdx,
     checkBeforeReviewScore,
-    checkAdminNotExist,
     checkMentionUserStatus,
     checkParentCommentAble,
     checkIsMyComment,

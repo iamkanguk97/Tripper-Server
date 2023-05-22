@@ -74,9 +74,7 @@ const signUp = async (req, res) => {
         provider
     );
 
-    return res
-        .status(httpStatus.CREATED)
-        .json(response(responseMessage.CREATE_SUCCESS, signUpResult));
+    return res.status(httpStatus.CREATED).json(response(responseMessage.SUCCESS, signUpResult));
 };
 
 const autoLogin = async (req, res) => {
@@ -103,7 +101,7 @@ const tokenRefresh = async (req, res) => {
 const postEmailVerify = async (req, res) => {
     const email = req.body.email;
     await AuthService.postEmailVerify(email);
-    return res.status(httpStatus.CREATED).json(response(responseMessage.CREATE_SUCCESS));
+    return res.status(httpStatus.CREATED).json(response(responseMessage.SUCCESS));
 };
 
 const getEmailVerify = async (req, res) => {
