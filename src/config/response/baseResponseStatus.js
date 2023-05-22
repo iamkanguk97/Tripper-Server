@@ -10,6 +10,9 @@ module.exports = {
     JWT_TOKEN_EXPIRED_ERROR: { "isSuccess": false, "code": 401, "message": "JWT 토큰 만료." },
     API_NOT_FOUND: { "isSuccess": false, "code": 404, "message": "API NOT FOUND!" },
 
+    PAGE_NUMBER_ERROR: { isSuccess: false, "code": 2000, "message": "페이지 번호는 1부터 30이하로 입력해주세요." },
+    PAGE_SIZE_ERROR: { isSuccess: false, "code": 2001, "message": "한 페이지에 보여질 문서 수는 1부터 30이하로 입력해주세요." },
+
     NICKNAME_EMPTY: { isSuccess: false, "code": 2010, "message": "닉네임을 입력해주세요." },
     NICKNAME_ERROR_TYPE: { "isSuccess": false, "code": 2011, "message": "닉네임은 한글,영어,숫자만 가능하며 2자 이상 10자 이하로 설정 가능합니다." },
     NICKNAME_BAD_WORD_INCLUDE: { "isSuccess": false, "code": 2012, "message": "닉네임에 부적절한 단어가 포함되어 있습니다. 다시 시도해주세요." },
@@ -88,4 +91,5 @@ module.exports = {
     ADMIN_ALREADY_EXIST: { "isSuccess": false, "code": 3500, "message": "이미 가입되어 있는 관리자 이메일입니다." },
     ADMIN_NOT_EXIST: { "isSuccess": false, "code": 3501, "message": "존재하지 않는 관리자 이메일입니다." },
     REPORT_NOT_EXIST: { "isSuccess": false, "code": 3502, "message": "존재하지 않는 신고 내역입니다." },
+    ADMIN_NICKNAME_DUPLICATED: { "isSuccess": false, "code": 3503, "message": "중복된 관리자 닉네임입니다." },
 };

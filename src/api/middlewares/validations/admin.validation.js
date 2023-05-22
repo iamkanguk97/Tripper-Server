@@ -1,18 +1,26 @@
 const { body, query } = require('express-validator');
 const responseMessage = require('../../../config/response/baseResponseStatus');
+const { checkAdminNotExist } = require('../../utils/validation-util');
 const {
     checkAdminExist,
     checkAdminNickExist,
-    checkAdminNotExist,
-    checkReportIsValid
-} = require('../../utils/validation-util');
+    checkReportExist
+} = require('./utils/admin.validation.func');
 const { REGEX_ADMIN_PASSWORD, REGEX_NICKNAME } = require('../../utils/regex');
 
 /**
- * 관리자 회원가입 Validation
- * - [Body] 이메일 입력 유무, 형식 및 중복 확인
- * - [Body] 비밀번호 입력 유무, 형식 확인
- * - [Body] 닉네임 입력 유무, 형식 및 중복 확인
+ * @title 관리자 회원가입 API Validation
+ * @body email
+ * - @desc 이메일 입력 유무
+ * - @desc 이메일 형식 확인
+ * - @desc 이미 등록된 이메일인지 확인
+ * @body password
+ * - @desc 비밀번호 입력유무
+ * - @desc 비밀번호 형식에러
+ * @body nickname
+ * - @desc 닉네임 입력 유무
+ * - @desc 닉네임 형식 확인
+ * - @desc 관리자 닉네임 중복여부 확인
  */
 const adminSignUpValidation = [
     body('email')
@@ -33,7 +41,7 @@ const adminSignUpValidation = [
         .bail(),
     body('nickname')
         .notEmpty()
-        .withMessage(responseMessage.ADMIN_NICKNAME_EMPTY)
+        .withMessage(responseMessage.NICKNAME_EMPTY)
         .bail()
         .matches(REGEX_NICKNAME)
         .withMessage(responseMessage.NICKNAME_ERROR_TYPE)
@@ -58,15 +66,17 @@ const adminLoginValidation = [
 ];
 
 /**
- * 특정 신고 조회 API Validation
- * - reportIdx 유무 확인 및 존재하는 신고 확인
+ * @title 특정 신고 조회 API Validation
+ * @query reportIdx
+ * - @desc 신고 고유값 입력유무
+ * - @desc 신고 존재유무
  */
 const getReportDetailValidation = [
     query('reportIdx')
         .notEmpty()
         .withMessage(responseMessage.REPORT_IDX_EMPTY)
         .bail()
-        .custom(checkReportIsValid)
+        .custom(checkReportExist)
         .bail()
 ];
 

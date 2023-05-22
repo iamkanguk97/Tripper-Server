@@ -7,6 +7,7 @@ const {
     adminLoginValidation,
     getReportDetailValidation
 } = require('../middlewares/validations/admin.validation');
+const pageValidation = require('../middlewares/validations/page.validation');
 
 const router = express.Router();
 
@@ -22,7 +23,7 @@ router.post(
 router.post('/login', adminLoginValidation, validationMiddleware, wrapAsync(AdminController.login));
 
 // 신고 조회 API
-router.get('/reports', wrapAsync(AdminController.getReports));
+router.get('/reports', pageValidation, validationMiddleware, wrapAsync(AdminController.getReports));
 
 // 신고 상세조회 API
 router.get(

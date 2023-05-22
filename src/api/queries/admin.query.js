@@ -12,7 +12,8 @@ const getReportsQuery = `
     FROM REPORT AS R
         INNER JOIN REPORT_TYPE AS RT ON R.REPORT_TYPE_IDX = RT.IDX
     WHERE RT.STATUS = 'A'
-    ORDER BY R.CREATED_AT DESC;
+    ORDER BY R.CREATED_AT DESC
+    LIMIT :skipSize, :contentSize;
 `;
 
 const getReportDetailQuery = `

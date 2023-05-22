@@ -14,8 +14,6 @@ const Logger = require('../../config/logger');
 const { validationErrorResponse } = require('../../config/response/response-template');
 const Admin = require('../models/Admin/Admin');
 const TravelComment = require('../models/Travel/TravelComment');
-const Report = require('../models/Report/Report');
-const BadRequestError = require('../errors/BadRequestError');
 
 // 회원 존재 및 탈퇴 확인하는 Validation
 const checkUserStatus = async value => {
@@ -249,36 +247,6 @@ const checkBeforeReviewScore = async (value, { req }) => {
     }
 };
 
-const checkAdminExist = async value => {
-    try {
-        const checkAdminExistWithEmail = await Admin.findOne({
-            where: {
-                ADMIN_EMAIL: value
-            }
-        });
-
-        if (checkAdminExistWithEmail) return Promise.reject(responseMessage.ADMIN_ALREADY_EXIST);
-    } catch (err) {
-        Logger.error(err);
-        return Promise.reject(validationErrorResponse(true, err));
-    }
-};
-
-const checkAdminNickExist = async value => {
-    try {
-        const checkAdminNickExistResult = await Admin.findOne({
-            where: {
-                ADMIN_NICKNAME: value
-            }
-        });
-
-        if (checkAdminNickExistResult) return Promise.reject(responseMessage.NICKNAME_DUPLICATED);
-    } catch (err) {
-        Logger.error(err);
-        return Promise.reject(validationErrorResponse(true, err));
-    }
-};
-
 const checkAdminNotExist = async (value, { req }) => {
     try {
         const checkAdminExistWithEmail = await Admin.findOne({
@@ -371,21 +339,6 @@ const checkUserIdxIsOther = async (value, { req }) => {
     }
 };
 
-const checkReportIsValid = async value => {
-    try {
-        const checkReportResult = await Report.findOne({
-            where: {
-                IDX: value
-            }
-        });
-
-        if (!checkReportResult) return Promise.reject(responseMessage.REPORT_NOT_EXIST);
-    } catch (err) {
-        Logger.error(err);
-        return Promise.reject(validationErrorResponse(true, err));
-    }
-};
-
 const checkIsSocialTokenValid = async (value, { req }) => {
     try {
         // 여기서 회원 상태 확인하자.. (이미 회원탈퇴가 된 유저인지)
@@ -459,14 +412,11 @@ module.exports = {
     checkUserStatus,
     checkParameterIdxEqualMyIdx,
     checkBeforeReviewScore,
-    checkAdminExist,
-    checkAdminNickExist,
     checkAdminNotExist,
     checkMentionUserStatus,
     checkParentCommentAble,
     checkIsMyComment,
     checkUserIdxIsOther,
-    checkReportIsValid,
     checkIsSocialTokenValid,
     checkSoialAtMatchProvider
 };

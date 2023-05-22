@@ -5,14 +5,6 @@ const response = ({ isSuccess, code, message }, result) => ({
     result
 });
 
-const pageResponse = ({ isSuccess, code, message }, result, meta) => ({
-    isSuccess,
-    code,
-    message,
-    result,
-    meta
-});
-
 const errResponse = ({ isSuccess, code, message }) => ({
     isSuccess,
     code,
@@ -27,6 +19,5 @@ const validationErrorResponse = (isServerError, error) => ({
 module.exports = {
     response,
     errResponse,
-    validationErrorResponse,
-    pageResponse
+    validationErrorResponse
 };

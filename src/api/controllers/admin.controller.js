@@ -25,7 +25,10 @@ const login = async (req, res) => {
 };
 
 const getReports = async (req, res) => {
-    const getReportsResult = await AdminService.getReports();
+    const page = Number(req.query.page) || 1;
+    const size = Number(req.query.size) || 10; // limit
+
+    const getReportsResult = await AdminService.getReports(page, size);
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, getReportsResult));
 };
 

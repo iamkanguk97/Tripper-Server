@@ -6,6 +6,7 @@ const { getReportsQuery, getReportDetailQuery } = require('../queries/admin.quer
 const Admin = require('../models/Admin/Admin');
 const AdminSalt = require('../models/Admin/AdminSalt');
 const ReportImage = require('../models/Report/ReportImage');
+const Report = require('../models/Report/Report');
 
 const signUp = async (email, password, nickname) => {
     const secretData = saltHashPassword(password);
@@ -83,9 +84,21 @@ const login = async (adminIdx, password) => {
     return { adminIdx, token };
 };
 
-const getReports = async () => {
+const getReports = async (page, size) => {
+    const skipSize = (page - 1) * size; // 다음 페이지로 갈때 건너뛸 리스트 개수
+    const totalCount = await Report.count(); // 신고 총 개수
+    const pnTotal = Math.ceil(totalCount / size); // 페이지 전체 카운트
+    // const currentPage = Math.ceil(totalCount % )
+
+    // console.log(page, size);
+    // console.log(skipSize, totalCount, pnTotal);
+
     const getReportsResult = await sequelize.query(getReportsQuery, {
-        type: QueryTypes.SELECT
+        type: QueryTypes.SELECT,
+        replacements: {
+            skipSize,
+            contentSize: size
+        }
     });
 
     return getReportsResult;
