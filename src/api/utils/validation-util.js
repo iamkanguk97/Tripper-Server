@@ -355,33 +355,6 @@ const checkIsSocialTokenValid = async (value, { req }) => {
     }
 };
 
-const checkSoialAtMatchProvider = async (value, { req }) => {
-    try {
-        const vendor = value;
-        const socialAccessToken = req.body.socialAccessToken;
-
-        const socialUserProfile = (
-            await axios({
-                method: 'GET',
-                url:
-                    vendor === 'kakao'
-                        ? 'https://kapi.kakao.com/v2/user/me'
-                        : 'https://openapi.naver.com/v1/nid/me',
-                headers: {
-                    Authorization: `Bearer ${socialAccessToken}`,
-                    'Content-Type': 'application/json'
-                }
-            })
-        ).data;
-
-        // req 변수에 저장
-        req.socialUserProfile = socialUserProfile;
-    } catch (err) {
-        Logger.error(err);
-        return Promise.reject(responseMessage.SOCIAL_LOGIN_ACCESS_TOKEN_ERROR);
-    }
-};
-
 module.exports = {
     // checkUserStatusFunc,
     checkSnsIdDuplicate,
@@ -400,6 +373,5 @@ module.exports = {
     checkParentCommentAble,
     checkIsMyComment,
     checkUserIdxIsOther,
-    checkIsSocialTokenValid,
-    checkSoialAtMatchProvider
+    checkIsSocialTokenValid
 };

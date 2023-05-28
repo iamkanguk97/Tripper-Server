@@ -413,6 +413,18 @@ const getTravelComments = async (userIdx, travelIdx) => {
     }
 };
 
+const getTravelDetail = async (userIdx, travelIdx) => {
+    let transaction;
+
+    try {
+        // START TRANSACTION
+        transaction = await sequelize.transaction();
+    } catch (err) {
+        if (transaction) await transaction.rollback();
+        throw new Error(err);
+    }
+};
+
 module.exports = {
     updateTravelStatus,
     createTravelReviewScore,
@@ -421,5 +433,6 @@ module.exports = {
     deleteTravel,
     createTravelComment,
     deleteTravelComment,
-    getTravelComments
+    getTravelComments,
+    getTravelDetail
 };

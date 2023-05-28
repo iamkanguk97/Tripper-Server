@@ -260,6 +260,11 @@ module.exports = {
         code: 2062,
         message: '소셜 로그인 타입은 kakao 또는 naver로 입력해주세요.'
     },
+    CREATE_TRAVEL_TITLE_LENGTH_ERROR: {
+        isSuccess: false,
+        code: 2063,
+        message: '여행 게시물 제목은 최대 50자까지 입력 가능합니다.'
+    },
 
     NICKNAME_DUPLICATED: { isSuccess: false, code: 3010, message: '중복된 닉네임입니다.' },
     USER_NOT_EXIST: { isSuccess: false, code: 3011, message: '존재하지 않는 유저입니다.' },

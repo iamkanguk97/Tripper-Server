@@ -10,12 +10,22 @@ const {
     checkParentCommentAble,
     checkIsMyComment
 } = require('../../utils/validation-util');
+const { checkDateOverToday } = require('./utils/travel.validation.func');
 const { REGEX_DATE } = require('../../utils/regex');
 
 /**
- * 게시물 생성 API Validator
- * - travelInformation 객체가 있는지 확인
- *  -- startDate와 endDate 유무확인 및 정규식 일치 확인
+ * @title 게시물 생성 API Validation
+ *
+ * @body travelInformation
+ * - @desc travelInformation 객체는 무조건 있어야함
+ * - @properties travelStartDate, travelEndDate
+ *   - @desc 무조건 있어야함 + 형식 확인
+ *   - @desc 오늘 날짜 넘어가는지 확인
+ *   - @desc 시작날짜와 종료날짜의 차이를 최대 1주일로 일단 설정
+ * - @properties moveMethod
+ *   - @desc 입력확인 및 형식 확인
+ * - @properties travelTitle
+ *   - @desc 입력필수 + 최대 50글자
  */
 const createTravelValidation = [
     body('travelInformation')
@@ -28,16 +38,14 @@ const createTravelValidation = [
         .bail()
         .matches(REGEX_DATE)
         .withMessage(responseMessage.CREATE_TRAVEL_DATE_ERROR_TYPE)
-        .bail(),
+        .bail()
+        .custom(checkDateOverToday),
     body('travelInformation.travelEndDate')
         .notEmpty()
         .withMessage(responseMessage.CREATE_TRAVEL_ENDDATE_EMPTY)
         .bail()
         .matches(REGEX_DATE)
         .withMessage(responseMessage.CREATE_TRAVEL_DATE_ERROR_TYPE)
-        .bail(),
-    body(['travelInformation.travelStartDate', 'travelInformation.travelEndDate'])
-        .custom(checkTravelDateIsOver)
         .bail(),
     body('travelInformation.moveMethod')
         .notEmpty()
@@ -49,6 +57,9 @@ const createTravelValidation = [
     body('travelInformation.travelTitle')
         .notEmpty()
         .withMessage(responseMessage.CREATE_TRAVEL_TITLE_EMPTY)
+        .bail()
+        .isLength({ max: 50 })
+        .withMessage(responseMessage.CREATE_TRAVEL_TITLE_LENGTH_ERROR)
         .bail(),
     body('travelInformation.travelThumnailImages')
         .optional()
@@ -177,6 +188,13 @@ const selectTravelCommentValidation = [
         .bail()
 ];
 
+/**
+ * @title 특정 게시물 조회 API Validation
+ * @query travelIdx
+ * - @desc 입력유무 확인
+ */
+const selectTravelDetailValidation = [];
+
 module.exports = {
     createTravelValidation,
     deleteTravelValidation,
@@ -186,5 +204,6 @@ module.exports = {
     createTravelCommentValidation,
     updateTravelCommentValidation,
     deleteTravelCommentValidation,
-    selectTravelCommentValidation
+    selectTravelCommentValidation,
+    selectTravelDetailValidation
 };

@@ -1,3 +1,4 @@
+const axios = require('axios');
 const Logger = require('../../../../config/logger');
 const responseMessage = require('../../../../config/response/baseResponseStatus');
 const { validationErrorResponse } = require('../../../../config/response/response-template');
@@ -39,5 +40,37 @@ exports.checkBadWordInclude = async value => {
     } catch (err) {
         Logger.error(err);
         return Promise.reject(validationErrorResponse(true, err));
+    }
+};
+
+/**
+ * @title socialAccessToken과 vendor가 매칭되는지 확인 + 매칭되면 req 변수에 저장
+ * @parameter value, req
+ * - @body socialAccessToken
+ */
+exports.checkSoialAtMatchProvider = async (value, { req }) => {
+    try {
+        const vendor = value;
+        const socialAccessToken = req.body.socialAccessToken;
+
+        const socialUserProfile = (
+            await axios({
+                method: 'GET',
+                url:
+                    vendor === 'kakao'
+                        ? 'https://kapi.kakao.com/v2/user/me'
+                        : 'https://openapi.naver.com/v1/nid/me',
+                headers: {
+                    Authorization: `Bearer ${socialAccessToken}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+        ).data;
+
+        // req 변수에 저장
+        req.socialUserProfile = socialUserProfile;
+    } catch (err) {
+        Logger.error(err);
+        return Promise.reject(responseMessage.SOCIAL_LOGIN_ACCESS_TOKEN_ERROR);
     }
 };

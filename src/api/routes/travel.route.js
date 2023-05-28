@@ -11,7 +11,8 @@ const {
     createTravelLikeValidation,
     createTravelCommentValidation,
     deleteTravelCommentValidation,
-    selectTravelCommentValidation
+    selectTravelCommentValidation,
+    selectTravelDetailValidation
 } = require('../middlewares/validations/travel.validation');
 
 const router = express.Router();
@@ -100,6 +101,12 @@ router.patch(
 );
 
 // 특정 게시물 조회 API
-router.get('/', TravelController.getTravelDetail);
+router.get(
+    '/travel-detail',
+    jwtMiddleware,
+    selectTravelDetailValidation,
+    validationMiddleware,
+    TravelController.getTravelDetail
+);
 
 module.exports = router;

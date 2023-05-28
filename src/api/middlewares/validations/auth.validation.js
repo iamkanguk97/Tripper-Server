@@ -3,10 +3,13 @@ const { REGEX_NICKNAME } = require('../../utils/regex');
 const {
     checkSnsIdDuplicate,
     checkAccessTokenEmpty,
-    checkIsSocialTokenValid,
-    checkSoialAtMatchProvider
+    checkIsSocialTokenValid
 } = require('../../utils/validation-util');
-const { checkNickDuplicate, checkBadWordInclude } = require('./utils/auth.validation.func');
+const {
+    checkNickDuplicate,
+    checkBadWordInclude,
+    checkSoialAtMatchProvider
+} = require('./utils/auth.validation.func');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 
 /**
@@ -96,9 +99,8 @@ const signUpValidation = [
 ];
 
 /**
- * Access Token 갱신을 위한 API Validator
- * - 자세한 검증 Logic은 Service단에서 진행하는걸로 결정.
- * - Access-Token 및 Refresh-Token 유무 확인만 필요.
+ * @Title Access-Token 갱신을 위한 API Validation
+ * - @header Bearer Token
  */
 const tokenRefreshValidation = [
     header('authorization')
