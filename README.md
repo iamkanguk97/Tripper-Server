@@ -19,7 +19,7 @@
 ## 📕 Directory Structure
 
 ```
-📦 
+📦
 ├─ .eslintignore
 ├─ .eslintrc.js
 ├─ .github
@@ -135,6 +135,48 @@
 
 <br>
 
+## ENV Sample
+
+```
+NODE_ENV =
+PORT =
+
+RDS_ENDPOINT =
+RDS_PORT =
+RDS_ID =
+RDS_PASSWORD =
+RDS_DATABASE =
+
+REDIS_HOST =
+REDIS_PORT =
+REDIS_USERNAME =
+REDIS_PASSWORD =
+
+SWAGGER_ID =
+SWAGGER_PASSWORD =
+
+KAKAO_REST_API_KEY =
+KAKAO_CALLBACK_URL =
+
+NAVER_CLIENT_ID =
+NAVER_CLIENT_SECRET_KEY =
+NAVER_CALLBACK_URL =
+
+JWT_ACCESS_SECRET_KEY =
+JWT_REFRESH_SECRET_KEY =
+
+S3_ACCESS_KEY_ID =
+S3_SECRET_ACCESS_KEY =
+S3_BUCKET_NAME =
+S3_REGION =
+
+NODEMAILER_USER =
+NODEMAILER_PASS =
+NODEMAILER_PORT =
+```
+
+<br>
+
 ## 🛠️ Stacks
 
 ### Environment
@@ -156,5 +198,5 @@
 <br>
 
 ## 🔍 ERD 설계도, Figma 등 상세 설명 문서
-https://iamkanguk.notion.site/Tripper-0eeed21ef2274046ae345bd0f10350d5?pvs=4
 
+https://iamkanguk.notion.site/Tripper-0eeed21ef2274046ae345bd0f10350d5?pvs=4
