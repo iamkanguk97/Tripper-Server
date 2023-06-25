@@ -1,6 +1,7 @@
 const fs = require('fs');
 const util = require('util');
 const AWS = require('aws-sdk');
+const moment = require('moment');
 
 const readFile = util.promisify(fs.readFile);
 const { S3 } = require('../../config/vars');
@@ -148,6 +149,22 @@ const genRandomNumber = len => {
     return str;
 };
 
+/**
+ * 두 날짜 사이의 날짜들을 가져오는 함수
+ */
+const getBetweenDates = (startDate, endDate) => {
+    const dates = [];
+    const sDate = moment(startDate);
+    const eDate = moment(endDate);
+
+    while (sDate <= eDate) {
+        dates.push(sDate.format('YYYY-MM-DD'));
+        sDate.add(1, 'days');
+    }
+
+    return dates;
+};
+
 module.exports = {
     checkBadWord,
     getFirstLetter,
@@ -159,5 +176,6 @@ module.exports = {
     getKeyByValue,
     getTravelTrans,
     // uploadThumImage
-    genRandomNumber
+    genRandomNumber,
+    getBetweenDates
 };

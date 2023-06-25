@@ -1,7 +1,7 @@
 {
     "workbench.startupEditor": "none",
     "workbench.iconTheme": "material-icon-theme",
-    "editor.fontSize": 14,
+    "editor.fontSize": 16,
     "[python]": {
         "editor.formatOnType": true
     },

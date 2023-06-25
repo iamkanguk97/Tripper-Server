@@ -2,7 +2,6 @@ const { body, query } = require('express-validator');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 const {
     checkTravelStatusAble,
-    checkTravelDateIsOver,
     checkTravelStatus,
     checkMyTravel,
     checkBeforeReviewScore,
@@ -10,8 +9,9 @@ const {
     checkParentCommentAble,
     checkIsMyComment
 } = require('../../utils/validation-util');
-const { checkDateOverToday } = require('./utils/travel.validation.func');
 const { REGEX_DATE } = require('../../utils/regex');
+const { TRAVEL_MOVE_METHOD } = require('../../../config/vars');
+const { checkTravelDate, checkTravelDayKeys } = require('./utils/travel.validation.func');
 
 /**
  * @title 게시물 생성 API Validation
@@ -19,44 +19,65 @@ const { REGEX_DATE } = require('../../utils/regex');
  * @body travelInformation
  * - @desc travelInformation 객체는 무조건 있어야함
  * - @properties travelStartDate, travelEndDate
- *   - @desc 무조건 있어야함 + 형식 확인
- *   - @desc 오늘 날짜 넘어가는지 확인
- *   - @desc 시작날짜와 종료날짜의 차이를 최대 1주일로 일단 설정
+ *   - @desc 입력 및 형식확인
+ *   - @desc 오늘 날짜 넘어가는지 확인 (travelStartDate와 travelEndDate가 오늘을 넘어가면 안됨)
  * - @properties moveMethod
  *   - @desc 입력확인 및 형식 확인
  * - @properties travelTitle
- *   - @desc 입력필수 + 최대 50글자
+ *   - @desc 입력확인 및 최대 50자
+ * - @properties travelThumnailImages
+ *   - @desc 최대 5장까지 업로드 가능
+ *
+ * @body day
+ * - @desc day 객체도 마찬가지로 무조건 있어야함
+ * - @desc day 객체의 key는 startDate와 endDate 사이의 모든 날짜를 가져와야함
+ * - @properties area
+ *  - @desc latitude, longitude, address 필수입력 확인
+ * - @properties review
+ *  - @desc images 최대 5개 확인
  */
 const createTravelValidation = [
     body('travelInformation')
         .notEmpty()
         .withMessage(responseMessage.CREATE_TRAVEL_INFORMATION_EMPTY)
+        .bail()
+        .isObject()
+        .withMessage(responseMessage.CREATE_TRAVEL_INFORMATION_MUST_OBJECT)
         .bail(),
     body('travelInformation.travelStartDate')
         .notEmpty()
         .withMessage(responseMessage.CREATE_TRAVEL_STARTDATE_EMPTY)
         .bail()
+        .isString()
+        .bail()
         .matches(REGEX_DATE)
         .withMessage(responseMessage.CREATE_TRAVEL_DATE_ERROR_TYPE)
         .bail()
-        .custom(checkDateOverToday),
+        .custom(checkTravelDate),
     body('travelInformation.travelEndDate')
         .notEmpty()
         .withMessage(responseMessage.CREATE_TRAVEL_ENDDATE_EMPTY)
         .bail()
+        .isString()
+        .bail()
         .matches(REGEX_DATE)
         .withMessage(responseMessage.CREATE_TRAVEL_DATE_ERROR_TYPE)
-        .bail(),
+        .bail()
+        .custom(checkTravelDate),
     body('travelInformation.moveMethod')
         .notEmpty()
         .withMessage(responseMessage.CREATE_TRAVEL_MOVEMETHOD_EMPTY)
         .bail()
-        .isIn(['자차로 여행', '대중교통 여행', '자전거 여행', '도보 여행'])
+        .isString()
+        .bail()
+        .isIn(TRAVEL_MOVE_METHOD)
         .withMessage(responseMessage.CREATE_TRAVEL_MOVEMETHOD_ERROR_TYPE)
         .bail(),
     body('travelInformation.travelTitle')
         .notEmpty()
         .withMessage(responseMessage.CREATE_TRAVEL_TITLE_EMPTY)
+        .bail()
+        .isString()
         .bail()
         .isLength({ max: 50 })
         .withMessage(responseMessage.CREATE_TRAVEL_TITLE_LENGTH_ERROR)
@@ -65,7 +86,40 @@ const createTravelValidation = [
         .optional()
         .isArray({ max: 5 })
         .withMessage(responseMessage.CREATE_TRAVEL_THUMNAIL_IMAGE_LENGTH_ERROR)
+        .bail(),
+    body('day')
+        .notEmpty()
+        .withMessage(responseMessage.CREATE_TRAVEL_DAY_EMPTY)
         .bail()
+        .isObject()
+        .withMessage(responseMessage.CREATE_TRAVEL_DAY_MUST_OBJECT)
+        .bail()
+        .custom(checkTravelDayKeys)
+        .bail(),
+    body('day.*.area').optional(),
+    body('day.*.area.*.latitude')
+        .notEmpty()
+        .withMessage(responseMessage.CREATE_TRAVEL_DAY_AREA_LATITUDE_EMPTY)
+        .bail(),
+    body('day.*.area.*.longitude')
+        .notEmpty()
+        .withMessage(responseMessage.CREATE_TRAVEL_DAY_AREA_LONGITUDE_EMPTY)
+        .bail(),
+    body('day.*.area.*.address')
+        .notEmpty()
+        .withMessage(responseMessage.CREATE_TRAVEL_DAY_AREA_ADDRESS_EMPTY)
+        .bail(),
+    body('day.*.area.*.review')
+        .optional()
+        .isObject()
+        .withMessage(responseMessage.CREATE_TRAVEL_DAY_AREA_REVIEW_MUST_OBJECT)
+        .bail(),
+    body('day.*.area.*.review.images')
+        .optional()
+        .isArray({ max: 5 })
+        .withMessage(responseMessage.CREATE_TRAVEL_DAY_AREA_IMAGE_COUNT_ERROR)
+        .bail(),
+    body('day.*.area.*.review.comment').optional().isString().bail()
 ];
 
 /**

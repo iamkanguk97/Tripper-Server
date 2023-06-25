@@ -265,6 +265,57 @@ module.exports = {
         code: 2063,
         message: '여행 게시물 제목은 최대 50자까지 입력 가능합니다.'
     },
+    CREATE_TRAVEL_DATE_MORE_THAN_TODAY: {
+        isSuccess: false,
+        code: 2064,
+        message: '여행 시작날짜 및 종료날짜는 오늘 날짜까지만 설정할 수 있습니다.'
+    },
+    CREATE_TRAVEL_DAY_EMPTY: {
+        isSuccess: false,
+        code: 2065,
+        message: '여행 게시물 생성시 필요한 각 날짜별 정보가 없습니다.'
+    },
+    CREATE_TRAVEL_DAY_KEYS_ERROR: {
+        isSuccess: false,
+        code: 2066,
+        message:
+            '여행 게시물의 날짜 정보는 설정하신 시작 날짜와 종료 날짜 사이의 날짜들을 key로 설정해야 합니다.'
+    },
+    CREATE_TRAVEL_DAY_AREA_IMAGE_COUNT_ERROR: {
+        isSuccess: false,
+        code: 2067,
+        message: '여행 게시물의 지역 사진은 최대 5장까지 업로드 가능합니다.'
+    },
+    CREATE_TRAVEL_INFORMATION_MUST_OBJECT: {
+        isSuccess: false,
+        code: 2068,
+        message: '여행 게시물의 정보는 객체 상태로 전달을 해주셔야 합니다.'
+    },
+    CREATE_TRAVEL_DAY_MUST_OBJECT: {
+        isSuccess: false,
+        code: 2069,
+        message: '여행 게시물의 날짜 정보는 객체 상태로 전달을 해주셔야 합니다.'
+    },
+    CREATE_TRAVEL_DAY_AREA_LATITUDE_EMPTY: {
+        isSuccess: false,
+        code: 2070,
+        message: '여행 게시물의 지역 정보에는 위도를 필수로 입력해주세요.'
+    },
+    CREATE_TRAVEL_DAY_AREA_LONGITUDE_EMPTY: {
+        isSuccess: false,
+        code: 2071,
+        message: '여행 게시물의 지역 정보에는 경도를 필수로 입력해주세요.'
+    },
+    CREATE_TRAVEL_DAY_AREA_ADDRESS_EMPTY: {
+        isSuccess: false,
+        code: 2072,
+        message: '여행 게시물의 지역 정보에는 주소를 필수로 입력해주세요.'
+    },
+    CREATE_TRAVEL_DAY_AREA_REVIEW_MUST_OBJECT: {
+        isSuccess: false,
+        code: 2073,
+        message: '여행 게시물의 지역 정보의 리뷰는 객체 상태로 전달해주세요.'
+    },
 
     NICKNAME_DUPLICATED: { isSuccess: false, code: 3010, message: '중복된 닉네임입니다.' },
     USER_NOT_EXIST: { isSuccess: false, code: 3011, message: '존재하지 않는 유저입니다.' },

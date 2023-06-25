@@ -100,7 +100,6 @@ const createTravelLike = async (userIdx, travelIdx) => {
 };
 
 const createTravel = async (userIdx, travelInformation, day) => {
-    const travelThumImages = travelInformation.travelThumnailImages;
     let transaction;
     let newTravelIdx;
 
@@ -126,7 +125,7 @@ const createTravel = async (userIdx, travelInformation, day) => {
 
         // TRAVEL 썸네일 이미지 INSERT
         await Promise.all(
-            travelThumImages.map(async img => {
+            travelInformation.travelThumnailImages.map(async img => {
                 await TravelThumImage.create(
                     {
                         TRAVEL_IDX: newTravelIdx,

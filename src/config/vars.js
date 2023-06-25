@@ -52,5 +52,6 @@ module.exports = {
         PASS: process.env.NODEMAILER_PASS,
         PORT: process.env.NODEMAILER_PORT,
         EXPIRE_TIME: 60 * 3
-    }
+    },
+    TRAVEL_MOVE_METHOD: ['자차로 여행', '대중교통 여행', '자전거 여행', '도보 여행']
 };
