@@ -35,22 +35,12 @@ const generateRefreshToken = () => {
 
 // JWT Refresh Token 저장
 const saveRefreshToken = async (redisClient, userIdx, refreshToken) => {
-    await redisClient.hSet(
-        'refreshToken',
-        `userId_${userIdx}`,
-        refreshToken,
-        JWT.REFRESH_TOKEN_EXPIRE_TIME
-    );
+    await redisClient.hSet('refreshToken', `userId_${userIdx}`, refreshToken, JWT.REFRESH_TOKEN_EXPIRE_TIME);
 };
 
 // JWT Refresh Token 저장
 const saveAdminRefreshToken = async (redisClient, adminIdx, refreshToken) => {
-    await redisClient.hSet(
-        'refreshToken',
-        `adminId_${adminIdx}`,
-        refreshToken,
-        JWT.REFRESH_TOKEN_EXPIRE_TIME
-    );
+    await redisClient.hSet('refreshToken', `adminId_${adminIdx}`, refreshToken, JWT.REFRESH_TOKEN_EXPIRE_TIME);
 };
 
 // JWT Access Token 검증

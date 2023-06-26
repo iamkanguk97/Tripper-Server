@@ -181,8 +181,7 @@ const updageMyPage = async (userIdx, profileImgUrl, nickname) => {
         )
     )[0];
 
-    if (!updateMyPageResult)
-        throw new Error('[User->updateMyPage] 변경사항이 없거나 잘못된 문법 사용');
+    if (!updateMyPageResult) throw new Error('[User->updateMyPage] 변경사항이 없거나 잘못된 문법 사용');
 };
 
 const getProfile = async (myIdx, userIdx) => {
@@ -227,15 +226,7 @@ const getProfile = async (myIdx, userIdx) => {
     }
 };
 
-const createReport = async (
-    userIdx,
-    travelIdx,
-    travelCommentIdx,
-    reportType,
-    reportSubject,
-    reportContent,
-    reportImages
-) => {
+const createReport = async (userIdx, travelIdx, travelCommentIdx, reportType, reportSubject, reportContent, reportImages) => {
     let transaction;
     let newReportIdx;
 

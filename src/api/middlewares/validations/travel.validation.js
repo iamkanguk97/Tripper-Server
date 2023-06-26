@@ -1,4 +1,4 @@
-const { body, query } = require('express-validator');
+const { body, query, param } = require('express-validator');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 const {
     checkTravelStatusAble,
@@ -97,23 +97,10 @@ const createTravelValidation = [
         .custom(checkTravelDayKeys)
         .bail(),
     body('day.*.area').optional(),
-    body('day.*.area.*.latitude')
-        .notEmpty()
-        .withMessage(responseMessage.CREATE_TRAVEL_DAY_AREA_LATITUDE_EMPTY)
-        .bail(),
-    body('day.*.area.*.longitude')
-        .notEmpty()
-        .withMessage(responseMessage.CREATE_TRAVEL_DAY_AREA_LONGITUDE_EMPTY)
-        .bail(),
-    body('day.*.area.*.address')
-        .notEmpty()
-        .withMessage(responseMessage.CREATE_TRAVEL_DAY_AREA_ADDRESS_EMPTY)
-        .bail(),
-    body('day.*.area.*.review')
-        .optional()
-        .isObject()
-        .withMessage(responseMessage.CREATE_TRAVEL_DAY_AREA_REVIEW_MUST_OBJECT)
-        .bail(),
+    body('day.*.area.*.latitude').notEmpty().withMessage(responseMessage.CREATE_TRAVEL_DAY_AREA_LATITUDE_EMPTY).bail(),
+    body('day.*.area.*.longitude').notEmpty().withMessage(responseMessage.CREATE_TRAVEL_DAY_AREA_LONGITUDE_EMPTY).bail(),
+    body('day.*.area.*.address').notEmpty().withMessage(responseMessage.CREATE_TRAVEL_DAY_AREA_ADDRESS_EMPTY).bail(),
+    body('day.*.area.*.review').optional().isObject().withMessage(responseMessage.CREATE_TRAVEL_DAY_AREA_REVIEW_MUST_OBJECT).bail(),
     body('day.*.area.*.review.images')
         .optional()
         .isArray({ max: 5 })
@@ -200,17 +187,9 @@ const createTravelLikeValidation = [
  * - [Body - mentionUsers] 해당 닉네임을 가진 유저들이 전부 활성화 상태인지 확인
  */
 const createTravelCommentValidation = [
-    body('travelIdx')
-        .notEmpty()
-        .withMessage(responseMessage.TRAVEL_IDX_EMPTY)
-        .bail()
-        .custom(checkTravelStatusAble)
-        .bail(),
+    body('travelIdx').notEmpty().withMessage(responseMessage.TRAVEL_IDX_EMPTY).bail().custom(checkTravelStatusAble).bail(),
     body('commentIdx').optional().custom(checkParentCommentAble).bail(),
-    body('comment')
-        .isLength({ max: 200 })
-        .withMessage(responseMessage.TRAVEL_COMMENT_LENGTH_ERROR)
-        .bail(),
+    body('comment').isLength({ max: 200 }).withMessage(responseMessage.TRAVEL_COMMENT_LENGTH_ERROR).bail(),
     body('mentionUsers').optional().custom(checkMentionUserStatus).bail()
 ];
 
@@ -221,12 +200,7 @@ const updateTravelCommentValidation = [];
  * - [Body - commentIdx] 입력 유무 + 해당 댓글 존재 유무 + 본인의 댓글만 삭제할 수 있음
  */
 const deleteTravelCommentValidation = [
-    body('commentIdx')
-        .notEmpty()
-        .withMessage(responseMessage.COMMENT_IDX_EMPTY)
-        .bail()
-        .custom(checkIsMyComment)
-        .bail()
+    body('commentIdx').notEmpty().withMessage(responseMessage.COMMENT_IDX_EMPTY).bail().custom(checkIsMyComment).bail()
 ];
 
 /**
@@ -234,20 +208,16 @@ const deleteTravelCommentValidation = [
  * - [Query - travelIdx] 입력 유무 + 게시물 유효성 확인 및 본인 비공개 게시물에는 조회 가능하게!
  */
 const selectTravelCommentValidation = [
-    query('travelIdx')
-        .notEmpty()
-        .withMessage(responseMessage.TRAVEL_IDX_EMPTY)
-        .bail()
-        .custom(checkTravelStatusAble)
-        .bail()
+    query('travelIdx').notEmpty().withMessage(responseMessage.TRAVEL_IDX_EMPTY).bail().custom(checkTravelStatusAble).bail()
 ];
 
 /**
  * @title 특정 게시물 조회 API Validation
- * @query travelIdx
+ * @param travelIdx
  * - @desc 입력유무 확인
+ * - @desc
  */
-const selectTravelDetailValidation = [];
+const selectTravelDetailValidation = [param('travelIdx').notEmpty().withMessage(responseMessage.TRAVEL_IDX_EMPTY).bail().custom().bail()];
 
 module.exports = {
     createTravelValidation,

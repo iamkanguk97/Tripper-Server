@@ -1,11 +1,7 @@
 const { QueryTypes } = require('sequelize');
 const { saltHashPassword, validatePassword } = require('../utils/crypto-util');
 const { sequelize } = require('../models/index');
-const {
-    generateAdminAccessToken,
-    generateRefreshToken,
-    saveAdminRefreshToken
-} = require('../utils/jwt-util');
+const { generateAdminAccessToken, generateRefreshToken, saveAdminRefreshToken } = require('../utils/jwt-util');
 const { getReportsQuery, getReportDetailQuery } = require('../queries/admin.query');
 const { pageResponse } = require('../../config/response/response-template');
 

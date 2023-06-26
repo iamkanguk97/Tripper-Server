@@ -11,11 +11,7 @@ const searchAreaValidation = [
         .trim()
         .withMessage(responseMessage.KAKAO_SEARCH_AREA_LENGTH_ERROR)
         .bail(),
-    query('page')
-        .optional()
-        .isInt({ min: 1, max: 45 })
-        .withMessage(responseMessage.KAKAO_SEARCH_PAGE_NUMBER_ERROR)
-        .bail(),
+    query('page').optional().isInt({ min: 1, max: 45 }).withMessage(responseMessage.KAKAO_SEARCH_PAGE_NUMBER_ERROR).bail(),
     query('lon')
         .notEmpty()
         .withMessage(responseMessage.KAKAO_SEARCH_LONGITUDE_EMPTY)

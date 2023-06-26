@@ -15,10 +15,19 @@ const { REGEX_NICKNAME } = require('../../utils/regex');
  * - 팔로우 상대 IDX 유무 확인 + 실제 존재하는 유저인지 확인 (탈퇴 유무까지)
  * - followUserIdx와 jwt의 userIdx가 같으면 안됨
  */
+/**
+ * @title 팔로우 API Validator
+ * @body followUserIdx
+ * - @desc 입력유무 및 숫자 확인
+ * - @desc
+ */
 const followValidation = [
     body('followUserIdx')
         .notEmpty()
         .withMessage(responseMessage.FOLLOW_TARGET_IDX_EMPTY)
+        .bail()
+        .isInt()
+        .withMessage()
         .bail()
         .custom(checkUserStatus)
         .bail()
@@ -82,14 +91,8 @@ const getProfileValidation = [
  * - [query] page는 0이상
  */
 const getMyPageValidation = [
-    query('option')
-        .optional()
-        .isIn(['mytrip', 'like'])
-        .withMessage(responseMessage.SELECT_MYPAGE_OPTION_ERROR_TYPE),
-    query('contentSize')
-        .optional()
-        .isInt({ min: 1, max: 15 })
-        .withMessage(responseMessage.SELECT_CONTENT_SIZE_ERROR_TYPE),
+    query('option').optional().isIn(['mytrip', 'like']).withMessage(responseMessage.SELECT_MYPAGE_OPTION_ERROR_TYPE),
+    query('contentSize').optional().isInt({ min: 1, max: 15 }).withMessage(responseMessage.SELECT_CONTENT_SIZE_ERROR_TYPE),
     query('page').optional().isInt({ min: 0 }).withMessage(responseMessage.SELECT_PAGE_ERROR_TYPE)
 ];
 
@@ -112,12 +115,7 @@ const updateMyPageValidation = [
  * - 댓글 신고가 아니면 reportedCommentIdx는 null, 아니면 둘다 넣기 (travelIdx + commentIdx)
  */
 const createReportValidation = [
-    body('travelIdx')
-        .notEmpty()
-        .withMessage(responseMessage.TRAVEL_IDX_EMPTY)
-        .bail()
-        .custom()
-        .bail(),
+    body('travelIdx').notEmpty().withMessage(responseMessage.TRAVEL_IDX_EMPTY).bail().custom().bail(),
     body('travelCommentIdx').optional().custom().bail(),
     body('reportTypeIdx').notEmpty().withMessage().bail().custom().bail()
 ];

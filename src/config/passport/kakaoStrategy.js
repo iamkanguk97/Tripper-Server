@@ -20,18 +20,15 @@ module.exports = () => {
                 const kakaoLoginUser = {
                     kakaoId: profileJson.id,
                     email:
-                        !kakaoAccount.has_email ||
-                        (kakaoAccount.has_email && kakaoAccount.email_needs_agreement)
+                        !kakaoAccount.has_email || (kakaoAccount.has_email && kakaoAccount.email_needs_agreement)
                             ? null
                             : kakaoAccount.email,
                     ageGroup:
-                        !kakaoAccount.has_age_range ||
-                        (kakaoAccount.has_age_range && kakaoAccount.age_range_needs_agreement)
+                        !kakaoAccount.has_age_range || (kakaoAccount.has_age_range && kakaoAccount.age_range_needs_agreement)
                             ? null
                             : ageGroupToString(kakaoAccount.age_range),
                     gender:
-                        !kakaoAccount.has_gender ||
-                        (kakaoAccount.has_gender && kakaoAccount.gender_needs_agreement)
+                        !kakaoAccount.has_gender || (kakaoAccount.has_gender && kakaoAccount.gender_needs_agreement)
                             ? null
                             : getFirstLetter(kakaoAccount.gender)
                 };

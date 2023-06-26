@@ -11,16 +11,8 @@ const responseMessage = require('../../../config/response/baseResponseStatus');
  * OFFSET: 가져올 데이터의 초기 위치값
  */
 const pageValidation = [
-    query('page')
-        .optional()
-        .isInt({ min: 1, max: 30 })
-        .withMessage(responseMessage.PAGE_NUMBER_ERROR)
-        .bail(),
-    query('size')
-        .optional()
-        .isInt({ min: 1, max: 30 })
-        .withMessage(responseMessage.PAGE_SIZE_ERROR)
-        .bail()
+    query('page').optional().isInt({ min: 1, max: 30 }).withMessage(responseMessage.PAGE_NUMBER_ERROR).bail(),
+    query('size').optional().isInt({ min: 1, max: 30 }).withMessage(responseMessage.PAGE_SIZE_ERROR).bail()
 ];
 
 module.exports = pageValidation;

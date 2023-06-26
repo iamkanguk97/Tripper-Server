@@ -26,8 +26,7 @@ const checkUserStatus = async value => {
 
         // DB에 해당 유저의 아이디가 등록X
         if (!checkUserResult) return Promise.reject(responseMessage.USER_NOT_EXIST);
-        if (checkUserResult.dataValues.USER_STATUS === 'D')
-            return Promise.reject(responseMessage.USER_WITHDRAWAL);
+        if (checkUserResult.dataValues.USER_STATUS === 'D') return Promise.reject(responseMessage.USER_WITHDRAWAL);
     } catch (err) {
         Logger.error(err);
         return Promise.reject(validationErrorResponse(true, err));
@@ -38,8 +37,7 @@ const checkUserStatus = async value => {
 const checkParameterIdxEqualMyIdx = async (value, { req }) => {
     try {
         const userIdx = req.verifiedToken.userIdx;
-        if (parseInt(userIdx) === parseInt(value))
-            return Promise.reject(responseMessage.PARAMETER_IDX_EQUALS_MY_IDX);
+        if (parseInt(userIdx) === parseInt(value)) return Promise.reject(responseMessage.PARAMETER_IDX_EQUALS_MY_IDX);
     } catch (err) {
         Logger.error(err);
         return Promise.reject(validationErrorResponse(true, err));
@@ -195,10 +193,8 @@ const checkTravelStatusExceptPrivate = async travelIdx => {
         if (!checkTravelExist) return Promise.reject(responseMessage.TRAVEL_NOT_EXIST);
 
         // 있으면 그 게시물이 삭제된 게시물인지 확인
-        if (checkTravelExist.dataValues.TRAVEL_STATUS === 'C')
-            return Promise.reject(responseMessage.TRAVEL_DELETED);
-        if (checkTravelExist.dataValues.TRAVEL_STATUS === 'B')
-            return Promise.reject(responseMessage.TRAVEL_PRIVATE);
+        if (checkTravelExist.dataValues.TRAVEL_STATUS === 'C') return Promise.reject(responseMessage.TRAVEL_DELETED);
+        if (checkTravelExist.dataValues.TRAVEL_STATUS === 'B') return Promise.reject(responseMessage.TRAVEL_PRIVATE);
     } catch (err) {
         Logger.error(err);
         return Promise.reject(validationErrorResponse(true, err));
@@ -258,8 +254,7 @@ const checkMentionUserStatus = async (value, { req }) => {
                     }
                 });
 
-                if (!checkMentionUser)
-                    return Promise.reject(responseMessage.MENTION_USER_NOT_EXIST);
+                if (!checkMentionUser) return Promise.reject(responseMessage.MENTION_USER_NOT_EXIST);
                 return checkMentionUser.dataValues.IDX;
             })
         );
@@ -302,10 +297,8 @@ const checkIsMyComment = async (value, { req }) => {
         });
 
         if (!checkCommentExist) return Promise.reject(responseMessage.COMMENT_NOT_EXIST);
-        if (checkCommentExist.dataValues.STATUS === 'D')
-            return Promise.reject(responseMessage.COMMENT_ALREADY_DELETED);
-        if (checkCommentExist.dataValues.USER_IDX !== userIdx)
-            return Promise.reject(responseMessage.COMMENT_WRITER_NOT_MATCH);
+        if (checkCommentExist.dataValues.STATUS === 'D') return Promise.reject(responseMessage.COMMENT_ALREADY_DELETED);
+        if (checkCommentExist.dataValues.USER_IDX !== userIdx) return Promise.reject(responseMessage.COMMENT_WRITER_NOT_MATCH);
     } catch (err) {
         Logger.error(err);
         return Promise.reject(validationErrorResponse(true, err));
@@ -338,9 +331,7 @@ const checkIsSocialTokenValid = async (value, { req }) => {
             return Promise.reject(responseMessage.USER_WITHDRAWAL);
 
         const requestUrl =
-            value === 'kakao'
-                ? 'https://kapi.kakao.com/v1/user/access_token_info'
-                : 'https://openapi.naver.com/v1/nid/verify';
+            value === 'kakao' ? 'https://kapi.kakao.com/v1/user/access_token_info' : 'https://openapi.naver.com/v1/nid/verify';
 
         await axios({
             method: 'GET',

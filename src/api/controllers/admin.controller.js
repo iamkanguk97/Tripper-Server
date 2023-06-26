@@ -14,10 +14,7 @@ const login = async (req, res) => {
     const adminIdx = req.adminIdx;
     const loginResult = await AdminService.login(adminIdx, password); // 이메일은 이미 Middleware단에서 확인완료
 
-    if (!loginResult)
-        return res
-            .status(httpStatus.BAD_REQUEST)
-            .json(errResponse(responseMessage.ADMIN_PASSWORD_WRONG));
+    if (!loginResult) return res.status(httpStatus.BAD_REQUEST).json(errResponse(responseMessage.ADMIN_PASSWORD_WRONG));
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, loginResult));
 };
 

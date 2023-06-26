@@ -15,8 +15,7 @@ const checkTravelDate = async value => {
         const today = moment(); // 오늘 날짜
         const travelDate = moment(value); // 여행 게시물 날짜
 
-        if (today < travelDate)
-            return Promise.reject(responseMessage.CREATE_TRAVEL_DATE_MORE_THAN_TODAY);
+        if (today < travelDate) return Promise.reject(responseMessage.CREATE_TRAVEL_DATE_MORE_THAN_TODAY);
     } catch (err) {
         Logger.error(err);
         return Promise.reject(validationErrorResponse(true, err));

@@ -56,10 +56,7 @@ exports.checkSoialAtMatchProvider = async (value, { req }) => {
         const socialUserProfile = (
             await axios({
                 method: 'GET',
-                url:
-                    vendor === 'kakao'
-                        ? 'https://kapi.kakao.com/v2/user/me'
-                        : 'https://openapi.naver.com/v1/nid/me',
+                url: vendor === 'KAKAO' ? 'https://kapi.kakao.com/v2/user/me' : 'https://openapi.naver.com/v1/nid/me',
                 headers: {
                     Authorization: `Bearer ${socialAccessToken}`,
                     'Content-Type': 'application/json'

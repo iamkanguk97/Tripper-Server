@@ -1,11 +1,6 @@
 const { body, query } = require('express-validator');
 const responseMessage = require('../../../config/response/baseResponseStatus');
-const {
-    checkAdminExist,
-    checkAdminNickExist,
-    checkReportExist,
-    checkAdminNotExist
-} = require('./utils/admin.validation.func');
+const { checkAdminExist, checkAdminNickExist, checkReportExist, checkAdminNotExist } = require('./utils/admin.validation.func');
 const { REGEX_ADMIN_PASSWORD, REGEX_NICKNAME } = require('../../utils/regex');
 
 /**
@@ -59,12 +54,7 @@ const adminSignUpValidation = [
  * - @desc 비밀번호 입력유무
  */
 const adminLoginValidation = [
-    body('email')
-        .notEmpty()
-        .withMessage(responseMessage.EMAIL_EMPTY)
-        .bail()
-        .custom(checkAdminNotExist)
-        .bail(),
+    body('email').notEmpty().withMessage(responseMessage.EMAIL_EMPTY).bail().custom(checkAdminNotExist).bail(),
     body('password').notEmpty().withMessage(responseMessage.ADMIN_PASSWORD_EMPTY).bail()
 ];
 
@@ -75,12 +65,7 @@ const adminLoginValidation = [
  * - @desc 신고 존재유무
  */
 const getReportDetailValidation = [
-    query('reportIdx')
-        .notEmpty()
-        .withMessage(responseMessage.REPORT_IDX_EMPTY)
-        .bail()
-        .custom(checkReportExist)
-        .bail()
+    query('reportIdx').notEmpty().withMessage(responseMessage.REPORT_IDX_EMPTY).bail().custom(checkReportExist).bail()
 ];
 
 module.exports = {

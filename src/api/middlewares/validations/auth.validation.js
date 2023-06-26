@@ -1,16 +1,9 @@
 const { query, body, header } = require('express-validator');
 const { REGEX_NICKNAME } = require('../../utils/regex');
-const {
-    checkSnsIdDuplicate,
-    checkAccessTokenEmpty,
-    checkIsSocialTokenValid
-} = require('../../utils/validation-util');
-const {
-    checkNickDuplicate,
-    checkBadWordInclude,
-    checkSoialAtMatchProvider
-} = require('./utils/auth.validation.func');
+const { checkSnsIdDuplicate, checkAccessTokenEmpty, checkIsSocialTokenValid } = require('../../utils/validation-util');
+const { checkNickDuplicate, checkBadWordInclude, checkSoialAtMatchProvider } = require('./utils/auth.validation.func');
 const responseMessage = require('../../../config/response/baseResponseStatus');
+const { SOCIAL_LOGIN_VENDOR } = require('../../../config/vars');
 
 /**
  * @title 닉네임 확인 API Validation
@@ -39,7 +32,7 @@ const verifyNickValidation = [
  * @body socialAccessToken
  * - @desc 소셜 Access-Token 입력유무
  * @body vendor
- * - @desc 소셜로그인 유형 입력유무
+ * - @desc 소셜로그인 유형 입력유무 + 문자열 확인
  * - @desc 소셜로그인 유형 (naver / kakao)
  * - @desc socialAccessToken <-> vendor 매칭되는지 확인 + req 변수에 저장
  */
@@ -47,12 +40,17 @@ const socialLoginValidation = [
     body('socialAccessToken')
         .notEmpty()
         .withMessage(responseMessage.SOCIAL_LOGIN_ACCESS_TOKEN_EMPY)
+        .bail()
+        .isString()
+        .withMessage(responseMessage.MUST_BE_STRING)
         .bail(),
     body('vendor')
         .notEmpty()
         .withMessage(responseMessage.SOCIAL_LOGIN_PROVIDER_EMPTY)
         .bail()
-        .isIn(['kakao', 'naver'])
+        .isString()
+        .withMessage(responseMessage.MUST_BE_STRING)
+        .isIn(SOCIAL_LOGIN_VENDOR)
         .withMessage(responseMessage.SOCIAL_LOGIN_PROVIDER_ERROR_TYPE)
         .bail()
         .custom(checkSoialAtMatchProvider)
@@ -67,11 +65,7 @@ const socialLoginValidation = [
  * - 사용자 로그인 타입 유무 + 형식 확인
  */
 const signUpValidation = [
-    body('email')
-        .isEmail()
-        .optional({ nullable: true })
-        .withMessage(responseMessage.EMAIL_TYPE_ERROR)
-        .bail(),
+    body('email').isEmail().optional({ nullable: true }).withMessage(responseMessage.EMAIL_TYPE_ERROR).bail(),
     body('nickname')
         .notEmpty()
         .withMessage(responseMessage.NICKNAME_EMPTY)
@@ -83,12 +77,7 @@ const signUpValidation = [
         .bail()
         .custom(checkBadWordInclude)
         .bail(),
-    body('snsId')
-        .notEmpty()
-        .withMessage(responseMessage.SNS_ID_EMPTY)
-        .bail()
-        .custom(checkSnsIdDuplicate)
-        .bail(),
+    body('snsId').notEmpty().withMessage(responseMessage.SNS_ID_EMPTY).bail().custom(checkSnsIdDuplicate).bail(),
     body('provider')
         .notEmpty()
         .withMessage(responseMessage.PROVIDER_EMPTY)
@@ -133,13 +122,7 @@ const getEmailVerifyValidation = [
  * - [query] 이메일 유무 확인 및 이메일 형식 확인
  */
 const postEmailVerifyValidation = [
-    body('email')
-        .notEmpty()
-        .withMessage(responseMessage.EMAIL_EMPTY)
-        .bail()
-        .isEmail()
-        .withMessage(responseMessage.EMAIL_TYPE_ERROR)
-        .bail()
+    body('email').notEmpty().withMessage(responseMessage.EMAIL_EMPTY).bail().isEmail().withMessage(responseMessage.EMAIL_TYPE_ERROR).bail()
 ];
 
 /**

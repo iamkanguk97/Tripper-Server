@@ -8,9 +8,7 @@ const createTravel = async (req, res) => {
     const { travelInformation, day } = req.body;
 
     const createTravelResult = await TravelService.createTravel(userIdx, travelInformation, day);
-    return res
-        .status(httpStatus.CREATED)
-        .json(response(responseMessage.SUCCESS, createTravelResult));
+    return res.status(httpStatus.CREATED).json(response(responseMessage.SUCCESS, createTravelResult));
 };
 
 const deleteTravel = async (req, res) => {
@@ -18,9 +16,7 @@ const deleteTravel = async (req, res) => {
     const travelIdx = req.body.travelIdx;
 
     const deleteTravelResult = await TravelService.deleteTravel(userIdx, travelIdx);
-    return res
-        .status(httpStatus.OK)
-        .json(response(responseMessage.SUCCESS, { deletedTravelIdx: deleteTravelResult }));
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, { deletedTravelIdx: deleteTravelResult }));
 };
 
 const updateTravelStatus = async (req, res) => {
@@ -28,14 +24,8 @@ const updateTravelStatus = async (req, res) => {
     const travelIdx = parseInt(req.body.travelIdx);
     const travelStatus = req.travelStatus;
 
-    const updateTravelStatusResult = await TravelService.updateTravelStatus(
-        userIdx,
-        travelIdx,
-        travelStatus
-    );
-    return res
-        .status(httpStatus.OK)
-        .json(response(responseMessage.SUCCESS, updateTravelStatusResult));
+    const updateTravelStatusResult = await TravelService.updateTravelStatus(userIdx, travelIdx, travelStatus);
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, updateTravelStatusResult));
 };
 
 const createTravelReviewScore = async (req, res) => {
@@ -44,15 +34,8 @@ const createTravelReviewScore = async (req, res) => {
     const reviewScore = parseInt(req.body.reviewScore);
     const checkUserScoreExist = req.checkUserScoreExist;
 
-    const createTravelReviewScoreResult = await TravelService.createTravelReviewScore(
-        userIdx,
-        travelIdx,
-        reviewScore,
-        checkUserScoreExist
-    );
-    return res
-        .status(httpStatus.CREATED)
-        .json(response(responseMessage.SUCCESS, { message: createTravelReviewScoreResult }));
+    const createTravelReviewScoreResult = await TravelService.createTravelReviewScore(userIdx, travelIdx, reviewScore, checkUserScoreExist);
+    return res.status(httpStatus.CREATED).json(response(responseMessage.SUCCESS, { message: createTravelReviewScoreResult }));
 };
 
 const createTravelLike = async (req, res) => {
@@ -60,9 +43,7 @@ const createTravelLike = async (req, res) => {
     const travelIdx = req.body.travelIdx;
 
     const createTravelLikeResult = await TravelService.createTravelLike(userIdx, travelIdx);
-    return res
-        .status(httpStatus.OK)
-        .json(response(responseMessage.SUCCESS, { message: createTravelLikeResult }));
+    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, { message: createTravelLikeResult }));
 };
 
 const createTravelComment = async (req, res) => {
@@ -71,16 +52,8 @@ const createTravelComment = async (req, res) => {
     const commentIdx = req.body.commentIdx || null;
     const mentionUserIdRows = req.mentionUserIdRows;
 
-    const createTravelCommentResult = await TravelService.createTravelComment(
-        userIdx,
-        travelIdx,
-        commentIdx,
-        comment,
-        mentionUserIdRows
-    );
-    return res
-        .status(httpStatus.CREATED)
-        .json(response(responseMessage.SUCCESS, { newCommentIdx: createTravelCommentResult }));
+    const createTravelCommentResult = await TravelService.createTravelComment(userIdx, travelIdx, commentIdx, comment, mentionUserIdRows);
+    return res.status(httpStatus.CREATED).json(response(responseMessage.SUCCESS, { newCommentIdx: createTravelCommentResult }));
 };
 
 // const updateTravelComment = async (req, res) => {};
@@ -103,7 +76,7 @@ const getTravelComments = async (req, res) => {
 
 const getTravelDetail = async (req, res) => {
     const userIdx = req.verifiedToken.userIdx;
-    const travelIdx = req.query.travelIdx;
+    const travelIdx = req.params.travelIdx;
 
     const getTravelDetailResult = await TravelService.getTravelDetail(userIdx, travelIdx);
     return res.send(getTravelDetailResult);

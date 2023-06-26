@@ -40,8 +40,7 @@ exports.checkAdminNickExist = async value => {
             }
         });
 
-        if (checkAdminNickExistResult)
-            return Promise.reject(responseMessage.ADMIN_NICKNAME_DUPLICATED);
+        if (checkAdminNickExistResult) return Promise.reject(responseMessage.ADMIN_NICKNAME_DUPLICATED);
     } catch (err) {
         Logger.error(err);
         return Promise.reject(validationErrorResponse(true, err));

@@ -10,8 +10,7 @@ const searchArea = async (req, res) => {
     const longitude = req.query.lon; // 클라이언트의 현재 경도
 
     const searchAreaResult = await CommonService.searchArea(area, pageNumber, latitude, longitude);
-    if (searchAreaResult.code === 3015)
-        return res.status(httpStatus.BAD_REQUEST).json(searchAreaResult);
+    if (searchAreaResult.code === 3015) return res.status(httpStatus.BAD_REQUEST).json(searchAreaResult);
     return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, searchAreaResult));
 };
 

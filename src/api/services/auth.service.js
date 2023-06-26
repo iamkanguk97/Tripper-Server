@@ -2,13 +2,7 @@ const axios = require('axios');
 const User = require('../models/User/User');
 const RedisClient = require('../../config/redis');
 const { verify, refreshVerify, saveRefreshToken } = require('../utils/jwt-util');
-const {
-    getFirstLetter,
-    uploadProfileImage,
-    checkUserExistWithSnsId,
-    ageGroupToString,
-    genRandomNumber
-} = require('../utils/util');
+const { getFirstLetter, uploadProfileImage, checkUserExistWithSnsId, ageGroupToString, genRandomNumber } = require('../utils/util');
 const { generateAccessToken, generateRefreshToken } = require('../utils/jwt-util');
 const { JWTError, BadRequestError } = require('../errors/index');
 const responseMessage = require('../../config/response/baseResponseStatus');
@@ -115,23 +109,17 @@ const socialLogin = async (vendor, socialUserProfile) => {
     let ageGroup;
     let gender;
 
-    if (vendor === 'kakao') {
+    if (vendor === 'KAKAO') {
         const kakaoAccount = socialUserProfile.kakao_account;
 
         snsId = socialUserProfile.id;
-        email =
-            !kakaoAccount.has_email ||
-            (kakaoAccount.has_email && kakaoAccount.email_needs_agreement)
-                ? null
-                : kakaoAccount.email;
+        email = !kakaoAccount.has_email || (kakaoAccount.has_email && kakaoAccount.email_needs_agreement) ? null : kakaoAccount.email;
         ageGroup =
-            !kakaoAccount.has_age_range ||
-            (kakaoAccount.has_age_range && kakaoAccount.age_range_needs_agreement)
+            !kakaoAccount.has_age_range || (kakaoAccount.has_age_range && kakaoAccount.age_range_needs_agreement)
                 ? null
                 : ageGroupToString(kakaoAccount.age_range);
         gender =
-            !kakaoAccount.has_gender ||
-            (kakaoAccount.has_gender && kakaoAccount.gender_needs_agreement)
+            !kakaoAccount.has_gender || (kakaoAccount.has_gender && kakaoAccount.gender_needs_agreement)
                 ? null
                 : getFirstLetter(kakaoAccount.gender);
     } else {
@@ -371,11 +359,7 @@ const userWithdraw = async (userIdx, socialAT, socialVendor) => {
         }
     };
 
-    await Promise.all([
-        updateUserStatus(userIdx),
-        deleteRefreshToken(userIdx),
-        quitConnectionWithSocial(socialAT, socialVendor)
-    ]);
+    await Promise.all([updateUserStatus(userIdx), deleteRefreshToken(userIdx), quitConnectionWithSocial(socialAT, socialVendor)]);
 };
 
 const logout = async userIdx => {

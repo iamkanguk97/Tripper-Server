@@ -10,10 +10,7 @@ const TravelDayArea = require('../models/Travel/TravelDayArea');
 const TravelDayAreaImage = require('../models/Travel/TravelDayAreaImage');
 const TravelComment = require('../models/Travel/TravelComment');
 const TravelCommentMention = require('../models/Travel/TravelCommentMention');
-const {
-    selectParentCommentListQuery,
-    selectChildCommentListQuery
-} = require('../queries/travel.query');
+const { selectParentCommentListQuery, selectChildCommentListQuery } = require('../queries/travel.query');
 
 const updateTravelStatus = async (userIdx, travelIdx, travelStatus) => {
     const _newTravelStatus = travelStatus === 'A' ? 'B' : 'A';
@@ -62,12 +59,9 @@ const createTravelReviewScore = async (userIdx, travelIdx, reviewScore, checkUse
         });
     } else {
         // 점수를 이전에 부여했음
-        const updateTravelScoreResult = (
-            await TravelScore.update({ TRAVEL_SCORE: reviewScore }, { where: whereOption })
-        )[0];
+        const updateTravelScoreResult = (await TravelScore.update({ TRAVEL_SCORE: reviewScore }, { where: whereOption }))[0];
 
-        if (!updateTravelScoreResult)
-            throw new Error('[Travel->updateTravelScore] 변경사항이 없거나 잘못된 문법 사용');
+        if (!updateTravelScoreResult) throw new Error('[Travel->updateTravelScore] 변경사항이 없거나 잘못된 문법 사용');
     }
 
     return `게시물 점수 ${reviewScore}점 부여 성공!`;
@@ -318,10 +312,7 @@ const deleteTravelComment = async (userIdx, commentIdx) => {
                             )
                         )[0];
 
-                        if (!updateChildCommentResult)
-                            throw new Error(
-                                '[Travel->updateChildComment] 변경사항이 없거나 잘못된 문법 사용'
-                            );
+                        if (!updateChildCommentResult) throw new Error('[Travel->updateChildComment] 변경사항이 없거나 잘못된 문법 사용');
                     })
                 );
             }
@@ -342,8 +333,7 @@ const deleteTravelComment = async (userIdx, commentIdx) => {
             )
         )[0];
 
-        if (!deleteTravelCommentResult)
-            throw new Error('[Travel->deleteTravelComment] 변경사항이 없거나 잘못된 문법 사용');
+        if (!deleteTravelCommentResult) throw new Error('[Travel->deleteTravelComment] 변경사항이 없거나 잘못된 문법 사용');
 
         // COMMIT
         await transaction.commit();

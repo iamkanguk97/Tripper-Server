@@ -6,8 +6,7 @@ module.exports = {
     REQUIRE_SIGN_UP: {
         isSuccess: true,
         code: 200,
-        message:
-            '환영합니다! 신규 회원의 경우 닉네임 및 프로필 사진 설정 후 서비스 이용이 가능합니다.'
+        message: '환영합니다! 신규 회원의 경우 닉네임 및 프로필 사진 설정 후 서비스 이용이 가능합니다.'
     },
     AUTO_LOGIN_ERROR: {
         isSuccess: false,
@@ -27,6 +26,11 @@ module.exports = {
         isSuccess: false,
         code: 2001,
         message: '한 페이지에 보여질 문서 수는 1부터 30이하로 입력해주세요.'
+    },
+    MUST_BE_STRING: {
+        isSuccess: false,
+        code: 2002,
+        message: '문자열 형태로 입력해주세요.'
     },
 
     NICKNAME_EMPTY: { isSuccess: false, code: 2010, message: '닉네임을 입력해주세요.' },
@@ -278,8 +282,7 @@ module.exports = {
     CREATE_TRAVEL_DAY_KEYS_ERROR: {
         isSuccess: false,
         code: 2066,
-        message:
-            '여행 게시물의 날짜 정보는 설정하신 시작 날짜와 종료 날짜 사이의 날짜들을 key로 설정해야 합니다.'
+        message: '여행 게시물의 날짜 정보는 설정하신 시작 날짜와 종료 날짜 사이의 날짜들을 key로 설정해야 합니다.'
     },
     CREATE_TRAVEL_DAY_AREA_IMAGE_COUNT_ERROR: {
         isSuccess: false,
