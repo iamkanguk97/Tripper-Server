@@ -1,7 +1,12 @@
 const { query, body, header } = require('express-validator');
 const { REGEX_NICKNAME } = require('../../utils/regex');
-const { checkSnsIdDuplicate, checkAccessTokenEmpty, checkIsSocialTokenValid } = require('../../utils/validation-util');
-const { checkNickDuplicate, checkBadWordInclude, checkSoialAtMatchProvider } = require('./utils/auth.validation.func');
+const { checkSnsIdDuplicate, checkAccessTokenEmpty } = require('../../utils/validation-util');
+const {
+    checkNickDuplicate,
+    checkBadWordInclude,
+    checkSoialAtMatchProvider,
+    checkIsSocialTokenValid
+} = require('./utils/auth.validation.func');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 const { SOCIAL_LOGIN_VENDOR } = require('../../../config/vars');
 
@@ -102,9 +107,11 @@ const tokenRefreshValidation = [
 ];
 
 /**
- * 이메일 인증번호 확인을 위한 API Validator
- * - [query] 이메일 유무 확인 및 이메일 형식 확인
- * - [query] 인증번호 입력 유무 확인
+ * @title 이메일 인증번호 확인 API Validator
+ * @query email
+ * - @desc 이메일 입력유무 및 형식 확인
+ * @query verifyNumber
+ * - @desc 인증번호 입력 확인
  */
 const getEmailVerifyValidation = [
     query('email')
@@ -118,8 +125,9 @@ const getEmailVerifyValidation = [
 ];
 
 /**
- * 이메일 인증번호 발송을 위한 API Validator
- * - [query] 이메일 유무 확인 및 이메일 형식 확인
+ * @title 이메일 인증번호 전송 API Validator
+ * @body email
+ * - @desc 이메일 입력유무 및 형식 확인
  */
 const postEmailVerifyValidation = [
     body('email').notEmpty().withMessage(responseMessage.EMAIL_EMPTY).bail().isEmail().withMessage(responseMessage.EMAIL_TYPE_ERROR).bail()
@@ -139,7 +147,7 @@ const userWithdrawValidation = [
         .notEmpty()
         .withMessage(responseMessage.SOCIAL_VENDOR_EMPTY)
         .bail()
-        .isIn(['kakao', 'naver'])
+        .isIn(SOCIAL_LOGIN_VENDOR)
         .withMessage(responseMessage.SOCIAL_VENDOR_ERROR_TYPE)
         .bail()
         .custom(checkIsSocialTokenValid)

@@ -135,39 +135,6 @@ const checkMyTravelExist = async (value, { req }) => {
     }
 };
 
-// 게시물 고유값을 통해 유효한 게시물인지 확인
-// 본인 게시물도 허용시켜야 할 때 사용하는 Validation 함수
-const checkTravelStatusAble = async (value, { req }) => {
-    try {
-        const travel = await Travel.findOne({
-            attributes: ['IDX', 'USER_IDX', 'TRAVEL_STATUS'],
-            where: {
-                IDX: value,
-                TRAVEL_STATUS: {
-                    [Op.ne]: 'C'
-                }
-            }
-        }); // 해당 고유값으로 게시물 있는지 확인
-
-        // travel이 null이면 해당 게시물이 존재하지 않는 것 -> 에러 발생
-        if (!travel) return Promise.reject(responseMessage.TRAVEL_NOT_EXIST);
-
-        const isTravelWriterIsMe = travel.dataValues.USER_IDX === req.verifiedToken.userIdx;
-        const travelStatus = travel.dataValues.TRAVEL_STATUS;
-
-        /**
-         * 본인 게시물일 경우 -> travelStatus가 'A'와 'B'이면 모두 가능 => 검사 필요 X
-         * 본인 게시물이 아닐 경우 -> travelStatus가 only 'A'일 경우만 가능
-         */
-        if (!isTravelWriterIsMe && travelStatus !== 'A')
-            // 본인게시물이 아니고 A가 아닐 경우 -> 에러 발생
-            return Promise.reject(responseMessage.TRAVEL_CANT_ACCESS);
-    } catch (err) {
-        Logger.error(err);
-        return Promise.reject(validationErrorResponse(true, err));
-    }
-};
-
 // const checkTravelDateIsOver = async date => {
 //     try {
 //         // console.log(date);
@@ -316,43 +283,12 @@ const checkUserIdxIsOther = async (value, { req }) => {
     }
 };
 
-const checkIsSocialTokenValid = async (value, { req }) => {
-    try {
-        // 여기서 회원 상태 확인하자.. (이미 회원탈퇴가 된 유저인지)
-        const checkUserResult = await User.findOne({
-            where: {
-                IDX: req.verifiedToken.userIdx
-            }
-        });
-
-        if (!checkUserResult) return Promise.reject(responseMessage.USER_NOT_EXIST); // DB에 해당 유저의 아이디가 등록X
-        if (checkUserResult.dataValues.USER_STATUS === 'D')
-            // 이미 탈퇴된 유저
-            return Promise.reject(responseMessage.USER_WITHDRAWAL);
-
-        const requestUrl =
-            value === 'kakao' ? 'https://kapi.kakao.com/v1/user/access_token_info' : 'https://openapi.naver.com/v1/nid/verify';
-
-        await axios({
-            method: 'GET',
-            url: requestUrl,
-            headers: {
-                Authorization: `Bearer ${req.headers.social_at}`
-            }
-        });
-    } catch (err) {
-        Logger.error(err);
-        return Promise.reject(validationErrorResponse(true, err));
-    }
-};
-
 module.exports = {
     // checkUserStatusFunc,
     checkSnsIdDuplicate,
     checkAccessTokenEmpty,
     checkUserFollowMe,
     checkMyTravelExist,
-    checkTravelStatusAble,
     // checkTravelDateIsOver,
     // checkTravelDay,
     checkTravelStatusExceptPrivate,
@@ -363,6 +299,5 @@ module.exports = {
     checkMentionUserStatus,
     checkParentCommentAble,
     checkIsMyComment,
-    checkUserIdxIsOther,
-    checkIsSocialTokenValid
+    checkUserIdxIsOther
 };

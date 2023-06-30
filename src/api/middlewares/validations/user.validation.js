@@ -27,7 +27,7 @@ const followValidation = [
         .withMessage(responseMessage.FOLLOW_TARGET_IDX_EMPTY)
         .bail()
         .isInt()
-        .withMessage()
+        .withMessage(responseMessage.MUST_BE_POSITIVE_INTEGER)
         .bail()
         .custom(checkUserStatus)
         .bail()
@@ -111,8 +111,10 @@ const updateMyPageValidation = [
 ];
 
 /**
- * 신고하기 API Validator
- * - 댓글 신고가 아니면 reportedCommentIdx는 null, 아니면 둘다 넣기 (travelIdx + commentIdx)
+ * @title 신고하기 API Validator
+ * @body travelIdx
+ * @body travelCommentIdx
+ * @body reportTypeIdx
  */
 const createReportValidation = [
     body('travelIdx').notEmpty().withMessage(responseMessage.TRAVEL_IDX_EMPTY).bail().custom().bail(),

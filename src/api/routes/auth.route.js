@@ -24,31 +24,14 @@ router.get('/kakao-login/callback', passport.authenticate('kakao', { session: fa
 router.get('/naver-login', passport.authenticate('naver'));
 router.get('/naver-login/callback', passport.authenticate('naver', { session: false }), wrapAsync(AuthController.naverLoginCallback));
 
-// 소셜로그인 API without passport
-router.post('/social-login', socialLoginValidation, validationMiddleware, wrapAsync(AuthController.socialLogin));
-
-// 닉네임 확인 API
-router.get('/verify-nickname', verifyNickValidation, validationMiddleware, AuthController.verifyNickname);
-
-// 회원가입 API
-router.post('/sign-up', signUpValidation, validationMiddleware, wrapAsync(AuthController.signUp));
-
-// 자동로그인 API
-router.get('/auto-login', jwtMiddleware, AuthController.autoLogin);
-
-// JWT 재발급을 위한 Router
-router.post('/token-refresh', tokenRefreshValidation, validationMiddleware, wrapAsync(AuthController.tokenRefresh));
-
-// (관리자 회원가입) 이메일 인증번호 전송 API
-router.post('/email-verify', postEmailVerifyValidation, validationMiddleware, wrapAsync(AuthController.postEmailVerify));
-
-// (관리자 회원가입) 이메일 인증번호 확인 API
-router.get('/email-verify', getEmailVerifyValidation, validationMiddleware, wrapAsync(AuthController.getEmailVerify));
-
-// 로그아웃 API
-router.patch('/logout', jwtMiddleware, wrapAsync(AuthController.logout));
-
-// 회원탈퇴 API
-router.patch('/withdrawal', jwtMiddleware, userWithdrawValidation, validationMiddleware, wrapAsync(AuthController.userWithdrawal));
+router.post('/social-login', [socialLoginValidation, validationMiddleware], wrapAsync(AuthController.socialLogin)); // 소셜로그인 API without passport
+router.get('/verify-nickname', [verifyNickValidation, validationMiddleware], AuthController.verifyNickname); // 닉네임 확인 API
+router.post('/sign-up', [signUpValidation, validationMiddleware], wrapAsync(AuthController.signUp)); // 회원가입 API
+router.get('/auto-login', [jwtMiddleware], AuthController.autoLogin); // 자동로그인 API
+router.post('/token-refresh', [tokenRefreshValidation, validationMiddleware], wrapAsync(AuthController.tokenRefresh)); // JWT 재발급을 위한 Router
+router.post('/email-verify', [postEmailVerifyValidation, validationMiddleware], wrapAsync(AuthController.postEmailVerify)); // (관리자 회원가입) 이메일 인증번호 전송 API
+router.get('/email-verify', [getEmailVerifyValidation, validationMiddleware], wrapAsync(AuthController.getEmailVerify)); // (관리자 회원가입) 이메일 인증번호 확인 API
+router.patch('/logout', [jwtMiddleware], wrapAsync(AuthController.logout)); // 로그아웃 API
+router.patch('/withdrawal', [jwtMiddleware, userWithdrawValidation, validationMiddleware], wrapAsync(AuthController.userWithdrawal)); // 회원탈퇴 API
 
 module.exports = router;

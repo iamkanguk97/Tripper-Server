@@ -11,6 +11,11 @@ module.exports = class ReportType extends Sequelize.Model {
                     allowNull: false,
                     comment: '신고 유형 고유값'
                 },
+                REPORT_TARGET: {
+                    type: Sequelize.STRING(15),
+                    allowNull: false,
+                    comment: '신고 대상 (USER/TRAVEL/TRAVEL-COMMENT)'
+                },
                 REPORT_TYPE_NAME: {
                     type: Sequelize.STRING(15),
                     allowNull: false,

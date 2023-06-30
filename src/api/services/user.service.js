@@ -272,7 +272,10 @@ const createReport = async (userIdx, travelIdx, travelCommentIdx, reportType, re
 
 const getReportTypes = async () => {
     const getReportTypesResult = await ReportType.findAll({
-        attributes: ['IDX', 'REPORT_TYPE_NAME'],
+        attributes: [
+            ['IDX', 'idx'],
+            ['REPORT_TYPE_NAME', 'reportTypeName']
+        ],
         where: {
             STATUS: 'A'
         },

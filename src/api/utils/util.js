@@ -2,6 +2,8 @@ const fs = require('fs');
 const util = require('util');
 const AWS = require('aws-sdk');
 const moment = require('moment');
+const jwt = require('jsonwebtoken');
+const { JWT } = require('../../config/vars');
 
 const readFile = util.promisify(fs.readFile);
 const { S3 } = require('../../config/vars');
@@ -165,6 +167,21 @@ const getBetweenDates = (startDate, endDate) => {
     return dates;
 };
 
+/**
+ * jwtMiddleware를 사용하지 않고 사용자 고유값 가져오는 함수
+ */
+const setUserIdxByToken = userAuth => {
+    let userIdx;
+
+    if (!userAuth) userIdx = 0;
+    else {
+        const userToken = userAuth.split('Bearer ')[1];
+        userIdx = jwt.verify(userToken, JWT.ACCESS_SECRET_KEY);
+    }
+
+    return userIdx;
+};
+
 module.exports = {
     checkBadWord,
     getFirstLetter,
@@ -177,5 +194,6 @@ module.exports = {
     getTravelTrans,
     // uploadThumImage
     genRandomNumber,
-    getBetweenDates
+    getBetweenDates,
+    setUserIdxByToken
 };

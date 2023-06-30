@@ -10,7 +10,12 @@ const TravelDayArea = require('../models/Travel/TravelDayArea');
 const TravelDayAreaImage = require('../models/Travel/TravelDayAreaImage');
 const TravelComment = require('../models/Travel/TravelComment');
 const TravelCommentMention = require('../models/Travel/TravelCommentMention');
-const { selectParentCommentListQuery, selectChildCommentListQuery } = require('../queries/travel.query');
+const {
+    selectParentCommentListQuery,
+    selectChildCommentListQuery,
+    selectTravelInfoDetailQuery,
+    selectTravelDayInfoDetailQuery
+} = require('../queries/travel.query');
 
 const updateTravelStatus = async (userIdx, travelIdx, travelStatus) => {
     const _newTravelStatus = travelStatus === 'A' ? 'B' : 'A';
@@ -60,7 +65,6 @@ const createTravelReviewScore = async (userIdx, travelIdx, reviewScore, checkUse
     } else {
         // 점수를 이전에 부여했음
         const updateTravelScoreResult = (await TravelScore.update({ TRAVEL_SCORE: reviewScore }, { where: whereOption }))[0];
-
         if (!updateTravelScoreResult) throw new Error('[Travel->updateTravelScore] 변경사항이 없거나 잘못된 문법 사용');
     }
 
@@ -408,6 +412,65 @@ const getTravelDetail = async (userIdx, travelIdx) => {
     try {
         // START TRANSACTION
         transaction = await sequelize.transaction();
+
+        // DAY를 제외한 정보들 가져오기
+        const travelInfoDetail = (
+            await sequelize.query(
+                selectTravelInfoDetailQuery,
+                {
+                    type: QueryTypes.SELECT,
+                    replacements: {
+                        travelIdx,
+                        userIdx
+                    }
+                },
+                { transaction }
+            )
+        )[0];
+        travelInfoDetail.travelHashtag = travelInfoDetail.travelHashtag.split(' ');
+
+        // DAY 정보들 가져오기
+        const travelDays = await TravelDay.findAll(
+            {
+                attributes: ['IDX', 'TRAVEL_DAY_DATE'],
+                where: {
+                    TRAVEL_IDX: travelIdx
+                },
+                order: [['IDX', 'ASC']],
+                raw: true
+            },
+            { transaction }
+        );
+
+        const travelDayInfoDetail = {};
+        let dayIdx = 1;
+        for await (const td of travelDays) {
+            const key = `day${dayIdx}`;
+            const temp = {};
+            temp.date = td.TRAVEL_DAY_DATE;
+
+            // TRAVEL_DAY의 idx를 가지고 AREA 조회
+            const areaResult = (
+                await sequelize.query(
+                    selectTravelDayInfoDetailQuery,
+                    {
+                        replacements: {
+                            travelDayIdx: td.IDX
+                        }
+                    },
+                    { transaction }
+                )
+            )[0];
+
+            temp.area = areaResult;
+            travelDayInfoDetail[key] = temp;
+            dayIdx += 1;
+        }
+
+        return {
+            travelInfo: travelInfoDetail,
+            travelDayInfo: travelDayInfoDetail
+        };
     } catch (err) {
         if (transaction) await transaction.rollback();
         throw new Error(err);

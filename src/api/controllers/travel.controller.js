@@ -43,7 +43,7 @@ const createTravelLike = async (req, res) => {
     const travelIdx = req.body.travelIdx;
 
     const createTravelLikeResult = await TravelService.createTravelLike(userIdx, travelIdx);
-    return res.status(httpStatus.OK).json(response(responseMessage.SUCCESS, { message: createTravelLikeResult }));
+    return res.status(httpStatus.CREATED).json(response(responseMessage.SUCCESS, { message: createTravelLikeResult }));
 };
 
 const createTravelComment = async (req, res) => {
@@ -79,7 +79,7 @@ const getTravelDetail = async (req, res) => {
     const travelIdx = req.params.travelIdx;
 
     const getTravelDetailResult = await TravelService.getTravelDetail(userIdx, travelIdx);
-    return res.send(getTravelDetailResult);
+    return res.send(response(responseMessage.SUCCESS, getTravelDetailResult));
 };
 
 module.exports = {

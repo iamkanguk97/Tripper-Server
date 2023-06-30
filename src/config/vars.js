@@ -54,5 +54,6 @@ module.exports = {
         EXPIRE_TIME: 60 * 3
     },
     TRAVEL_MOVE_METHOD: ['자차로 여행', '대중교통 여행', '자전거 여행', '도보 여행'],
-    SOCIAL_LOGIN_VENDOR: ['KAKAO', 'NAVER']
+    SOCIAL_LOGIN_VENDOR: ['KAKAO', 'NAVER'],
+    HOME_OPTION: ['latest', 'popular', 'follow']
 };

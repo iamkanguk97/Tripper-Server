@@ -1,7 +1,6 @@
 const { body, query, param } = require('express-validator');
 const responseMessage = require('../../../config/response/baseResponseStatus');
 const {
-    checkTravelStatusAble,
     checkTravelStatus,
     checkMyTravel,
     checkBeforeReviewScore,
@@ -11,7 +10,7 @@ const {
 } = require('../../utils/validation-util');
 const { REGEX_DATE } = require('../../utils/regex');
 const { TRAVEL_MOVE_METHOD } = require('../../../config/vars');
-const { checkTravelDate, checkTravelDayKeys } = require('./utils/travel.validation.func');
+const { checkTravelDate, checkTravelDayKeys, checkTravelStatusAble } = require('./utils/travel.validation.func');
 
 /**
  * @title 게시물 생성 API Validation
@@ -110,17 +109,16 @@ const createTravelValidation = [
 ];
 
 /**
- * 게시물 삭제 API Validator
- * - travelIdx 누락 확인 + 이미 삭제된 게시물인지 확인
- * - 이미 삭제된 게시물인지 확인
- * - 본인 게시물을 삭제하려는게 맞는지 확인
+ * @title 게시물 삭제 API Validator
+ * @body travelIdx
+ * - @desc 입력유무 + 본인 게시물 접근 확인
  */
 const deleteTravelValidation = [
     body('travelIdx')
         .notEmpty()
         .withMessage(responseMessage.TRAVEL_IDX_EMPTY)
         .bail()
-        .custom(checkTravelStatus)
+        .custom(checkTravelStatusAble)
         .bail()
         .custom(checkMyTravel)
         .bail()
@@ -130,12 +128,17 @@ const deleteTravelValidation = [
  * 게시물 공개 범위 수정 API Validator
  * - 게시물 고유값 유무 + 본인 게시물이 맞는지 확인
  */
+/**
+ * @title 게시물 공개범위 수정 API Validator
+ * @body travelIdx
+ * - @desc 입력유무 + 내 게시물에만 접근 가능
+ */
 const updateTravelStatusValidation = [
     body('travelIdx')
         .notEmpty()
         .withMessage(responseMessage.TRAVEL_IDX_EMPTY)
         .bail()
-        .custom(checkTravelStatus) // 게시물 상태 확인
+        .custom(checkTravelStatusAble) // 게시물 상태 확인
         .bail()
         .custom(checkMyTravel) // 본인 게시물 맞는지 확인
         .bail()
@@ -146,14 +149,19 @@ const updateTravelStatusValidation = [
  * - 게시물 고유값 유무 + 게시물 유효성 확인 + 본인 PRIVATE 게시물에도 가능하게 기능 구현 필요
  * - 점수 유무 + 1-5점 사이인지 확인
  */
+/**
+ * @title 게시물 평점등록 API Validator
+ * @body travelIdx
+ * - @desc 입력유무 확인 + 본인게시물에 가능하게 처리
+ * @body reviewScore
+ * - @desc 점수입력 유무확인 + 1점~5점 사이인지 확인 + 이전 게시물 점수랑 동일한지 확인
+ */
 const createTravelReviewScoreValidation = [
     body('travelIdx')
         .notEmpty() // 게시물 고유값 유무 확인
         .withMessage(responseMessage.TRAVEL_IDX_EMPTY)
         .bail()
-        .custom(checkTravelStatus)
-        .bail()
-        .custom(checkMyTravel)
+        .custom(checkTravelStatusAble)
         .bail(),
     body('reviewScore')
         .notEmpty() // 점수 유무 확인
@@ -167,8 +175,9 @@ const createTravelReviewScoreValidation = [
 ];
 
 /**
- * 게시물 좋아요 API Validator
- * - 게시물 고유값 유무 + 게시물 유효성 확인 + 본인 PRIVATE 게시물에도 가능하게 기능 구현 필요
+ * @title 게시물 좋아요 API Validator
+ * @body travelIdx
+ * - @desc 입력확인 및 게시물 유효성 확인 + 본인 게시물에도 좋아요 가능
  */
 const createTravelLikeValidation = [
     body('travelIdx')
@@ -215,9 +224,12 @@ const selectTravelCommentValidation = [
  * @title 특정 게시물 조회 API Validation
  * @param travelIdx
  * - @desc 입력유무 확인
- * - @desc
+ * - @desc 게시물 작성자의 상태 확인
+ * - @desc 자신의 게시물을 확인하는거면 비공개 게시물까지 확인할 수 있게
  */
-const selectTravelDetailValidation = [param('travelIdx').notEmpty().withMessage(responseMessage.TRAVEL_IDX_EMPTY).bail().custom().bail()];
+const selectTravelDetailValidation = [
+    param('travelIdx').notEmpty().withMessage(responseMessage.TRAVEL_IDX_EMPTY).bail().custom(checkTravelStatusAble).bail()
+];
 
 module.exports = {
     createTravelValidation,

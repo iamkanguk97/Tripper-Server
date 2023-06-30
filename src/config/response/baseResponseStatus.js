@@ -32,6 +32,11 @@ module.exports = {
         code: 2002,
         message: '문자열 형태로 입력해주세요.'
     },
+    MUST_BE_POSITIVE_INTEGER: {
+        isSuccess: false,
+        code: 2003,
+        message: '양의정수 형태로 입력해주세요.'
+    },
 
     NICKNAME_EMPTY: { isSuccess: false, code: 2010, message: '닉네임을 입력해주세요.' },
     NICKNAME_ERROR_TYPE: {
@@ -318,6 +323,16 @@ module.exports = {
         isSuccess: false,
         code: 2073,
         message: '여행 게시물의 지역 정보의 리뷰는 객체 상태로 전달해주세요.'
+    },
+    HOME_OPTION_ERROR_TYPE: {
+        isSuccess: false,
+        code: 2074,
+        message: '홈화면 조회 옵션이 잘못되었습니다. latest, popular, follow 중에 입력해주세요.'
+    },
+    NON_MEMBER_CANT_FOLLOW_OPTION: {
+        isSuccess: false,
+        code: 2075,
+        message: '비회원 사용자는 홈조회에서 팔로우 옵션을 사용할 수 없습니다.'
     },
 
     NICKNAME_DUPLICATED: { isSuccess: false, code: 3010, message: '중복된 닉네임입니다.' },
